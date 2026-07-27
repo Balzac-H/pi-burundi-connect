@@ -9,38 +9,351 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PortefeuilleRouteImport } from './routes/portefeuille'
+import { Route as ParametresRouteImport } from './routes/parametres'
+import { Route as PaiementRouteImport } from './routes/paiement'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as FavorisRouteImport } from './routes/favoris'
+import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProfilIndexRouteImport } from './routes/profil.index'
+import { Route as MessagesIndexRouteImport } from './routes/messages.index'
+import { Route as MarketIndexRouteImport } from './routes/market.index'
+import { Route as JobsIndexRouteImport } from './routes/jobs.index'
+import { Route as ProfilModifierRouteImport } from './routes/profil.modifier'
+import { Route as ProfilIdRouteImport } from './routes/profil.$id'
+import { Route as MessagesIdRouteImport } from './routes/messages.$id'
+import { Route as MarketVendreRouteImport } from './routes/market.vendre'
+import { Route as MarketBoutiqueRouteImport } from './routes/market.boutique'
+import { Route as MarketIdRouteImport } from './routes/market.$id'
+import { Route as JobsPostulationsRouteImport } from './routes/jobs.postulations'
+import { Route as JobsCreerRouteImport } from './routes/jobs.creer'
+import { Route as JobsIdRouteImport } from './routes/jobs.$id'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortefeuilleRoute = PortefeuilleRouteImport.update({
+  id: '/portefeuille',
+  path: '/portefeuille',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParametresRoute = ParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaiementRoute = PaiementRouteImport.update({
+  id: '/paiement',
+  path: '/paiement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavorisRoute = FavorisRouteImport.update({
+  id: '/favoris',
+  path: '/favoris',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfilIndexRoute = ProfilIndexRouteImport.update({
+  id: '/profil/',
+  path: '/profil/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesIndexRoute = MessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketIndexRoute = MarketIndexRouteImport.update({
+  id: '/market/',
+  path: '/market/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsIndexRoute = JobsIndexRouteImport.update({
+  id: '/jobs/',
+  path: '/jobs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilModifierRoute = ProfilModifierRouteImport.update({
+  id: '/profil/modifier',
+  path: '/profil/modifier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilIdRoute = ProfilIdRouteImport.update({
+  id: '/profil/$id',
+  path: '/profil/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesIdRoute = MessagesIdRouteImport.update({
+  id: '/messages/$id',
+  path: '/messages/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketVendreRoute = MarketVendreRouteImport.update({
+  id: '/market/vendre',
+  path: '/market/vendre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketBoutiqueRoute = MarketBoutiqueRouteImport.update({
+  id: '/market/boutique',
+  path: '/market/boutique',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketIdRoute = MarketIdRouteImport.update({
+  id: '/market/$id',
+  path: '/market/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsPostulationsRoute = JobsPostulationsRouteImport.update({
+  id: '/jobs/postulations',
+  path: '/jobs/postulations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsCreerRoute = JobsCreerRouteImport.update({
+  id: '/jobs/creer',
+  path: '/jobs/creer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsIdRoute = JobsIdRouteImport.update({
+  id: '/jobs/$id',
+  path: '/jobs/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/connexion': typeof ConnexionRoute
+  '/favoris': typeof FavorisRoute
+  '/notifications': typeof NotificationsRoute
+  '/paiement': typeof PaiementRoute
+  '/parametres': typeof ParametresRoute
+  '/portefeuille': typeof PortefeuilleRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/jobs/$id': typeof JobsIdRoute
+  '/jobs/creer': typeof JobsCreerRoute
+  '/jobs/postulations': typeof JobsPostulationsRoute
+  '/market/$id': typeof MarketIdRoute
+  '/market/boutique': typeof MarketBoutiqueRoute
+  '/market/vendre': typeof MarketVendreRoute
+  '/messages/$id': typeof MessagesIdRoute
+  '/profil/$id': typeof ProfilIdRoute
+  '/profil/modifier': typeof ProfilModifierRoute
+  '/jobs/': typeof JobsIndexRoute
+  '/market/': typeof MarketIndexRoute
+  '/messages/': typeof MessagesIndexRoute
+  '/profil/': typeof ProfilIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/connexion': typeof ConnexionRoute
+  '/favoris': typeof FavorisRoute
+  '/notifications': typeof NotificationsRoute
+  '/paiement': typeof PaiementRoute
+  '/parametres': typeof ParametresRoute
+  '/portefeuille': typeof PortefeuilleRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/jobs/$id': typeof JobsIdRoute
+  '/jobs/creer': typeof JobsCreerRoute
+  '/jobs/postulations': typeof JobsPostulationsRoute
+  '/market/$id': typeof MarketIdRoute
+  '/market/boutique': typeof MarketBoutiqueRoute
+  '/market/vendre': typeof MarketVendreRoute
+  '/messages/$id': typeof MessagesIdRoute
+  '/profil/$id': typeof ProfilIdRoute
+  '/profil/modifier': typeof ProfilModifierRoute
+  '/jobs': typeof JobsIndexRoute
+  '/market': typeof MarketIndexRoute
+  '/messages': typeof MessagesIndexRoute
+  '/profil': typeof ProfilIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/connexion': typeof ConnexionRoute
+  '/favoris': typeof FavorisRoute
+  '/notifications': typeof NotificationsRoute
+  '/paiement': typeof PaiementRoute
+  '/parametres': typeof ParametresRoute
+  '/portefeuille': typeof PortefeuilleRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/jobs/$id': typeof JobsIdRoute
+  '/jobs/creer': typeof JobsCreerRoute
+  '/jobs/postulations': typeof JobsPostulationsRoute
+  '/market/$id': typeof MarketIdRoute
+  '/market/boutique': typeof MarketBoutiqueRoute
+  '/market/vendre': typeof MarketVendreRoute
+  '/messages/$id': typeof MessagesIdRoute
+  '/profil/$id': typeof ProfilIdRoute
+  '/profil/modifier': typeof ProfilModifierRoute
+  '/jobs/': typeof JobsIndexRoute
+  '/market/': typeof MarketIndexRoute
+  '/messages/': typeof MessagesIndexRoute
+  '/profil/': typeof ProfilIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/connexion'
+    | '/favoris'
+    | '/notifications'
+    | '/paiement'
+    | '/parametres'
+    | '/portefeuille'
+    | '/sitemap.xml'
+    | '/jobs/$id'
+    | '/jobs/creer'
+    | '/jobs/postulations'
+    | '/market/$id'
+    | '/market/boutique'
+    | '/market/vendre'
+    | '/messages/$id'
+    | '/profil/$id'
+    | '/profil/modifier'
+    | '/jobs/'
+    | '/market/'
+    | '/messages/'
+    | '/profil/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/connexion'
+    | '/favoris'
+    | '/notifications'
+    | '/paiement'
+    | '/parametres'
+    | '/portefeuille'
+    | '/sitemap.xml'
+    | '/jobs/$id'
+    | '/jobs/creer'
+    | '/jobs/postulations'
+    | '/market/$id'
+    | '/market/boutique'
+    | '/market/vendre'
+    | '/messages/$id'
+    | '/profil/$id'
+    | '/profil/modifier'
+    | '/jobs'
+    | '/market'
+    | '/messages'
+    | '/profil'
+  id:
+    | '__root__'
+    | '/'
+    | '/connexion'
+    | '/favoris'
+    | '/notifications'
+    | '/paiement'
+    | '/parametres'
+    | '/portefeuille'
+    | '/sitemap.xml'
+    | '/jobs/$id'
+    | '/jobs/creer'
+    | '/jobs/postulations'
+    | '/market/$id'
+    | '/market/boutique'
+    | '/market/vendre'
+    | '/messages/$id'
+    | '/profil/$id'
+    | '/profil/modifier'
+    | '/jobs/'
+    | '/market/'
+    | '/messages/'
+    | '/profil/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConnexionRoute: typeof ConnexionRoute
+  FavorisRoute: typeof FavorisRoute
+  NotificationsRoute: typeof NotificationsRoute
+  PaiementRoute: typeof PaiementRoute
+  ParametresRoute: typeof ParametresRoute
+  PortefeuilleRoute: typeof PortefeuilleRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  JobsIdRoute: typeof JobsIdRoute
+  JobsCreerRoute: typeof JobsCreerRoute
+  JobsPostulationsRoute: typeof JobsPostulationsRoute
+  MarketIdRoute: typeof MarketIdRoute
+  MarketBoutiqueRoute: typeof MarketBoutiqueRoute
+  MarketVendreRoute: typeof MarketVendreRoute
+  MessagesIdRoute: typeof MessagesIdRoute
+  ProfilIdRoute: typeof ProfilIdRoute
+  ProfilModifierRoute: typeof ProfilModifierRoute
+  JobsIndexRoute: typeof JobsIndexRoute
+  MarketIndexRoute: typeof MarketIndexRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
+  ProfilIndexRoute: typeof ProfilIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portefeuille': {
+      id: '/portefeuille'
+      path: '/portefeuille'
+      fullPath: '/portefeuille'
+      preLoaderRoute: typeof PortefeuilleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parametres': {
+      id: '/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof ParametresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/paiement': {
+      id: '/paiement'
+      path: '/paiement'
+      fullPath: '/paiement'
+      preLoaderRoute: typeof PaiementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoris': {
+      id: '/favoris'
+      path: '/favoris'
+      fullPath: '/favoris'
+      preLoaderRoute: typeof FavorisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +361,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profil/': {
+      id: '/profil/'
+      path: '/profil'
+      fullPath: '/profil/'
+      preLoaderRoute: typeof ProfilIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/': {
+      id: '/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof MessagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market/': {
+      id: '/market/'
+      path: '/market'
+      fullPath: '/market/'
+      preLoaderRoute: typeof MarketIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/': {
+      id: '/jobs/'
+      path: '/jobs'
+      fullPath: '/jobs/'
+      preLoaderRoute: typeof JobsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil/modifier': {
+      id: '/profil/modifier'
+      path: '/profil/modifier'
+      fullPath: '/profil/modifier'
+      preLoaderRoute: typeof ProfilModifierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil/$id': {
+      id: '/profil/$id'
+      path: '/profil/$id'
+      fullPath: '/profil/$id'
+      preLoaderRoute: typeof ProfilIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/$id': {
+      id: '/messages/$id'
+      path: '/messages/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof MessagesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market/vendre': {
+      id: '/market/vendre'
+      path: '/market/vendre'
+      fullPath: '/market/vendre'
+      preLoaderRoute: typeof MarketVendreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market/boutique': {
+      id: '/market/boutique'
+      path: '/market/boutique'
+      fullPath: '/market/boutique'
+      preLoaderRoute: typeof MarketBoutiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market/$id': {
+      id: '/market/$id'
+      path: '/market/$id'
+      fullPath: '/market/$id'
+      preLoaderRoute: typeof MarketIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/postulations': {
+      id: '/jobs/postulations'
+      path: '/jobs/postulations'
+      fullPath: '/jobs/postulations'
+      preLoaderRoute: typeof JobsPostulationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/creer': {
+      id: '/jobs/creer'
+      path: '/jobs/creer'
+      fullPath: '/jobs/creer'
+      preLoaderRoute: typeof JobsCreerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/$id': {
+      id: '/jobs/$id'
+      path: '/jobs/$id'
+      fullPath: '/jobs/$id'
+      preLoaderRoute: typeof JobsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConnexionRoute: ConnexionRoute,
+  FavorisRoute: FavorisRoute,
+  NotificationsRoute: NotificationsRoute,
+  PaiementRoute: PaiementRoute,
+  ParametresRoute: ParametresRoute,
+  PortefeuilleRoute: PortefeuilleRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  JobsIdRoute: JobsIdRoute,
+  JobsCreerRoute: JobsCreerRoute,
+  JobsPostulationsRoute: JobsPostulationsRoute,
+  MarketIdRoute: MarketIdRoute,
+  MarketBoutiqueRoute: MarketBoutiqueRoute,
+  MarketVendreRoute: MarketVendreRoute,
+  MessagesIdRoute: MessagesIdRoute,
+  ProfilIdRoute: ProfilIdRoute,
+  ProfilModifierRoute: ProfilModifierRoute,
+  JobsIndexRoute: JobsIndexRoute,
+  MarketIndexRoute: MarketIndexRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
+  ProfilIndexRoute: ProfilIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
