@@ -9,8 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PortefeuilleRouteImport } from './routes/portefeuille'
+import { Route as ParametresRouteImport } from './routes/parametres'
 import { Route as PaiementRouteImport } from './routes/paiement'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as FavorisRouteImport } from './routes/favoris'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfilIndexRouteImport } from './routes/profil.index'
@@ -27,14 +31,34 @@ import { Route as JobsPostulationsRouteImport } from './routes/jobs.postulations
 import { Route as JobsCreerRouteImport } from './routes/jobs.creer'
 import { Route as JobsIdRouteImport } from './routes/jobs.$id'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortefeuilleRoute = PortefeuilleRouteImport.update({
   id: '/portefeuille',
   path: '/portefeuille',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ParametresRoute = ParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PaiementRoute = PaiementRouteImport.update({
   id: '/paiement',
   path: '/paiement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavorisRoute = FavorisRouteImport.update({
+  id: '/favoris',
+  path: '/favoris',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConnexionRoute = ConnexionRouteImport.update({
@@ -116,8 +140,12 @@ const JobsIdRoute = JobsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
+  '/favoris': typeof FavorisRoute
+  '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
+  '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -135,8 +163,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
+  '/favoris': typeof FavorisRoute
+  '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
+  '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -155,8 +187,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
+  '/favoris': typeof FavorisRoute
+  '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
+  '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -176,8 +212,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/connexion'
+    | '/favoris'
+    | '/notifications'
     | '/paiement'
+    | '/parametres'
     | '/portefeuille'
+    | '/sitemap.xml'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -195,8 +235,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/connexion'
+    | '/favoris'
+    | '/notifications'
     | '/paiement'
+    | '/parametres'
     | '/portefeuille'
+    | '/sitemap.xml'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -214,8 +258,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/connexion'
+    | '/favoris'
+    | '/notifications'
     | '/paiement'
+    | '/parametres'
     | '/portefeuille'
+    | '/sitemap.xml'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -234,8 +282,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConnexionRoute: typeof ConnexionRoute
+  FavorisRoute: typeof FavorisRoute
+  NotificationsRoute: typeof NotificationsRoute
   PaiementRoute: typeof PaiementRoute
+  ParametresRoute: typeof ParametresRoute
   PortefeuilleRoute: typeof PortefeuilleRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   JobsIdRoute: typeof JobsIdRoute
   JobsCreerRoute: typeof JobsCreerRoute
   JobsPostulationsRoute: typeof JobsPostulationsRoute
@@ -253,6 +305,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portefeuille': {
       id: '/portefeuille'
       path: '/portefeuille'
@@ -260,11 +319,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortefeuilleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/parametres': {
+      id: '/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof ParametresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/paiement': {
       id: '/paiement'
       path: '/paiement'
       fullPath: '/paiement'
       preLoaderRoute: typeof PaiementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoris': {
+      id: '/favoris'
+      path: '/favoris'
+      fullPath: '/favoris'
+      preLoaderRoute: typeof FavorisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/connexion': {
@@ -378,8 +458,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConnexionRoute: ConnexionRoute,
+  FavorisRoute: FavorisRoute,
+  NotificationsRoute: NotificationsRoute,
   PaiementRoute: PaiementRoute,
+  ParametresRoute: ParametresRoute,
   PortefeuilleRoute: PortefeuilleRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   JobsIdRoute: JobsIdRoute,
   JobsCreerRoute: JobsCreerRoute,
   JobsPostulationsRoute: JobsPostulationsRoute,
