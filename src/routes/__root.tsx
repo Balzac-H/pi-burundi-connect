@@ -81,15 +81,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BURUNDI PI CONNECT — Jobs, Market & Pi" },
+      { title: "Accueil — BURUNDI PI CONNECT" },
       {
         name: "description",
         content:
-          "Plateforme peer-to-peer du Burundi : trouvez des emplois, achetez et vendez, payez en Pi.",
+          "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi.",
       },
       { name: "author", content: "Burundi Pi Connect" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Accueil — BURUNDI PI CONNECT" },
+      { name: "twitter:title", content: "Accueil — BURUNDI PI CONNECT" },
+      { property: "og:description", content: "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi." },
+      { name: "twitter:description", content: "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9bd5e4c1-a346-48b0-823c-12f889e10520/id-preview-42fe7499--4c2efe0c-fc97-45aa-becc-558c99928a5d.lovable.app-1785175859727.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9bd5e4c1-a346-48b0-823c-12f889e10520/id-preview-42fe7499--4c2efe0c-fc97-45aa-becc-558c99928a5d.lovable.app-1785175859727.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

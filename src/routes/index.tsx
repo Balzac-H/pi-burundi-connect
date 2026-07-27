@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
         content: "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi.",
       },
       { property: "og:title", content: "Accueil — BURUNDI PI CONNECT" },
-      { property: "og:description", content: "Emplois, marché et paiements Pi au Burundi, en un seul endroit." },
+      { property: "og:description", content: "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi." },
     ],
   }),
   component: Accueil,
