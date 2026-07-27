@@ -12,8 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfilIndexRouteImport } from './routes/profil.index'
+import { Route as JobsIndexRouteImport } from './routes/jobs.index'
 import { Route as ProfilModifierRouteImport } from './routes/profil.modifier'
 import { Route as ProfilIdRouteImport } from './routes/profil.$id'
+import { Route as JobsPostulationsRouteImport } from './routes/jobs.postulations'
+import { Route as JobsCreerRouteImport } from './routes/jobs.creer'
+import { Route as JobsIdRouteImport } from './routes/jobs.$id'
 
 const ConnexionRoute = ConnexionRouteImport.update({
   id: '/connexion',
@@ -30,6 +34,11 @@ const ProfilIndexRoute = ProfilIndexRouteImport.update({
   path: '/profil/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsIndexRoute = JobsIndexRouteImport.update({
+  id: '/jobs/',
+  path: '/jobs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfilModifierRoute = ProfilModifierRouteImport.update({
   id: '/profil/modifier',
   path: '/profil/modifier',
@@ -40,27 +49,54 @@ const ProfilIdRoute = ProfilIdRouteImport.update({
   path: '/profil/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsPostulationsRoute = JobsPostulationsRouteImport.update({
+  id: '/jobs/postulations',
+  path: '/jobs/postulations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsCreerRoute = JobsCreerRouteImport.update({
+  id: '/jobs/creer',
+  path: '/jobs/creer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsIdRoute = JobsIdRouteImport.update({
+  id: '/jobs/$id',
+  path: '/jobs/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
+  '/jobs/$id': typeof JobsIdRoute
+  '/jobs/creer': typeof JobsCreerRoute
+  '/jobs/postulations': typeof JobsPostulationsRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profil/modifier': typeof ProfilModifierRoute
+  '/jobs/': typeof JobsIndexRoute
   '/profil/': typeof ProfilIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
+  '/jobs/$id': typeof JobsIdRoute
+  '/jobs/creer': typeof JobsCreerRoute
+  '/jobs/postulations': typeof JobsPostulationsRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profil/modifier': typeof ProfilModifierRoute
+  '/jobs': typeof JobsIndexRoute
   '/profil': typeof ProfilIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
+  '/jobs/$id': typeof JobsIdRoute
+  '/jobs/creer': typeof JobsCreerRoute
+  '/jobs/postulations': typeof JobsPostulationsRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profil/modifier': typeof ProfilModifierRoute
+  '/jobs/': typeof JobsIndexRoute
   '/profil/': typeof ProfilIndexRoute
 }
 export interface FileRouteTypes {
@@ -68,25 +104,46 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/connexion'
+    | '/jobs/$id'
+    | '/jobs/creer'
+    | '/jobs/postulations'
     | '/profil/$id'
     | '/profil/modifier'
+    | '/jobs/'
     | '/profil/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/connexion' | '/profil/$id' | '/profil/modifier' | '/profil'
+  to:
+    | '/'
+    | '/connexion'
+    | '/jobs/$id'
+    | '/jobs/creer'
+    | '/jobs/postulations'
+    | '/profil/$id'
+    | '/profil/modifier'
+    | '/jobs'
+    | '/profil'
   id:
     | '__root__'
     | '/'
     | '/connexion'
+    | '/jobs/$id'
+    | '/jobs/creer'
+    | '/jobs/postulations'
     | '/profil/$id'
     | '/profil/modifier'
+    | '/jobs/'
     | '/profil/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConnexionRoute: typeof ConnexionRoute
+  JobsIdRoute: typeof JobsIdRoute
+  JobsCreerRoute: typeof JobsCreerRoute
+  JobsPostulationsRoute: typeof JobsPostulationsRoute
   ProfilIdRoute: typeof ProfilIdRoute
   ProfilModifierRoute: typeof ProfilModifierRoute
+  JobsIndexRoute: typeof JobsIndexRoute
   ProfilIndexRoute: typeof ProfilIndexRoute
 }
 
@@ -113,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfilIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/': {
+      id: '/jobs/'
+      path: '/jobs'
+      fullPath: '/jobs/'
+      preLoaderRoute: typeof JobsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profil/modifier': {
       id: '/profil/modifier'
       path: '/profil/modifier'
@@ -127,14 +191,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfilIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/postulations': {
+      id: '/jobs/postulations'
+      path: '/jobs/postulations'
+      fullPath: '/jobs/postulations'
+      preLoaderRoute: typeof JobsPostulationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/creer': {
+      id: '/jobs/creer'
+      path: '/jobs/creer'
+      fullPath: '/jobs/creer'
+      preLoaderRoute: typeof JobsCreerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/$id': {
+      id: '/jobs/$id'
+      path: '/jobs/$id'
+      fullPath: '/jobs/$id'
+      preLoaderRoute: typeof JobsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConnexionRoute: ConnexionRoute,
+  JobsIdRoute: JobsIdRoute,
+  JobsCreerRoute: JobsCreerRoute,
+  JobsPostulationsRoute: JobsPostulationsRoute,
   ProfilIdRoute: ProfilIdRoute,
   ProfilModifierRoute: ProfilModifierRoute,
+  JobsIndexRoute: JobsIndexRoute,
   ProfilIndexRoute: ProfilIndexRoute,
 }
 export const routeTree = rootRouteImport
