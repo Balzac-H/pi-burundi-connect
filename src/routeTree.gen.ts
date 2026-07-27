@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfilIndexRouteImport } from './routes/profil.index'
+import { Route as ProfilModifierRouteImport } from './routes/profil.modifier'
 import { Route as ProfilIdRouteImport } from './routes/profil.$id'
 
 const ConnexionRoute = ConnexionRouteImport.update({
@@ -29,6 +30,11 @@ const ProfilIndexRoute = ProfilIndexRouteImport.update({
   path: '/profil/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfilModifierRoute = ProfilModifierRouteImport.update({
+  id: '/profil/modifier',
+  path: '/profil/modifier',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfilIdRoute = ProfilIdRouteImport.update({
   id: '/profil/$id',
   path: '/profil/$id',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
   '/profil/$id': typeof ProfilIdRoute
+  '/profil/modifier': typeof ProfilModifierRoute
   '/profil/': typeof ProfilIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
   '/profil/$id': typeof ProfilIdRoute
+  '/profil/modifier': typeof ProfilModifierRoute
   '/profil': typeof ProfilIndexRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/connexion': typeof ConnexionRoute
   '/profil/$id': typeof ProfilIdRoute
+  '/profil/modifier': typeof ProfilModifierRoute
   '/profil/': typeof ProfilIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/connexion' | '/profil/$id' | '/profil/'
+  fullPaths:
+    | '/'
+    | '/connexion'
+    | '/profil/$id'
+    | '/profil/modifier'
+    | '/profil/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/connexion' | '/profil/$id' | '/profil'
-  id: '__root__' | '/' | '/connexion' | '/profil/$id' | '/profil/'
+  to: '/' | '/connexion' | '/profil/$id' | '/profil/modifier' | '/profil'
+  id:
+    | '__root__'
+    | '/'
+    | '/connexion'
+    | '/profil/$id'
+    | '/profil/modifier'
+    | '/profil/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConnexionRoute: typeof ConnexionRoute
   ProfilIdRoute: typeof ProfilIdRoute
+  ProfilModifierRoute: typeof ProfilModifierRoute
   ProfilIndexRoute: typeof ProfilIndexRoute
 }
 
@@ -92,6 +113,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfilIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profil/modifier': {
+      id: '/profil/modifier'
+      path: '/profil/modifier'
+      fullPath: '/profil/modifier'
+      preLoaderRoute: typeof ProfilModifierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profil/$id': {
       id: '/profil/$id'
       path: '/profil/$id'
@@ -106,6 +134,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConnexionRoute: ConnexionRoute,
   ProfilIdRoute: ProfilIdRoute,
+  ProfilModifierRoute: ProfilModifierRoute,
   ProfilIndexRoute: ProfilIndexRoute,
 }
 export const routeTree = rootRouteImport
