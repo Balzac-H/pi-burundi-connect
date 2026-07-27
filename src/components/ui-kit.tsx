@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { Link, createLink } from "@tanstack/react-router";
+import { forwardRef, type ReactNode } from "react";
+
 import { Star, MapPin } from "lucide-react";
 import { useStore, store } from "@/lib/store";
 import { parUtilisateur } from "@/lib/data";
