@@ -38,27 +38,25 @@ export function Bouton({
   );
 }
 
-export function LienBouton({
-  variante = "primaire",
-  className,
-  taille = "md",
-  children,
-  ...props
-}: React.ComponentProps<typeof Link> & { variante?: Variante; taille?: "sm" | "md" }) {
-  return (
-    <Link
-      {...props}
-      className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold transition-all active:scale-[0.98]",
-        taille === "sm" && "min-h-9 px-3 text-xs",
-        variantes[variante],
-        className,
-      )}
-    >
-      {children}
-    </Link>
-  );
-}
+const AncreStylisee = forwardRef<
+  HTMLAnchorElement,
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { variante?: Variante; taille?: "sm" | "md" }
+>(({ variante = "primaire", taille = "md", className, ...props }, ref) => (
+  <a
+    ref={ref}
+    {...props}
+    className={cn(
+      "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold transition-all active:scale-[0.98]",
+      taille === "sm" && "min-h-9 px-3 text-xs",
+      variantes[variante],
+      className,
+    )}
+  />
+));
+AncreStylisee.displayName = "AncreStylisee";
+
+export const LienBouton = createLink(AncreStylisee);
+
 
 /* ---------------- Carte ---------------- */
 
