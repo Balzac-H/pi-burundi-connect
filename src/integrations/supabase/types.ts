@@ -14,7 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      produits: {
+        Row: {
+          categorie: string
+          created_at: string
+          description: string | null
+          id: string
+          lieu: string | null
+          livraison: string | null
+          photo_url: string | null
+          prix: number
+          stock: number
+          titre: string
+          unite: string
+          updated_at: string
+          vendeur_id: string
+        }
+        Insert: {
+          categorie?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lieu?: string | null
+          livraison?: string | null
+          photo_url?: string | null
+          prix?: number
+          stock?: number
+          titre: string
+          unite?: string
+          updated_at?: string
+          vendeur_id: string
+        }
+        Update: {
+          categorie?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          lieu?: string | null
+          livraison?: string | null
+          photo_url?: string | null
+          prix?: number
+          stock?: number
+          titre?: string
+          unite?: string
+          updated_at?: string
+          vendeur_id?: string
+        }
+        Relationships: []
+      }
+      profils: {
+        Row: {
+          bio: string | null
+          competences: string[]
+          created_at: string
+          id: string
+          nom: string
+          photo_url: string | null
+          prix_horaire: number | null
+          statut: string
+          telephone: string | null
+          updated_at: string
+          ville: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          bio?: string | null
+          competences?: string[]
+          created_at?: string
+          id: string
+          nom?: string
+          photo_url?: string | null
+          prix_horaire?: number | null
+          statut?: string
+          telephone?: string | null
+          updated_at?: string
+          ville?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          bio?: string | null
+          competences?: string[]
+          created_at?: string
+          id?: string
+          nom?: string
+          photo_url?: string | null
+          prix_horaire?: number | null
+          statut?: string
+          telephone?: string | null
+          updated_at?: string
+          ville?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
