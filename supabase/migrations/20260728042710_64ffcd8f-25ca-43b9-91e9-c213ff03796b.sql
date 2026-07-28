@@ -1,0 +1,4 @@
+CREATE POLICY "Photos lisibles par tous" ON storage.objects FOR SELECT USING (bucket_id IN ('avatars','produits'));
+CREATE POLICY "Envoi de ses propres photos" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id IN ('avatars','produits') AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "Maj de ses propres photos" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id IN ('avatars','produits') AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "Suppression de ses propres photos" ON storage.objects FOR DELETE TO authenticated USING (bucket_id IN ('avatars','produits') AND (storage.foldername(name))[1] = auth.uid()::text);
