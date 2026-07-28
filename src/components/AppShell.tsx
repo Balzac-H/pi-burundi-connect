@@ -17,6 +17,7 @@ const onglets = [
 export function AppShell({ children }: { children: ReactNode }) {
   const chemin = useRouterState({ select: (s) => s.location.pathname });
   const nonLues = useStore((s) => s.notificationsNonLues);
+  const { utilisateur } = useSession();
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,6 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               { to: "/market", label: "Market" },
               { to: "/messages", label: "Messages" },
               { to: "/portefeuille", label: "Wallet" },
+              { to: "/vendeurs", label: "Vendeurs" },
               { to: "/favoris", label: "Favoris" },
             ].map((l) => (
               <Link
@@ -71,6 +73,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               )}
             </Link>
             <Link to="/parametres" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label="Paramètres">
+
               <Settings className="size-5" />
             </Link>
           </div>
