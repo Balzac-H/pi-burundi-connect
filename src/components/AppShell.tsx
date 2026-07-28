@@ -73,9 +73,24 @@ export function AppShell({ children }: { children: ReactNode }) {
               )}
             </Link>
             <Link to="/parametres" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label="Paramètres">
-
               <Settings className="size-5" />
             </Link>
+            {utilisateur ? (
+              <button
+                className="rounded-lg p-2 text-primary hover:bg-muted"
+                aria-label="Se déconnecter"
+                onClick={async () => {
+                  await seDeconnecter();
+                  toast.success("Vous êtes déconnecté.");
+                }}
+              >
+                <LogOut className="size-5" />
+              </button>
+            ) : (
+              <Link to="/connexion" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label="Se connecter">
+                <LogIn className="size-5" />
+              </Link>
+            )}
           </div>
         </div>
       </header>
