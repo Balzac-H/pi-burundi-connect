@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VendeursRouteImport } from './routes/vendeurs'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PortefeuilleRouteImport } from './routes/portefeuille'
 import { Route as ParametresRouteImport } from './routes/parametres'
@@ -31,6 +32,11 @@ import { Route as JobsPostulationsRouteImport } from './routes/jobs.postulations
 import { Route as JobsCreerRouteImport } from './routes/jobs.creer'
 import { Route as JobsIdRouteImport } from './routes/jobs.$id'
 
+const VendeursRoute = VendeursRouteImport.update({
+  id: '/vendeurs',
+  path: '/vendeurs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -193,6 +201,7 @@ export interface FileRoutesById {
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
+    | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
+    | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
+    | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   ParametresRoute: typeof ParametresRoute
   PortefeuilleRoute: typeof PortefeuilleRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  VendeursRoute: typeof VendeursRoute
   JobsIdRoute: typeof JobsIdRoute
   JobsCreerRoute: typeof JobsCreerRoute
   JobsPostulationsRoute: typeof JobsPostulationsRoute
@@ -305,6 +318,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vendeurs': {
+      id: '/vendeurs'
+      path: '/vendeurs'
+      fullPath: '/vendeurs'
+      preLoaderRoute: typeof VendeursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -464,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   ParametresRoute: ParametresRoute,
   PortefeuilleRoute: PortefeuilleRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  VendeursRoute: VendeursRoute,
   JobsIdRoute: JobsIdRoute,
   JobsCreerRoute: JobsCreerRoute,
   JobsPostulationsRoute: JobsPostulationsRoute,
