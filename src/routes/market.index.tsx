@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { listerProduits, lienWhatsApp, chargerProfil, type ProduitDb, type Profil } from "@/lib/comptes";
 import { Bouton, Carte, Etiquette, Saisie, Selection, LienBouton, Note, Distance } from "@/components/ui-kit";
 import { produits, parUtilisateur, categoriesMarket } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
@@ -68,6 +69,9 @@ function Market() {
         <Saisie placeholder="Rechercher un produit…" value={recherche} onChange={(e) => setRecherche(e.target.value)} maxLength={80} />
       </Carte>
 
+      <ProduitsCommunaute recherche={recherche} categorie={categorie} />
+
+      <h2 className="text-lg font-bold text-primary">Produits en vedette</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {liste.map((p) => {
           const v = parUtilisateur(p.vendeurId);
