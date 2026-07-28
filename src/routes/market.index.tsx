@@ -115,3 +115,62 @@ function Market() {
     </div>
   );
 }
+
+function ProduitsCommunaute({ recherche, categorie }: { recherche: string; categorie: string }) {
+  const [items, setItems] = useState<ProduitDb[]>([]);
+  const [vendeurs, setVendeurs] = useState<Record<string, Profil | null>>({});
+
+  useEffect(() => {
+    listerProduits().then(async (p) => {
+      setItems(p);
+      const ids = [...new Set(p.map((x) => x.vendeur_id))];
+      const profils = await Promise.all(ids.map((id) => chargerProfil(id)));
+      setVendeurs(Object.fromEntries(ids.map((id, i) => [id, profils[i]])));
+    });
+  }, []);
+
+  const liste = items.filter(
+    (p) =>
+      (!categorie || p.categorie === categorie) &&
+      (p.titre + (p.description ?? "")).toLowerCase().includes(recherche.toLowerCase()),
+  );
+
+  if (liste.length === 0) return null;
+
+  return (
+    <section className="space-y-3">
+      <h2 className="text-lg font-bold text-primary">Produits de la communauté</h2>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {liste.map((p) => {
+          const v = vendeurs[p.vendeur_id];
+          return (
+            <Carte key={p.id} className="space-y-2">
+              {p.photo_url ? (
+                <img src={p.photo_url} alt={p.titre} className="h-32 w-full rounded-lg object-cover" />
+              ) : (
+                <div className="grid h-32 place-items-center rounded-lg bg-primary-soft text-6xl">🛍️</div>
+              )}
+              <h3 className="font-bold leading-snug">{p.titre}</h3>
+              {v && <p className="text-xs font-semibold text-muted-foreground">{v.nom} {v.ville ? `· ${v.ville}` : ""}</p>}
+              <div className="flex flex-wrap items-center gap-2">
+                <Etiquette ton="pi">{formatPi(Number(p.prix))}</Etiquette>
+                <Etiquette ton="succes">✅ Stock : {p.stock}</Etiquette>
+              </div>
+              {p.description && <p className="line-clamp-2 text-xs text-muted-foreground">{p.description}</p>}
+              {v?.whatsapp && (
+                <a
+                  href={lienWhatsApp(v.whatsapp, `Bonjour, je suis intéressé par « ${p.titre} »`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success"
+                >
+                  💬 CONTACTER SUR WHATSAPP
+                </a>
+              )}
+            </Carte>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
