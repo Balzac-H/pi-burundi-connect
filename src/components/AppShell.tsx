@@ -1,7 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Briefcase, ShoppingBag, MessageCircle, User, Bell, Wallet, Heart, Settings } from "lucide-react";
+import { Home, Briefcase, ShoppingBag, MessageCircle, User, Bell, Wallet, Heart, Settings, LogIn, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
+import { useSession, seDeconnecter } from "@/lib/auth";
+import { toast } from "sonner";
 import type { ReactNode } from "react";
 
 const onglets = [
