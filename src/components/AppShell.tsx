@@ -1,7 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Briefcase, ShoppingBag, MessageCircle, User, Bell, Wallet, Heart, Settings } from "lucide-react";
+import { Home, Briefcase, ShoppingBag, MessageCircle, User, Bell, Wallet, Heart, Settings, LogIn, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
+import { useSession, seDeconnecter } from "@/lib/auth";
+import { toast } from "sonner";
 import type { ReactNode } from "react";
 
 const onglets = [
@@ -15,6 +17,7 @@ const onglets = [
 export function AppShell({ children }: { children: ReactNode }) {
   const chemin = useRouterState({ select: (s) => s.location.pathname });
   const nonLues = useStore((s) => s.notificationsNonLues);
+  const { utilisateur } = useSession();
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,6 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               { to: "/market", label: "Market" },
               { to: "/messages", label: "Messages" },
               { to: "/portefeuille", label: "Wallet" },
+              { to: "/vendeurs", label: "Vendeurs" },
               { to: "/favoris", label: "Favoris" },
             ].map((l) => (
               <Link
@@ -71,6 +75,22 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link to="/parametres" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label="Paramètres">
               <Settings className="size-5" />
             </Link>
+            {utilisateur ? (
+              <button
+                className="rounded-lg p-2 text-primary hover:bg-muted"
+                aria-label="Se déconnecter"
+                onClick={async () => {
+                  await seDeconnecter();
+                  toast.success("Vous êtes déconnecté.");
+                }}
+              >
+                <LogOut className="size-5" />
+              </button>
+            ) : (
+              <Link to="/connexion" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label="Se connecter">
+                <LogIn className="size-5" />
+              </Link>
+            )}
           </div>
         </div>
       </header>
