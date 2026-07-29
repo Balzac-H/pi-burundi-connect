@@ -29,10 +29,13 @@ function Parametres() {
         <Champ label="Email" aide="Une confirmation vous sera envoyée">
           <Saisie type="email" defaultValue="didier@example.com" maxLength={255} />
         </Champ>
-        <Champ label="Langue">
-          <Selection defaultValue="fr">
-            <option value="fr">Français</option>
-            <option value="rn">Kirundi</option>
+        <Champ label="Langue / Ururimi / Lugha / Language">
+          <Selection value={langue} onChange={(e) => definirLangue(e.target.value as Langue)}>
+            {langues.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.drapeau} {l.nom}
+              </option>
+            ))}
           </Selection>
         </Champ>
         <LienBouton to="/profil/modifier" variante="contour" taille="sm">Modifier mon profil</LienBouton>
