@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
 import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/components/ui-kit";
 import { toast } from "sonner";
 
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/parametres")({
 });
 
 function Parametres() {
+  const langue = useLangue();
   const navigate = useNavigate();
 
   return (
@@ -29,10 +31,13 @@ function Parametres() {
         <Champ label="Email" aide="Une confirmation vous sera envoyée">
           <Saisie type="email" defaultValue="didier@example.com" maxLength={255} />
         </Champ>
-        <Champ label="Langue">
-          <Selection defaultValue="fr">
-            <option value="fr">Français</option>
-            <option value="rn">Kirundi</option>
+        <Champ label="Langue / Ururimi / Lugha / Language">
+          <Selection value={langue} onChange={(e) => definirLangue(e.target.value as Langue)}>
+            {langues.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.drapeau} {l.nom}
+              </option>
+            ))}
           </Selection>
         </Champ>
         <LienBouton to="/profil/modifier" variante="contour" taille="sm">Modifier mon profil</LienBouton>

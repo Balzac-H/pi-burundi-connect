@@ -15,6 +15,7 @@ export type Utilisateur = {
   ventes: number;
   satisfaction: number;
   prixHoraire?: number;
+  whatsapp: string;
   membreDepuis: string;
 };
 
@@ -35,7 +36,8 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 52,
     ventes: 120,
     satisfaction: 98,
-    prixHoraire: 120,
+    prixHoraire: 0.012,
+    whatsapp: "+25779000001",
     membreDepuis: "2023",
   },
   {
@@ -54,6 +56,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 45,
     ventes: 12,
     satisfaction: 98,
+    whatsapp: "+25779000002",
     membreDepuis: "2022",
   },
   {
@@ -72,6 +75,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 8,
     ventes: 980,
     satisfaction: 99,
+    whatsapp: "+25779000003",
     membreDepuis: "2022",
   },
   {
@@ -90,7 +94,8 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 130,
     ventes: 4,
     satisfaction: 96,
-    prixHoraire: 150,
+    prixHoraire: 0.015,
+    whatsapp: "+25779000004",
     membreDepuis: "2021",
   },
   {
@@ -109,6 +114,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 0,
     ventes: 640,
     satisfaction: 95,
+    whatsapp: "+25779000005",
     membreDepuis: "2023",
   },
 ];
@@ -139,8 +145,8 @@ export const jobs: Job[] = [
     titre: "Fabrication portes / fenêtres en bois",
     categorie: "Menuiserie",
     employeurId: "u-jean",
-    salaire: "1 500 Pi",
-    salairePi: 1500,
+    salaire: "0,15 π",
+    salairePi: 0.15,
     duree: "3 jours (8h – 17h)",
     lieu: "Quartier Rohero, Bujumbura",
     urgent: true,
@@ -157,8 +163,8 @@ export const jobs: Job[] = [
     titre: "Nettoyage de bureau — 2x par semaine",
     categorie: "Nettoyage",
     employeurId: "u-marie",
-    salaire: "500 Pi / jour",
-    salairePi: 500,
+    salaire: "0,05 π / jour",
+    salairePi: 0.05,
     duree: "Permanent",
     lieu: "Kinama, Bujumbura",
     urgent: false,
@@ -175,8 +181,8 @@ export const jobs: Job[] = [
     titre: "Cherche 3 électriciens — URGENT",
     categorie: "Électricité",
     employeurId: "u-jean",
-    salaire: "6 000 Pi",
-    salairePi: 6000,
+    salaire: "0,6 π",
+    salairePi: 0.6,
     duree: "2 semaines",
     lieu: "Mutanga Nord, Bujumbura",
     urgent: true,
@@ -193,8 +199,8 @@ export const jobs: Job[] = [
     titre: "Rénovation de 2 appartements",
     categorie: "Construction",
     employeurId: "u-robert",
-    salaire: "4 500 Pi",
-    salairePi: 4500,
+    salaire: "0,45 π",
+    salairePi: 0.45,
     duree: "3 semaines",
     lieu: "Kiriri, Bujumbura",
     urgent: true,
@@ -236,11 +242,11 @@ export const produits: Produit[] = [
     emoji: "🍅",
     categorie: "Fruits & Légumes",
     vendeurId: "u-marie",
-    prix: 2500,
+    prix: 0.25,
     unite: "lot de 50 kg",
     stock: 20,
     lieu: "Quartier Kinama, Bujumbura",
-    livraison: "Gratuite (5 km) · 200 Pi au-delà",
+    livraison: "Gratuite (5 km) · 0,02 π au-delà",
     disponible: "Jusqu'à demain 18h",
     description:
       "Tomates cultivées localement sans pesticides. Fraîches du jour. Parfait pour restaurants ou familles. Possibilité de livraison. Commande minimum 10 kg.",
@@ -255,11 +261,11 @@ export const produits: Produit[] = [
     emoji: "👕",
     categorie: "Vêtements",
     vendeurId: "u-fashion",
-    prix: 800,
+    prix: 0.08,
     unite: "unité",
     stock: 50,
     lieu: "Centre-ville, Bujumbura",
-    livraison: "Gratuite (3 km) · 150 Pi au-delà",
+    livraison: "Gratuite (3 km) · 0,015 π au-delà",
     disponible: "En permanence",
     description: "T-shirt 100 % coton, coupe classique, plusieurs coloris disponibles.",
     vues: 890,
@@ -273,7 +279,7 @@ export const produits: Produit[] = [
     emoji: "🥭",
     categorie: "Fruits & Légumes",
     vendeurId: "u-marie",
-    prix: 800,
+    prix: 0.08,
     unite: "lot de 20 kg",
     stock: 50,
     lieu: "Kinama, Bujumbura",
@@ -291,11 +297,11 @@ export const produits: Produit[] = [
     emoji: "📻",
     categorie: "Électronique",
     vendeurId: "u-fashion",
-    prix: 1400,
+    prix: 0.14,
     unite: "unité",
     stock: 12,
     lieu: "Centre-ville, Bujumbura",
-    livraison: "200 Pi partout à Bujumbura",
+    livraison: "0,02 π partout à Bujumbura",
     disponible: "Stock limité",
     description: "Radio FM/AM à panneau solaire intégré, batterie 2000 mAh, port USB.",
     vues: 320,
@@ -324,7 +330,7 @@ export const conversations = [
     messages: [
       { moi: false, texte: "Ton profil m'intéresse, tu es dispo cette semaine ?", temps: "il y a 12 min" },
       { moi: true, texte: "Oui, j'ai 3 ans d'expérience en menuiserie.", temps: "il y a 10 min" },
-      { moi: false, texte: "Tes qualifications correspondent parfaitement. Je te paie 1 500 Pi pour 3 jours.", temps: "il y a 8 min" },
+      { moi: false, texte: "Tes qualifications correspondent parfaitement. Je te paie 0,15 π pour 3 jours.", temps: "il y a 8 min" },
       { moi: true, texte: "Merci ! Je confirme pour demain.", temps: "il y a 5 min" },
       { moi: false, texte: "D'accord, j'accepte ta postulation pour demain 8h. Rendez-vous à 7h30 à Rohero.", temps: "il y a 2 min" },
     ],
@@ -338,7 +344,7 @@ export const conversations = [
     nonLu: false,
     messages: [
       { moi: true, texte: "Bonjour, la livraison est possible à Rohero ?", temps: "il y a 3 h" },
-      { moi: false, texte: "Oui bien sûr, 200 Pi de frais.", temps: "il y a 2 h" },
+      { moi: false, texte: "Oui bien sûr, 0,02 π de frais.", temps: "il y a 2 h" },
       { moi: false, texte: "Merci pour l'achat ! Livraison demain à 10h.", temps: "il y a 1 h" },
     ],
   },
@@ -356,25 +362,25 @@ export const conversations = [
 export const parConversation = (id: string) => conversations.find((c) => c.id === id);
 
 export const transactions = [
-  { date: "15/08", type: "Paiement reçu", montant: 500, tiers: "Job complété — Nettoyage", statut: "Confirmé" },
-  { date: "14/08", type: "Achat", montant: -2500, tiers: "Tomates fraîches — Farmer Marie", statut: "Confirmé" },
-  { date: "13/08", type: "Paiement reçu", montant: 800, tiers: "Service plomberie", statut: "Confirmé" },
-  { date: "12/08", type: "Frais", montant: -300, tiers: "Frais plateforme", statut: "Confirmé" },
-  { date: "11/08", type: "Transfert", montant: 1000, tiers: "Ami Marie", statut: "Confirmé" },
-  { date: "10/08", type: "Achat", montant: -800, tiers: "T-shirt coton", statut: "Confirmé" },
+  { date: "15/08", type: "Paiement reçu", montant: 0.05, tiers: "Job complété — Nettoyage", statut: "Confirmé" },
+  { date: "14/08", type: "Achat", montant: -0.25, tiers: "Tomates fraîches — Farmer Marie", statut: "Confirmé" },
+  { date: "13/08", type: "Paiement reçu", montant: 0.08, tiers: "Service plomberie", statut: "Confirmé" },
+  { date: "12/08", type: "Frais", montant: -0.03, tiers: "Frais plateforme", statut: "Confirmé" },
+  { date: "11/08", type: "Transfert", montant: 0.1, tiers: "Ami Marie", statut: "Confirmé" },
+  { date: "10/08", type: "Achat", montant: -0.08, tiers: "T-shirt coton", statut: "Confirmé" },
 ];
 
 export const notifications = [
   { id: "n1", icone: "💼", titre: "Candidature acceptée", texte: "Jean M. a accepté votre postulation pour « Fabrication portes ».", temps: "il y a 2 min", nonLu: true },
   { id: "n2", icone: "💬", titre: "Nouveau message", texte: "Farmer Marie : « Livraison demain à 10h ».", temps: "il y a 1 h", nonLu: true },
-  { id: "n3", icone: "💰", titre: "Paiement reçu", texte: "Vous avez reçu 500 Pi pour un job complété.", temps: "il y a 3 h", nonLu: true },
-  { id: "n4", icone: "❤️", titre: "Baisse de prix", texte: "Les mangues du Burundi sont passées à 800 Pi.", temps: "hier", nonLu: false },
+  { id: "n3", icone: "💰", titre: "Paiement reçu", texte: "Vous avez reçu 0,05 π pour un job complété.", temps: "il y a 3 h", nonLu: true },
+  { id: "n4", icone: "❤️", titre: "Baisse de prix", texte: "Les mangues du Burundi sont passées à 0,08 π.", temps: "hier", nonLu: false },
 ];
 
 export const activiteRecente = [
   { icone: "✅", texte: "Robert P. a complété un job de plomberie", detail: "« Excellent résultat ! » — ⭐ 5/5" },
-  { icone: "🥭", texte: "Farmer Marie a publié « Mangues du Burundi »", detail: "800 Pi · En stock : 50 kg" },
-  { icone: "💬", texte: "Jean M. a écrit « Cherche 3 électriciens URGENT »", detail: "6 000 Pi · Commencer maintenant" },
+  { icone: "🥭", texte: "Farmer Marie a publié « Mangues du Burundi »", detail: "0,08 π · En stock : 50 kg" },
+  { icone: "💬", texte: "Jean M. a écrit « Cherche 3 électriciens URGENT »", detail: "0,6 π · Commencer maintenant" },
 ];
 
 export const categoriesJobs = [

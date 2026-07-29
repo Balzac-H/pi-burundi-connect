@@ -18,8 +18,8 @@ const initial: AppState = {
   suivis: ["u-marie"],
   favoris: ["p-tomates"],
   panier: [],
-  soldePi: 15230,
-  soldeEscrow: 2500,
+  soldePi: 0.842,
+  soldeEscrow: 0.125,
   notificationsNonLues: 3,
   candidatures: ["j-menuiserie"],
 };
@@ -85,5 +85,7 @@ export function useStore<T>(selecteur: (s: AppState) => T): T {
   );
 }
 
-export const formatPi = (n: number) => `${n.toLocaleString("fr-FR")} Pi`;
-export const enFBu = (pi: number) => `${(pi * 3).toLocaleString("fr-FR")} FBu`;
+export const formatPi = (n: number) =>
+  `${n.toLocaleString("fr-FR", { minimumFractionDigits: n < 0.01 ? 3 : 2, maximumFractionDigits: 4 })} π`;
+export const enFBu = (pi: number) =>
+  `${Math.round(pi * 3_000_000).toLocaleString("fr-FR")} FBu`;

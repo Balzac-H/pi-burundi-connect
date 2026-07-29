@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import { Link, createLink } from "@tanstack/react-router";
+import { Link, createLink, useRouter } from "@tanstack/react-router";
 import { forwardRef, type ReactNode } from "react";
 
-import { Star, MapPin } from "lucide-react";
+import { Star, MapPin, ChevronLeft } from "lucide-react";
 import { useStore, store } from "@/lib/store";
 import { parUtilisateur } from "@/lib/data";
 
@@ -210,5 +210,23 @@ export function BandeauPi({ texte = "Paiement sécurisé via Pi Network" }: { te
       <span className="grid size-6 place-items-center rounded-full gradient-pi text-primary-foreground">π</span>
       🔒 {texte}
     </div>
+  );
+}
+
+/* ---------------- Bouton retour ---------------- */
+
+export function BoutonRetour({ label = "Retour", className }: { label?: string; className?: string }) {
+  const routeur = useRouter();
+  return (
+    <button
+      type="button"
+      onClick={() => routeur.history.back()}
+      className={cn(
+        "inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-semibold text-foreground transition hover:bg-muted active:scale-[0.98]",
+        className,
+      )}
+    >
+      <ChevronLeft className="size-4" /> {label}
+    </button>
   );
 }

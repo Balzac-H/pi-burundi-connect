@@ -118,8 +118,8 @@ function Vendre() {
           <Zone name="description" maxLength={600} placeholder="Détaillez la qualité, la quantité, les conditions…" />
         </Champ>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Champ label="Prix (Pi)" obligatoire>
-            <Saisie name="prix" required type="number" min={0} step="1" placeholder="2500" />
+          <Champ label="Prix (π)" obligatoire aide="Entre 0,001 et 1 π — ex. 0,055">
+            <Saisie name="prix" required type="number" min={0.001} max={1} step="0.001" placeholder="0.055" />
           </Champ>
           <Champ label="Unité">
             <Saisie name="unite" defaultValue="unité" maxLength={40} />
@@ -132,7 +132,7 @@ function Vendre() {
           </Champ>
         </div>
         <Champ label="Livraison">
-          <Saisie name="livraison" maxLength={120} placeholder="Gratuite (5 km) · 200 Pi au-delà" />
+          <Saisie name="livraison" maxLength={120} placeholder="Gratuite (5 km) · 0,02 π au-delà" />
         </Champ>
 
         <BandeauPi texte="Vos paiements sont reçus en Pi" />

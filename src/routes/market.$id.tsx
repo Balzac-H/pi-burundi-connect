@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Bouton, Carte, Etiquette, Avatar, Note, BoutonSuivre, LienBouton, BandeauPi, Selection } from "@/components/ui-kit";
 import { parProduit, parUtilisateur, avisProduit } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
+import { lienWhatsApp } from "@/lib/comptes";
 import { toast } from "sonner";
 import { ArrowLeft, Heart, Share2, Flag } from "lucide-react";
 
@@ -11,10 +12,10 @@ export const Route = createFileRoute("/market/$id")({
     const p = parProduit(params.id);
     return {
       meta: [
-        { title: p ? `${p.titre} — ${p.prix} Pi` : "Produit introuvable" },
+        { title: p ? `${p.titre} — ${p.prix} π` : "Produit introuvable" },
         { name: "description", content: p ? p.description.slice(0, 155) : "Ce produit n'est plus disponible." },
         { property: "og:title", content: p ? `${p.titre} — BURUNDI PI CONNECT` : "Produit introuvable" },
-        { property: "og:description", content: p ? `${p.prix} Pi · ${p.lieu}` : "Produit indisponible." },
+        { property: "og:description", content: p ? `${p.prix} π · ${p.lieu}` : "Produit indisponible." },
       ],
     };
   },
@@ -94,6 +95,14 @@ function DetailProduit() {
           <LienBouton to="/profil/$id" params={{ id: v.id }} variante="contour" taille="sm">PROFIL VENDEUR</LienBouton>
           <BoutonSuivre id={v.id} />
           <LienBouton to="/messages" variante="secondaire" taille="sm">CHAT DIRECT</LienBouton>
+          <a
+            href={lienWhatsApp(v.whatsapp, `Bonjour ${v.nom}, je suis intéressé par « ${produit.titre} » (${formatPi(produit.prix)})`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success transition hover:bg-success/25"
+          >
+            💬 CONTACT WHATSAPP
+          </a>
         </div>
       </Carte>
 

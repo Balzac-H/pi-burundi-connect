@@ -3,21 +3,25 @@ import { Home, Briefcase, ShoppingBag, MessageCircle, User, Bell, Wallet, Heart,
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { useSession, seDeconnecter } from "@/lib/auth";
+import { useT, useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
+import { BoutonRetour } from "@/components/ui-kit";
 import { toast } from "sonner";
 import type { ReactNode } from "react";
 
 const onglets = [
-  { to: "/", label: "Accueil", icone: Home },
-  { to: "/jobs", label: "Jobs", icone: Briefcase },
-  { to: "/market", label: "Market", icone: ShoppingBag },
-  { to: "/messages", label: "Chat", icone: MessageCircle },
-  { to: "/profil", label: "Profil", icone: User },
+  { to: "/", cle: "accueil", icone: Home },
+  { to: "/jobs", cle: "jobs", icone: Briefcase },
+  { to: "/market", cle: "market", icone: ShoppingBag },
+  { to: "/messages", cle: "chat", icone: MessageCircle },
+  { to: "/profil", cle: "profil", icone: User },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const chemin = useRouterState({ select: (s) => s.location.pathname });
   const nonLues = useStore((s) => s.notificationsNonLues);
   const { utilisateur } = useSession();
+  const t = useT();
+  const langue = useLangue();
 
   return (
     <div className="min-h-screen bg-background">
@@ -37,12 +41,12 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           <nav className="ml-6 hidden items-center gap-1 lg:flex">
             {[
-              { to: "/jobs", label: "Jobs" },
-              { to: "/market", label: "Market" },
-              { to: "/messages", label: "Messages" },
-              { to: "/portefeuille", label: "Wallet" },
-              { to: "/vendeurs", label: "Vendeurs" },
-              { to: "/favoris", label: "Favoris" },
+              { to: "/jobs", label: t("jobs") },
+              { to: "/market", label: t("market") },
+              { to: "/messages", label: t("chat") },
+              { to: "/portefeuille", label: t("wallet") },
+              { to: "/vendeurs", label: t("vendeurs") },
+              { to: "/favoris", label: t("favoris") },
             ].map((l) => (
               <Link
                 key={l.to}
@@ -58,6 +62,18 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="ml-auto flex items-center gap-1">
+            <select
+              aria-label={t("langue")}
+              value={langue}
+              onChange={(e) => definirLangue(e.target.value as Langue)}
+              className="min-h-9 rounded-lg border border-border bg-card px-1.5 text-xs font-semibold text-foreground"
+            >
+              {langues.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.drapeau} {l.code.toUpperCase()}
+                </option>
+              ))}
+            </select>
             <Link to="/portefeuille" className="hidden rounded-lg p-2 text-primary hover:bg-muted sm:block" aria-label="Portefeuille Pi">
               <Wallet className="size-5" />
             </Link>
@@ -78,7 +94,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {utilisateur ? (
               <button
                 className="rounded-lg p-2 text-primary hover:bg-muted"
-                aria-label="Se déconnecter"
+                aria-label={t("seDeconnecter")}
                 onClick={async () => {
                   await seDeconnecter();
                   toast.success("Vous êtes déconnecté.");
@@ -87,13 +103,19 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <LogOut className="size-5" />
               </button>
             ) : (
-              <Link to="/connexion" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label="Se connecter">
+              <Link to="/connexion" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label={t("seConnecter")}>
                 <LogIn className="size-5" />
               </Link>
             )}
           </div>
         </div>
       </header>
+
+      {chemin !== "/" && (
+        <div className="mx-auto w-full max-w-6xl px-4 pt-3">
+          <BoutonRetour label={t("retour")} />
+        </div>
+      )}
 
       <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-4 lg:pb-10">{children}</main>
 
@@ -112,7 +134,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 )}
               >
                 <Icone className={cn("size-5", actif && "text-accent")} />
-                {o.label}
+                {t(o.cle)}
               </Link>
             );
           })}
