@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
 import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/components/ui-kit";
 import { toast } from "sonner";
 
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/parametres")({
 });
 
 function Parametres() {
+  const langue = useLangue();
   const navigate = useNavigate();
 
   return (
