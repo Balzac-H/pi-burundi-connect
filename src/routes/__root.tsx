@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
+import { useSession } from "../lib/auth";
 
 
 function NotFoundComponent() {
@@ -129,10 +130,21 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const CHEMINS_PUBLICS = ["/connexion"];
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const chemin = useRouterState({ select: (s) => s.location.pathname });
   const sansShell = chemin.startsWith("/connexion");
+  const router = useRouter();
+  const { utilisateur, chargement } = useSession();
+  const publique = CHEMINS_PUBLICS.some((c) => chemin.startsWith(c));
+
+  useEffect(() => {
+    if (!chargement && !utilisateur && !publique) {
+      router.navigate({ to: "/connexion" });
+    }
+  }, [chargement, utilisateur, publique, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
