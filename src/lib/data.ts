@@ -15,6 +15,7 @@ export type Utilisateur = {
   ventes: number;
   satisfaction: number;
   prixHoraire?: number;
+  whatsapp: string;
   membreDepuis: string;
 };
 
@@ -36,6 +37,7 @@ export const utilisateurs: Utilisateur[] = [
     ventes: 120,
     satisfaction: 98,
     prixHoraire: 0.012,
+    whatsapp: "+25779000001",
     membreDepuis: "2023",
   },
   {
@@ -54,6 +56,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 45,
     ventes: 12,
     satisfaction: 98,
+    whatsapp: "+25779000002",
     membreDepuis: "2022",
   },
   {
@@ -72,6 +75,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 8,
     ventes: 980,
     satisfaction: 99,
+    whatsapp: "+25779000003",
     membreDepuis: "2022",
   },
   {
@@ -91,6 +95,7 @@ export const utilisateurs: Utilisateur[] = [
     ventes: 4,
     satisfaction: 96,
     prixHoraire: 0.015,
+    whatsapp: "+25779000004",
     membreDepuis: "2021",
   },
   {
@@ -109,6 +114,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 0,
     ventes: 640,
     satisfaction: 95,
+    whatsapp: "+25779000005",
     membreDepuis: "2023",
   },
 ];
