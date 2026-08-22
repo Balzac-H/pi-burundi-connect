@@ -74,5 +74,17 @@ export async function supprimerProduit(id: string) {
   if (error) throw error;
 }
 
+/** Normalise un numéro burundais vers le format international attendu par WhatsApp (257XXXXXXXX). */
+export function normaliserNumero(numero: string): string {
+  let n = (numero ?? "").replace(/\D/g, "");
+  if (!n) return "";
+  n = n.replace(/^0+/, "");            // 079… -> 79…
+  if (n.startsWith("00")) n = n.slice(2);
+  if (!n.startsWith("257") && n.length <= 9) n = `257${n}`; // numéro local burundais
+  return n;
+}
+
+export const numeroValide = (numero: string) => normaliserNumero(numero).length >= 11;
+
 export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via BURUNDI PI CONNECT") =>
-  `https://wa.me/${numero.replace(/\D/g, "")}?text=${encodeURIComponent(texte)}`;
+  `https://wa.me/${normaliserNumero(numero)}?text=${encodeURIComponent(texte)}`;
