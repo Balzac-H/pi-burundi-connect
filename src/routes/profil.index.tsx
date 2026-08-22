@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Avatar, Bouton, Carte, Etiquette, LienBouton, TitreSection } from "@/components/ui-kit";
 import { useSession, seDeconnecter } from "@/lib/auth";
-import { chargerProfil, listerProduits, lienWhatsApp, type Profil, type ProduitDb } from "@/lib/comptes";
+import { chargerProfil, listerProduits, ouvrirWhatsApp, numeroValide, normaliserNumero, type Profil, type ProduitDb } from "@/lib/comptes";
 import { formatPi } from "@/lib/store";
 import { toast } from "sonner";
 import { LogOut, Pencil, Share2, MessageCircle } from "lucide-react";
