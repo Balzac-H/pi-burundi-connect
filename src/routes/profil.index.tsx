@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Avatar, Bouton, Carte, Etiquette, LienBouton, TitreSection } from "@/components/ui-kit";
 import { useSession, seDeconnecter } from "@/lib/auth";
-import { chargerProfil, listerProduits, lienWhatsApp, type Profil, type ProduitDb } from "@/lib/comptes";
+import { chargerProfil, listerProduits, ouvrirWhatsApp, numeroValide, normaliserNumero, type Profil, type ProduitDb } from "@/lib/comptes";
 import { formatPi } from "@/lib/store";
 import { toast } from "sonner";
 import { LogOut, Pencil, Share2, MessageCircle } from "lucide-react";
@@ -75,16 +75,20 @@ function MonProfil() {
         <div className="flex flex-wrap gap-2">
           <LienBouton to="/profil/modifier" taille="sm"><Pencil className="size-4" /> MODIFIER</LienBouton>
           <LienBouton to="/portefeuille" variante="pi" taille="sm">π MON WALLET</LienBouton>
-          {profil?.whatsapp && (
-            <a
-              href={lienWhatsApp(profil.whatsapp)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success"
-            >
-              <MessageCircle className="size-4" /> TESTER MON LIEN WHATSAPP
-            </a>
-          )}
+          <button
+            type="button"
+            onClick={() => {
+              if (!profil?.whatsapp || !numeroValide(profil.whatsapp)) {
+                toast.error("Numéro WhatsApp manquant ou invalide. Exemple : 79 123 456 ou +257 79 123 456.");
+                return;
+              }
+              ouvrirWhatsApp(profil.whatsapp, "Test de mon lien WhatsApp via BURUNDI PI CONNECT ✅");
+              toast.success(`Ouverture de WhatsApp (+${normaliserNumero(profil.whatsapp)})…`);
+            }}
+            className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success transition hover:bg-success/25"
+          >
+            <MessageCircle className="size-4" /> TESTER MON LIEN WHATSAPP
+          </button>
           <Bouton variante="contour" taille="sm" onClick={() => toast.success("Lien du profil copié !")}>
             <Share2 className="size-4" /> PARTAGER
           </Bouton>

@@ -15,6 +15,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
 import { useSession } from "../lib/auth";
+import { EtatReseau } from "../components/EtatReseau";
+import { enregistrerServiceWorker } from "../lib/pwa";
 
 
 function NotFoundComponent() {
@@ -89,6 +91,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi.",
       },
       { name: "author", content: "Burundi Pi Connect" },
+      { name: "theme-color", content: "#1F4E3D" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "Pi Connect" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Accueil — BURUNDI PI CONNECT" },
@@ -106,7 +112,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/icon-192.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
   shellComponent: RootShell,
@@ -141,6 +149,12 @@ function RootComponent() {
   const publique = CHEMINS_PUBLICS.some((c) => chemin.startsWith(c));
 
   useEffect(() => {
+    enregistrerServiceWorker();
+  }, []);
+
+  useEffect(() => {
+    // En cas de connexion faible/absente, on n'expulse pas l'utilisateur de l'app.
+    if (typeof navigator !== "undefined" && !navigator.onLine) return;
     if (!chargement && !utilisateur && !publique) {
       router.navigate({ to: "/connexion" });
     }
@@ -148,6 +162,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <EtatReseau />
       <Toaster position="top-center" richColors />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       {sansShell ? (
