@@ -88,3 +88,19 @@ export const numeroValide = (numero: string) => normaliserNumero(numero).length 
 
 export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via BURUNDI PI CONNECT") =>
   `https://wa.me/${normaliserNumero(numero)}?text=${encodeURIComponent(texte)}`;
+
+/** Ouvre WhatsApp de façon fiable (nouvel onglet, avec repli si bloqué : iframe/preview). */
+export function ouvrirWhatsApp(numero: string, texte?: string): boolean {
+  if (!numeroValide(numero)) return false;
+  const url = lienWhatsApp(numero, texte);
+  if (typeof window === "undefined") return false;
+  const onglet = window.open(url, "_blank", "noopener,noreferrer");
+  if (!onglet) {
+    try {
+      (window.top ?? window).location.href = url;
+    } catch {
+      window.location.href = url;
+    }
+  }
+  return true;
+}
