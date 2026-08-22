@@ -68,27 +68,20 @@ function MonProfil() {
         {profil?.prix_horaire ? (
           <p className="text-sm font-semibold text-primary">Prix horaire : {formatPi(Number(profil.prix_horaire))} / h</p>
         ) : null}
-        {profil?.whatsapp && (
-          <p className="text-sm font-semibold text-success">📱 WhatsApp : {profil.whatsapp}</p>
+        {profil?.whatsapp && numeroValide(profil.whatsapp) && (
+          <a
+            href={lienWhatsApp(profil.whatsapp, "Bonjour 👋")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-success underline underline-offset-2"
+          >
+            <MessageCircle className="size-4" /> +{normaliserNumero(profil.whatsapp)}
+          </a>
         )}
 
         <div className="flex flex-wrap gap-2">
           <LienBouton to="/profil/modifier" taille="sm"><Pencil className="size-4" /> MODIFIER</LienBouton>
           <LienBouton to="/portefeuille" variante="pi" taille="sm">π MON WALLET</LienBouton>
-          <button
-            type="button"
-            onClick={() => {
-              if (!profil?.whatsapp || !numeroValide(profil.whatsapp)) {
-                toast.error("Numéro WhatsApp manquant ou invalide. Exemple : 79 123 456 ou +257 79 123 456.");
-                return;
-              }
-              ouvrirWhatsApp(profil.whatsapp, "Test de mon lien WhatsApp via BURUNDI PI CONNECT ✅");
-              toast.success(`Ouverture de WhatsApp (+${normaliserNumero(profil.whatsapp)})…`);
-            }}
-            className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success transition hover:bg-success/25"
-          >
-            <MessageCircle className="size-4" /> TESTER MON LIEN WHATSAPP
-          </button>
           <Bouton variante="contour" taille="sm" onClick={() => toast.success("Lien du profil copié !")}>
             <Share2 className="size-4" /> PARTAGER
           </Bouton>
