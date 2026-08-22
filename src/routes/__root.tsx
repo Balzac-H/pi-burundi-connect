@@ -149,6 +149,12 @@ function RootComponent() {
   const publique = CHEMINS_PUBLICS.some((c) => chemin.startsWith(c));
 
   useEffect(() => {
+    enregistrerServiceWorker();
+  }, []);
+
+  useEffect(() => {
+    // En cas de connexion faible/absente, on n'expulse pas l'utilisateur de l'app.
+    if (typeof navigator !== "undefined" && !navigator.onLine) return;
     if (!chargement && !utilisateur && !publique) {
       router.navigate({ to: "/connexion" });
     }
@@ -156,6 +162,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <EtatReseau />
       <Toaster position="top-center" richColors />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       {sansShell ? (
