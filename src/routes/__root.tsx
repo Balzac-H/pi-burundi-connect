@@ -15,6 +15,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
 import { useSession } from "../lib/auth";
+import { EtatReseau } from "../components/EtatReseau";
+import { enregistrerServiceWorker } from "../lib/pwa";
 
 
 function NotFoundComponent() {
@@ -89,6 +91,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi.",
       },
       { name: "author", content: "Burundi Pi Connect" },
+      { name: "theme-color", content: "#1F4E3D" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "Pi Connect" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Accueil — BURUNDI PI CONNECT" },
