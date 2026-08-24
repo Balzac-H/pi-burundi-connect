@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { listerProduits, lienWhatsApp, type ProduitDb } from "@/lib/comptes";
 import { Bouton, Carte, TitreSection, Etiquette, Note, Distance, Avatar, LienBouton } from "@/components/ui-kit";
 import { utilisateurs, jobs, produits, activiteRecente, parUtilisateur, categoriesMarket } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
