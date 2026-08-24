@@ -210,7 +210,7 @@ function Accueil() {
                   <Note note={u.note} />
                 </div>
                 <a
-                  href={`https://wa.me/${u.whatsapp.replace(/\D/g, "")}`}
+                  href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom} 👋`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-lg bg-success/15 px-2 py-1 text-xs font-semibold text-success"
