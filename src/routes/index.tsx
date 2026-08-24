@@ -44,11 +44,25 @@ function Accueil() {
   const navigate = useNavigate();
   const [recherche, setRecherche] = useState("");
 
+  const [produitsDb, setProduitsDb] = useState<ProduitDb[]>([]);
+
+  useEffect(() => {
+    listerProduits().then(setProduitsDb).catch(() => setProduitsDb([]));
+  }, []);
+
   const resultats = useMemo(() => {
     const q = recherche.trim().toLowerCase();
     if (!q) return [];
     return produits.filter((p) => (p.titre + p.description + p.categorie).toLowerCase().includes(q)).slice(0, 6);
   }, [recherche]);
+
+  const resultatsDb = useMemo(() => {
+    const q = recherche.trim().toLowerCase();
+    if (!q) return [];
+    return produitsDb
+      .filter((p) => (p.titre + (p.description ?? "") + p.categorie).toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [recherche, produitsDb]);
 
   return (
     <div className="space-y-6">
