@@ -77,7 +77,7 @@ function Accueil() {
           className="mt-4 flex items-center gap-2 rounded-xl bg-card p-2 shadow-[var(--shadow-card)]"
           onSubmit={(e) => {
             e.preventDefault();
-            navigate({ to: "/market" });
+            if (!recherche.trim()) navigate({ to: "/market" });
           }}
         >
           <Search className="ml-1 size-4 shrink-0 text-muted-foreground" />
