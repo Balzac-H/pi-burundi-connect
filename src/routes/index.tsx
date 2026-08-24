@@ -102,10 +102,22 @@ function Accueil() {
       {recherche.trim() && (
         <section>
           <TitreSection>🔎 {t("rechercher")} : « {recherche} »</TitreSection>
-          {resultats.length === 0 ? (
+          {resultats.length === 0 && resultatsDb.length === 0 ? (
             <Carte className="text-sm text-muted-foreground">{t("aucunResultat")}</Carte>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {resultatsDb.map((p) => (
+                <Carte key={p.id} className="space-y-2">
+                  {p.photo_url ? (
+                    <img src={p.photo_url} alt={p.titre} loading="lazy" className="h-24 w-full rounded-lg object-cover" />
+                  ) : (
+                    <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-4xl">🛍️</div>
+                  )}
+                  <h3 className="font-semibold leading-snug">{p.titre}</h3>
+                  <p className="text-sm font-bold text-primary">{formatPi(Number(p.prix))}</p>
+                  <LienBouton to="/market" taille="sm" className="w-full">{t("voirTout")}</LienBouton>
+                </Carte>
+              ))}
               {resultats.map((p) => (
                 <Carte key={p.id} className="space-y-2">
                   <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-4xl">{p.emoji}</div>
