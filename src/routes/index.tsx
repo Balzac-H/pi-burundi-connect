@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { listerProduits, lienWhatsApp, type ProduitDb } from "@/lib/comptes";
 import { Bouton, Carte, TitreSection, Etiquette, Note, Distance, Avatar, LienBouton } from "@/components/ui-kit";
 import { utilisateurs, jobs, produits, activiteRecente, parUtilisateur, categoriesMarket } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
@@ -43,11 +44,25 @@ function Accueil() {
   const navigate = useNavigate();
   const [recherche, setRecherche] = useState("");
 
+  const [produitsDb, setProduitsDb] = useState<ProduitDb[]>([]);
+
+  useEffect(() => {
+    listerProduits().then(setProduitsDb).catch(() => setProduitsDb([]));
+  }, []);
+
   const resultats = useMemo(() => {
     const q = recherche.trim().toLowerCase();
     if (!q) return [];
     return produits.filter((p) => (p.titre + p.description + p.categorie).toLowerCase().includes(q)).slice(0, 6);
   }, [recherche]);
+
+  const resultatsDb = useMemo(() => {
+    const q = recherche.trim().toLowerCase();
+    if (!q) return [];
+    return produitsDb
+      .filter((p) => (p.titre + (p.description ?? "") + p.categorie).toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [recherche, produitsDb]);
 
   return (
     <div className="space-y-6">
@@ -62,7 +77,7 @@ function Accueil() {
           className="mt-4 flex items-center gap-2 rounded-xl bg-card p-2 shadow-[var(--shadow-card)]"
           onSubmit={(e) => {
             e.preventDefault();
-            navigate({ to: "/market" });
+            if (!recherche.trim()) navigate({ to: "/market" });
           }}
         >
           <Search className="ml-1 size-4 shrink-0 text-muted-foreground" />
@@ -87,10 +102,22 @@ function Accueil() {
       {recherche.trim() && (
         <section>
           <TitreSection>🔎 {t("rechercher")} : « {recherche} »</TitreSection>
-          {resultats.length === 0 ? (
+          {resultats.length === 0 && resultatsDb.length === 0 ? (
             <Carte className="text-sm text-muted-foreground">{t("aucunResultat")}</Carte>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {resultatsDb.map((p) => (
+                <Carte key={p.id} className="space-y-2">
+                  {p.photo_url ? (
+                    <img src={p.photo_url} alt={p.titre} loading="lazy" className="h-24 w-full rounded-lg object-cover" />
+                  ) : (
+                    <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-4xl">🛍️</div>
+                  )}
+                  <h3 className="font-semibold leading-snug">{p.titre}</h3>
+                  <p className="text-sm font-bold text-primary">{formatPi(Number(p.prix))}</p>
+                  <LienBouton to="/market" taille="sm" className="w-full">{t("voirTout")}</LienBouton>
+                </Carte>
+              ))}
               {resultats.map((p) => (
                 <Carte key={p.id} className="space-y-2">
                   <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-4xl">{p.emoji}</div>
@@ -183,7 +210,7 @@ function Accueil() {
                   <Note note={u.note} />
                 </div>
                 <a
-                  href={`https://wa.me/${u.whatsapp.replace(/\D/g, "")}`}
+                  href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom} 👋`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-lg bg-success/15 px-2 py-1 text-xs font-semibold text-success"
