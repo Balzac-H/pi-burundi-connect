@@ -138,27 +138,15 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-const CHEMINS_PUBLICS = ["/connexion"];
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const chemin = useRouterState({ select: (s) => s.location.pathname });
   const sansShell = chemin.startsWith("/connexion");
-  const router = useRouter();
-  const { utilisateur, chargement } = useSession();
-  const publique = CHEMINS_PUBLICS.some((c) => chemin.startsWith(c));
 
   useEffect(() => {
     enregistrerServiceWorker();
   }, []);
 
-  useEffect(() => {
-    // En cas de connexion faible/absente, on n'expulse pas l'utilisateur de l'app.
-    if (typeof navigator !== "undefined" && !navigator.onLine) return;
-    if (!chargement && !utilisateur && !publique) {
-      router.navigate({ to: "/connexion" });
-    }
-  }, [chargement, utilisateur, publique, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
