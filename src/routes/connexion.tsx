@@ -57,6 +57,18 @@ function Connexion() {
     }
   }
 
+  async function connexionGoogle() {
+    setEnCours(true);
+    try {
+      await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Connexion Google impossible.");
+    } finally {
+      setEnCours(false);
+    }
+  }
+
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md space-y-6">
