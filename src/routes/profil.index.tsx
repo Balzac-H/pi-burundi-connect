@@ -68,16 +68,21 @@ function MonProfil() {
         {profil?.prix_horaire ? (
           <p className="text-sm font-semibold text-primary">Prix horaire : {formatPi(Number(profil.prix_horaire))} / h</p>
         ) : null}
-        {profil?.whatsapp && numeroValide(profil.whatsapp) && (
-          <a
-            href={lienWhatsApp(profil.whatsapp, "Bonjour 👋")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-success underline underline-offset-2"
-          >
-            <MessageCircle className="size-4" /> +{normaliserNumero(profil.whatsapp)}
-          </a>
-        )}
+        {[profil?.whatsapp, profil?.telephone]
+          .filter((n): n is string => !!n && numeroValide(n))
+          .filter((n, i, liste) => liste.findIndex((a) => normaliserNumero(a) === normaliserNumero(n)) === i)
+          .map((n) => (
+            <a
+              key={n}
+              href={lienWhatsApp(n, "Bonjour 👋")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm font-semibold text-success underline underline-offset-2"
+            >
+              <MessageCircle className="size-4" /> +{normaliserNumero(n)} — Discuter sur WhatsApp
+            </a>
+          ))}
+
 
         <div className="flex flex-wrap gap-2">
           <LienBouton to="/profil/modifier" taille="sm"><Pencil className="size-4" /> MODIFIER</LienBouton>

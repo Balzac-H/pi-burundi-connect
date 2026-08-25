@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Bouton, Champ, Saisie } from "@/components/ui-kit";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
+
 
 export const Route = createFileRoute("/connexion")({
   head: () => ({
@@ -55,6 +57,18 @@ function Connexion() {
     }
   }
 
+  async function connexionGoogle() {
+    setEnCours(true);
+    try {
+      await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Connexion Google impossible.");
+    } finally {
+      setEnCours(false);
+    }
+  }
+
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md space-y-6">
@@ -65,6 +79,33 @@ function Connexion() {
           <h1 className="mt-3 text-2xl font-extrabold text-primary">BURUNDI PI CONNECT</h1>
           <p className="text-sm text-muted-foreground">Emplois, marché et paiements en Pi</p>
         </div>
+
+        <div className="card-surface space-y-3 p-5">
+          <h2 className="text-lg font-bold">Connexion sécurisée</h2>
+          <p className="text-xs text-muted-foreground">
+            Vos données de compte sont enregistrées et conservées en toute sécurité.
+          </p>
+          <Bouton type="button" variante="secondaire" className="w-full" onClick={connexionGoogle} disabled={enCours}>
+            Continuer avec Google
+          </Bouton>
+          <Bouton
+            type="button"
+            variante="pi"
+            className="w-full"
+            onClick={() => toast("Authentification Pi Wallet bientôt disponible (Pi App Studio).")}
+          >
+            π Continuer avec Pi Network
+          </Bouton>
+          <button
+            type="button"
+            className="w-full text-center text-xs font-semibold text-muted-foreground"
+            onClick={() => navigate({ to: "/" })}
+          >
+            Explorer l'application sans compte
+          </button>
+        </div>
+
+
 
         <form className="card-surface space-y-4 p-5" onSubmit={soumettre}>
           <h2 className="text-lg font-bold">{inscription ? "Créer un compte" : "Se connecter"}</h2>

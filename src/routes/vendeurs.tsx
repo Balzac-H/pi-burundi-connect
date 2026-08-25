@@ -85,9 +85,9 @@ function Vendeurs() {
                 <Etiquette key={c}>🏷️ {c}</Etiquette>
               ))}
             </div>
-            {v.whatsapp && (
+            {(v.whatsapp || v.telephone) && (
               <a
-                href={lienWhatsApp(v.whatsapp)}
+                href={lienWhatsApp((v.whatsapp || v.telephone) as string)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success"
@@ -95,6 +95,7 @@ function Vendeurs() {
                 <MessageCircle className="size-4" /> WHATSAPP
               </a>
             )}
+
           </Carte>
         ))}
       </div>

@@ -4,6 +4,7 @@ import { Bouton, Carte, BandeauPi, LienBouton } from "@/components/ui-kit";
 import { parProduit, parUtilisateur } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
 import { toast } from "sonner";
+import { BesoinCompte } from "@/components/BesoinCompte";
 
 export const Route = createFileRoute("/paiement")({
   head: () => ({
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/paiement")({
       { property: "og:description", content: "Paiement sécurisé en Pi, livraison au Burundi." },
     ],
   }),
-  component: Paiement,
+  component: PaiementProtege,
 });
 
 const FRAIS_LIVRAISON = 200;
@@ -112,5 +113,13 @@ function Paiement() {
         <Bouton variante="contour" onClick={() => store.viderPanier()}>ANNULER</Bouton>
       </div>
     </div>
+  );
+}
+
+function PaiementProtege() {
+  return (
+    <BesoinCompte titre="Paiement en Pi">
+      <Paiement />
+    </BesoinCompte>
   );
 }

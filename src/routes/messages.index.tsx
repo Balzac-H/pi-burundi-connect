@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Carte, Saisie, Avatar, Bouton } from "@/components/ui-kit";
 import { conversations, parUtilisateur } from "@/lib/data";
 import { toast } from "sonner";
+import { BesoinCompte } from "@/components/BesoinCompte";
 
 export const Route = createFileRoute("/messages/")({
   head: () => ({
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/messages/")({
       { property: "og:description", content: "Toutes vos conversations jobs et market au même endroit." },
     ],
   }),
-  component: ListeMessages,
+  component: ListeMessagesProtege,
 });
 
 function ListeMessages() {
@@ -53,5 +54,13 @@ function ListeMessages() {
         })}
       </div>
     </div>
+  );
+}
+
+function ListeMessagesProtege() {
+  return (
+    <BesoinCompte titre="Mes messages">
+      <ListeMessages />
+    </BesoinCompte>
   );
 }

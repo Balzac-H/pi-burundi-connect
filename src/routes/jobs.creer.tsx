@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Bouton, Carte, Champ, Saisie, Selection, Zone } from "@/components/ui-kit";
 import { categoriesJobs } from "@/lib/data";
 import { toast } from "sonner";
+import { BesoinCompte } from "@/components/BesoinCompte";
 
 export const Route = createFileRoute("/jobs/creer")({
   head: () => ({
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/jobs/creer")({
       { property: "og:description", content: "Recrutez rapidement au Burundi, paiement en Pi." },
     ],
   }),
-  component: CreerOffre,
+  component: CreerOffreProtege,
 });
 
 function CreerOffre() {
@@ -90,5 +91,13 @@ function CreerOffre() {
         <Bouton type="button" variante="fantome" onClick={() => toast.success("Brouillon enregistré.")}>BROUILLON</Bouton>
       </div>
     </form>
+  );
+}
+
+function CreerOffreProtege() {
+  return (
+    <BesoinCompte titre="Créer une offre d'emploi">
+      <CreerOffre />
+    </BesoinCompte>
   );
 }
