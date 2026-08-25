@@ -14,7 +14,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
-import { useSession } from "../lib/auth";
+
 import { EtatReseau } from "../components/EtatReseau";
 import { enregistrerServiceWorker } from "../lib/pwa";
 
