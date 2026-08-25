@@ -109,7 +109,42 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profils_publics: {
+        Row: {
+          bio: string | null
+          competences: string[] | null
+          created_at: string | null
+          id: string | null
+          nom: string | null
+          photo_url: string | null
+          prix_horaire: number | null
+          statut: string | null
+          ville: string | null
+        }
+        Insert: {
+          bio?: string | null
+          competences?: string[] | null
+          created_at?: string | null
+          id?: string | null
+          nom?: string | null
+          photo_url?: string | null
+          prix_horaire?: number | null
+          statut?: string | null
+          ville?: string | null
+        }
+        Update: {
+          bio?: string | null
+          competences?: string[] | null
+          created_at?: string | null
+          id?: string | null
+          nom?: string | null
+          photo_url?: string | null
+          prix_horaire?: number | null
+          statut?: string | null
+          ville?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
