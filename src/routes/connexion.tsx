@@ -68,6 +68,33 @@ function Connexion() {
           <p className="text-sm text-muted-foreground">Emplois, marché et paiements en Pi</p>
         </div>
 
+        <div className="card-surface space-y-3 p-5">
+          <h2 className="text-lg font-bold">Connexion sécurisée</h2>
+          <p className="text-xs text-muted-foreground">
+            Vos données de compte sont enregistrées et conservées en toute sécurité.
+          </p>
+          <Bouton type="button" variante="secondaire" className="w-full" onClick={connexionGoogle} disabled={enCours}>
+            Continuer avec Google
+          </Bouton>
+          <Bouton
+            type="button"
+            variante="pi"
+            className="w-full"
+            onClick={() => toast("Authentification Pi Wallet bientôt disponible (Pi App Studio).")}
+          >
+            π Continuer avec Pi Network
+          </Bouton>
+          <button
+            type="button"
+            className="w-full text-center text-xs font-semibold text-muted-foreground"
+            onClick={() => navigate({ to: "/" })}
+          >
+            Explorer l'application sans compte
+          </button>
+        </div>
+
+
+
         <form className="card-surface space-y-4 p-5" onSubmit={soumettre}>
           <h2 className="text-lg font-bold">{inscription ? "Créer un compte" : "Se connecter"}</h2>
 
