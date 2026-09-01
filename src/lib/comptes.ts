@@ -1,4 +1,9 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+
+/** Accès à la vue publique `profils_publics` (sans coordonnées téléphoniques). */
+const vuePublique = () => (supabase as unknown as SupabaseClient).from("profils_publics");
+
 
 export type Profil = {
   id: string;
@@ -32,16 +37,28 @@ const DIX_ANS = 60 * 60 * 24 * 365 * 10;
 
 export async function chargerProfil(id: string): Promise<Profil | null> {
   const { data } = await supabase.from("profils").select("*").eq("id", id).maybeSingle();
-  return (data as Profil | null) ?? null;
+  if (data) return data as Profil;
+  // Visiteur non connecté : lecture de la vue publique (sans numéros de téléphone).
+  const { data: pub } = await vuePublique().select("*").eq("id", id).maybeSingle();
+  return pub ? ({ ...(pub as Profil), whatsapp: null, telephone: null } as Profil) : null;
 }
 
 export async function chercherProfils(recherche: string): Promise<Profil[]> {
-  let requete = supabase.from("profils").select("*").order("created_at", { ascending: false }).limit(60);
   const q = recherche.trim();
-  if (q) requete = requete.or(`nom.ilike.%${q}%,ville.ilike.%${q}%,bio.ilike.%${q}%`);
-  const { data } = await requete;
-  return (data as Profil[] | null) ?? [];
+  const filtrer = <T extends { or: (f: string) => T }>(r: T) =>
+    q ? r.or(`nom.ilike.%${q}%,ville.ilike.%${q}%,bio.ilike.%${q}%`) : r;
+
+  const { data } = await filtrer(
+    supabase.from("profils").select("*").order("created_at", { ascending: false }).limit(60),
+  );
+  if (data && data.length) return data as Profil[];
+
+  const { data: pub } = await filtrer(
+    vuePublique().select("*").order("created_at", { ascending: false }).limit(60),
+  );
+  return ((pub ?? []) as Profil[]).map((p) => ({ ...p, whatsapp: null, telephone: null }));
 }
+
 
 export async function enregistrerProfil(id: string, valeurs: Partial<Profil>) {
   const { error } = await supabase.from("profils").upsert({ id, ...valeurs });

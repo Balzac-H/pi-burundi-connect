@@ -164,6 +164,23 @@ function Accueil() {
           🆕 {t("nouvellesAnnonces")}
         </TitreSection>
         <div className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2">
+          {produitsDb.map((p) => (
+            <Link
+              key={p.id}
+              to="/market"
+              className="w-40 shrink-0 snap-start space-y-1.5 rounded-xl border border-border/60 bg-card p-2"
+            >
+              {p.photo_url ? (
+                <img src={p.photo_url} alt={p.titre} loading="lazy" className="h-28 w-full rounded-lg object-cover" />
+              ) : (
+                <div className="grid h-28 place-items-center rounded-lg bg-primary-soft text-5xl">🛍️</div>
+              )}
+              <p className="line-clamp-2 text-xs font-semibold leading-snug">{p.titre}</p>
+              <p className="truncate text-[0.65rem] text-muted-foreground">📍 {p.lieu ?? "Burundi"}</p>
+              <p className="text-sm font-extrabold text-primary">{formatPi(Number(p.prix))}</p>
+              <p className="truncate text-[0.65rem] text-muted-foreground">Annonce de la communauté</p>
+            </Link>
+          ))}
           {produits.map((p) => {
             const v = parUtilisateur(p.vendeurId);
             return (
