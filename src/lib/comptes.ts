@@ -1,4 +1,9 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+
+/** Accès à la vue publique `profils_publics` (sans coordonnées téléphoniques). */
+const vuePublique = () => (supabase as unknown as SupabaseClient).from("profils_publics");
+
 
 export type Profil = {
   id: string;
