@@ -3,6 +3,7 @@ import { Home, Briefcase, ShoppingBag, MessageCircle, User, Bell, Wallet, Heart,
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { useSession, seDeconnecter } from "@/lib/auth";
+import { useAlertesTempsReel, useNotifsLive, compterNonLues } from "@/lib/notifications";
 import { useT, useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
 import { BoutonRetour } from "@/components/ui-kit";
 import { toast } from "sonner";
@@ -18,8 +19,10 @@ const onglets = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const chemin = useRouterState({ select: (s) => s.location.pathname });
-  const nonLues = useStore((s) => s.notificationsNonLues);
+  const nonLuesDemo = useStore((s) => s.notificationsNonLues);
   const { utilisateur } = useSession();
+  useAlertesTempsReel(!!utilisateur, utilisateur?.id);
+  const nonLues = nonLuesDemo + compterNonLues(useNotifsLive());
   const t = useT();
   const langue = useLangue();
 
