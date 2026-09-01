@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bouton, Carte, Champ, Saisie, Selection, Zone, Avatar, LienBouton } from "@/components/ui-kit";
 import { toast } from "sonner";
 import { useSession } from "@/lib/auth";
-import { chargerProfil, enregistrerProfil, televerserPhoto, type Profil } from "@/lib/comptes";
+import { chargerProfil, enregistrerProfil, televerserPhoto, numeroValide, normaliserNumero, type Profil } from "@/lib/comptes";
 
 export const Route = createFileRoute("/profil/modifier")({
   head: () => ({
@@ -54,13 +54,25 @@ function Modifier() {
     e.preventDefault();
     if (!utilisateur) return;
     const f = new FormData(e.currentTarget);
+    const telephone = String(f.get("telephone") ?? "").trim();
+    const whatsapp = String(f.get("whatsapp") ?? "").trim();
+
+    if (!numeroValide(telephone)) {
+      toast.error("Numéro de téléphone invalide. Exemple : +257 79 000 000 ou 79 000 000.");
+      return;
+    }
+    if (whatsapp && !numeroValide(whatsapp)) {
+      toast.error("Numéro WhatsApp invalide. Exemple : +257 79 000 000 ou 79 000 000.");
+      return;
+    }
+
     try {
       await enregistrerProfil(utilisateur.id, {
         nom: String(f.get("nom") ?? ""),
         bio: String(f.get("bio") ?? ""),
         ville: String(f.get("ville") ?? ""),
-        telephone: String(f.get("telephone") ?? ""),
-        whatsapp: String(f.get("whatsapp") ?? ""),
+        telephone: `+${normaliserNumero(telephone)}`,
+        whatsapp: whatsapp ? `+${normaliserNumero(whatsapp)}` : null,
         statut: String(f.get("statut") ?? "prestataire"),
         prix_horaire: f.get("prix") ? Number(f.get("prix")) : null,
         competences: String(f.get("competences") ?? "")
@@ -111,10 +123,10 @@ function Modifier() {
         <Champ label="Localisation" obligatoire>
           <Saisie name="ville" required defaultValue={profil?.ville ?? ""} maxLength={120} key={`v${profil?.id ?? ""}`} />
         </Champ>
-        <Champ label="Numéro de téléphone" obligatoire>
+        <Champ label="Numéro de téléphone (WhatsApp)" aide="Format burundais vérifié automatiquement" obligatoire>
           <Saisie name="telephone" required type="tel" defaultValue={profil?.telephone ?? ""} maxLength={20} key={`t${profil?.id ?? ""}`} />
         </Champ>
-        <Champ label="Numéro WhatsApp" aide="Affiché sur votre profil avec un bouton de contact direct">
+        <Champ label="Numéro WhatsApp" aide="Vérifié et affiché avec un bouton de discussion directe. Format : +257 79 000 000">
           <Saisie name="whatsapp" type="tel" placeholder="+257 79 000 000" defaultValue={profil?.whatsapp ?? ""} maxLength={20} key={`w${profil?.id ?? ""}`} />
         </Champ>
         <Champ label="Prix horaire (Pi)">
