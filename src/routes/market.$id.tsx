@@ -5,6 +5,7 @@ import { parProduit, parUtilisateur, avisProduit } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
 import { lienWhatsApp } from "@/lib/comptes";
 import { bientotDisponible } from "@/lib/utils";
+import { toast } from "sonner";
 import { ArrowLeft, Heart, Share2, Flag } from "lucide-react";
 
 export const Route = createFileRoute("/market/$id")({
