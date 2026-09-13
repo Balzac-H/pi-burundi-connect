@@ -93,7 +93,7 @@ function Paiement() {
       <Carte className="space-y-2 text-sm">
         <h2 className="text-sm font-bold uppercase text-muted-foreground">Adresse de livraison</h2>
         <p>Quartier Rohero, Bujumbura, Burundi</p>
-        <Bouton variante="contour" taille="sm" onClick={() => toast("Modification de l'adresse.")}>MODIFIER</Bouton>
+        <Bouton variante="contour" taille="sm" onClick={() => bientotDisponible("La modification d'adresse")}>MODIFIER</Bouton>
       </Carte>
 
       <BandeauPi />
