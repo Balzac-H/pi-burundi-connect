@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useCallback, useRef, useSyncExternalStore } from "react";
 
 export type AppState = {
   connecte: boolean;
@@ -77,11 +77,29 @@ export const store = {
   },
 };
 
+function shallowEqual(a: unknown, b: unknown) {
+  if (a === b) return true;
+  if (typeof a !== "object" || typeof b !== "object" || a == null || b == null) return false;
+  const ka = Object.keys(a);
+  const kb = Object.keys(b);
+  if (ka.length !== kb.length) return false;
+  for (const k of ka) {
+    if ((b as Record<string, unknown>)[k] !== (a as Record<string, unknown>)[k]) return false;
+  }
+  return true;
+}
+
 export function useStore<T>(selecteur: (s: AppState) => T): T {
+  const selecteurRef = useRef(selecteur);
+  selecteurRef.current = selecteur;
+
+  const getSnapshot = useCallback(() => selecteurRef.current(state), []);
+  const getServerSnapshot = useCallback(() => selecteurRef.current(initial), []);
+
   return useSyncExternalStore(
     store.subscribe,
-    () => selecteur(state),
-    () => selecteur(initial),
+    getSnapshot,
+    getServerSnapshot,
   );
 }
 
