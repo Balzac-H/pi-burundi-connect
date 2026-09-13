@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bouton, Carte, Avatar, Note, Distance, Saisie, LienBouton } from "@/components/ui-kit";
 import { parConversation, parUtilisateur } from "@/lib/data";
-import { toast } from "sonner";
+import { bientotDisponible } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/messages/$id")({
@@ -48,7 +48,7 @@ function Chat() {
           <Link to="/profil/$id" params={{ id: u.id }} className="block truncate font-semibold">{u.nom}</Link>
           <div className="flex gap-2"><Note note={u.note} /><Distance km={u.distanceKm} /></div>
         </div>
-        <Bouton taille="sm" variante="contour" onClick={() => toast("Appel en cours…")}>APPELER</Bouton>
+        <Bouton taille="sm" variante="contour" onClick={() => bientotDisponible("Les appels vocaux")}>APPELER</Bouton>
       </Carte>
 
       <p className="text-center text-xs text-muted-foreground">{conv.contexte}</p>
@@ -85,9 +85,9 @@ function Chat() {
       </form>
 
       <div className="flex flex-wrap gap-2">
-        <Bouton variante="contour" taille="sm" onClick={() => toast.success("Conversation partagée.")}>PARTAGER</Bouton>
-        <Bouton variante="danger" taille="sm" onClick={() => toast("Signalement envoyé.")}>SIGNALER</Bouton>
-        <Bouton variante="danger" taille="sm" onClick={() => toast("Utilisateur bloqué.")}>BLOQUER</Bouton>
+        <Bouton variante="contour" taille="sm" onClick={() => bientotDisponible("Le partage de conversation")}>PARTAGER</Bouton>
+        <Bouton variante="danger" taille="sm" onClick={() => bientotDisponible("Le signalement")}>SIGNALER</Bouton>
+        <Bouton variante="danger" taille="sm" onClick={() => bientotDisponible("Le blocage")}>BLOQUER</Bouton>
       </div>
     </div>
   );

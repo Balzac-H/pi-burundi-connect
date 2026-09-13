@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Bouton, Carte, Champ, Saisie, Zone, BandeauPi, TitreSection } from "@/components/ui-kit";
 import { transactions } from "@/lib/data";
 import { useStore, formatPi, enFBu } from "@/lib/store";
+import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 
@@ -48,9 +49,9 @@ function Portefeuille() {
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Bouton onClick={() => setModal(true)}>ENVOYER PI</Bouton>
-        <Bouton variante="contour" onClick={() => toast("Votre QR code de réception s'affiche ici.")}>RECEVOIR</Bouton>
-        <Bouton variante="contour" onClick={() => toast.success("Adresse copiée : pi://didier-n")}>ADRESSE</Bouton>
-        <Bouton variante="fantome" onClick={() => toast("Paramètres du wallet.")}>PARAMÈTRES</Bouton>
+        <Bouton variante="contour" onClick={() => bientotDisponible("La réception par QR code")}>RECEVOIR</Bouton>
+        <Bouton variante="contour" onClick={() => bientotDisponible("La copie d'adresse")}>ADRESSE</Bouton>
+        <Bouton variante="fantome" onClick={() => bientotDisponible("Les paramètres du wallet")}>PARAMÈTRES</Bouton>
       </div>
 
       <BandeauPi texte="Transactions sécurisées sur la blockchain Pi" />
@@ -73,7 +74,7 @@ function Portefeuille() {
             </div>
           ))}
         </Carte>
-        <Bouton variante="fantome" className="mt-2 w-full" onClick={() => toast("Historique complet chargé.")}>
+        <Bouton variante="fantome" className="mt-2 w-full" onClick={() => bientotDisponible("L'historique complet")}>
           VOIR TOUT L'HISTORIQUE
         </Bouton>
       </section>
