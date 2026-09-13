@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Carte, Saisie, Avatar, Bouton } from "@/components/ui-kit";
 import { conversations, parUtilisateur } from "@/lib/data";
-import { toast } from "sonner";
+import { bientotDisponible } from "@/lib/utils";
 import { BesoinCompte } from "@/components/BesoinCompte";
 
 export const Route = createFileRoute("/messages/")({
@@ -27,7 +27,7 @@ function ListeMessages() {
     <div className="mx-auto max-w-2xl space-y-4">
       <div className="flex items-center justify-between gap-2">
         <h1 className="text-2xl font-extrabold text-primary">MESSAGES 💬</h1>
-        <Bouton taille="sm" variante="secondaire" onClick={() => toast("Nouvelle conversation.")}>NOUVEAU</Bouton>
+        <Bouton taille="sm" variante="secondaire" onClick={() => bientotDisponible("La création de nouvelle conversation")}>NOUVEAU</Bouton>
       </div>
 
       <Saisie placeholder="Rechercher une conversation…" value={recherche} onChange={(e) => setRecherche(e.target.value)} maxLength={80} />

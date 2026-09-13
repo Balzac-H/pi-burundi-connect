@@ -92,7 +92,7 @@ function Connexion() {
             type="button"
             variante="pi"
             className="w-full"
-            onClick={() => toast("Authentification Pi Wallet bientôt disponible (Pi App Studio).")}
+            onClick={() => bientotDisponible("L'authentification Pi Wallet")}
           >
             π Continuer avec Pi Network
           </Bouton>
@@ -144,7 +144,7 @@ function Connexion() {
             type="button"
             variante="pi"
             className="w-full"
-            onClick={() => toast("Connexion Pi Wallet bientôt disponible (Pi App Studio).")}
+            onClick={() => bientotDisponible("La connexion Pi Wallet")}
           >
             π Se connecter avec Pi Wallet
           </Bouton>

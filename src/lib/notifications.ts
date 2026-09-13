@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -36,8 +36,16 @@ function charger() {
   }
 }
 
+function getNotifs() {
+  return liste;
+}
+
+function getNotifsServer() {
+  return [];
+}
+
 export const notifsLive = {
-  get: () => liste,
+  get: getNotifs,
   subscribe(l: () => void) {
     listeners.add(l);
     return () => listeners.delete(l);
@@ -54,7 +62,9 @@ export const notifsLive = {
 };
 
 export function useNotifsLive(): NotifLive[] {
-  return useSyncExternalStore(notifsLive.subscribe, notifsLive.get, () => []);
+  const getSnapshot = useCallback(getNotifs, []);
+  const getServerSnapshot = useCallback(getNotifsServer, []);
+  return useSyncExternalStore(notifsLive.subscribe, getSnapshot, getServerSnapshot);
 }
 
 export const compterNonLues = (l: NotifLive[]) => l.filter((n) => !n.lu).length;

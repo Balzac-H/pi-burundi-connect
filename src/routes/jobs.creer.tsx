@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Bouton, Carte, Champ, Saisie, Selection, Zone } from "@/components/ui-kit";
 import { categoriesJobs } from "@/lib/data";
+import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
 
@@ -87,8 +88,8 @@ function CreerOffre() {
 
       <div className="flex flex-wrap gap-2">
         <Bouton type="submit">PUBLIER L'OFFRE</Bouton>
-        <Bouton type="button" variante="contour" onClick={() => toast("Aperçu de l'offre généré.")}>APERÇU</Bouton>
-        <Bouton type="button" variante="fantome" onClick={() => toast.success("Brouillon enregistré.")}>BROUILLON</Bouton>
+        <Bouton type="button" variante="contour" onClick={() => bientotDisponible("L'aperçu d'offre")}>APERÇU</Bouton>
+        <Bouton type="button" variante="fantome" onClick={() => bientotDisponible("L'enregistrement de brouillon")}>BROUILLON</Bouton>
       </div>
     </form>
   );

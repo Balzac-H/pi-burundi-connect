@@ -4,6 +4,7 @@ import { Bouton, Carte, Etiquette, Avatar, Note, BoutonSuivre, LienBouton, Bande
 import { parProduit, parUtilisateur, avisProduit } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
 import { lienWhatsApp } from "@/lib/comptes";
+import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { ArrowLeft, Heart, Share2, Flag } from "lucide-react";
 
@@ -50,7 +51,7 @@ function DetailProduit() {
           <Bouton variante="contour" taille="sm" onClick={() => store.basculerFavori(produit.id)}>
             <Heart className={favori ? "size-4 fill-destructive text-destructive" : "size-4"} /> Favoris
           </Bouton>
-          <Bouton variante="contour" taille="sm" onClick={() => toast.success("Lien copié !")}>
+          <Bouton variante="contour" taille="sm" onClick={() => bientotDisponible("Le partage de produit")}>
             <Share2 className="size-4" /> Partager
           </Bouton>
         </div>
@@ -114,7 +115,7 @@ function DetailProduit() {
             <p className="text-xs text-muted-foreground">{a.auteur} · {a.date}</p>
           </div>
         ))}
-        <Bouton variante="fantome" taille="sm" onClick={() => toast(`Affichage des ${produit.avis} avis.`)}>
+        <Bouton variante="fantome" taille="sm" onClick={() => bientotDisponible("Tous les avis")}>
           VOIR TOUS LES AVIS ({produit.avis})
         </Bouton>
       </Carte>
@@ -151,7 +152,7 @@ function DetailProduit() {
           >
             ACHETER MAINTENANT
           </Bouton>
-          <Bouton variante="danger" taille="sm" onClick={() => toast("Signalement envoyé.")}>
+          <Bouton variante="danger" taille="sm" onClick={() => bientotDisponible("Le signalement")}>
             <Flag className="size-4" /> SIGNALER
           </Bouton>
         </div>

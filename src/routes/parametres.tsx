@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
 import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/components/ui-kit";
+import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/parametres")({
@@ -47,7 +48,7 @@ function Parametres() {
         <h2 className="text-sm font-bold uppercase text-muted-foreground">Sécurité</h2>
         <Interrupteur label="Authentification à deux facteurs (2FA)" />
         <Interrupteur label="Confirmation par code pour chaque paiement Pi" defaut />
-        <Bouton variante="contour" taille="sm" onClick={() => toast("Un lien de changement de mot de passe a été envoyé.")}>
+        <Bouton variante="contour" taille="sm" onClick={() => bientotDisponible("Le changement de mot de passe")}>
           Changer le mot de passe
         </Bouton>
       </Carte>
