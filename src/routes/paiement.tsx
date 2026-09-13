@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Bouton, Carte, BandeauPi, LienBouton } from "@/components/ui-kit";
 import { parProduit, parUtilisateur } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
+import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
 
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/paiement")({
   component: PaiementProtege,
 });
 
-const FRAIS_LIVRAISON = 200;
+const FRAIS_LIVRAISON = 0.02;
 
 function Paiement() {
   const panier = useStore((s) => s.panier);
