@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Avatar, Bouton, Carte, Etiquette, Note, TitreSection, BoutonSuivre, LienBouton } from "@/components/ui-kit";
 import { parUtilisateur } from "@/lib/data";
-import { toast } from "sonner";
+import { bientotDisponible } from "@/lib/utils";
 import { Share2, Flag, MessageCircle, Pencil } from "lucide-react";
 import { formatPi } from "@/lib/store";
 
@@ -49,11 +49,11 @@ export function ProfilComplet({ id, monProfil }: { id: string; monProfil?: boole
               </LienBouton>
             </>
           )}
-          <Bouton variante="contour" taille="sm" onClick={() => toast.success("Lien du profil copié !")}>
+          <Bouton variante="contour" taille="sm" onClick={() => bientotDisponible("Le partage de profil")}>
             <Share2 className="size-4" /> PARTAGER
           </Bouton>
           {!monProfil && (
-            <Bouton variante="danger" taille="sm" onClick={() => toast("Signalement envoyé aux modérateurs.")}>
+            <Bouton variante="danger" taille="sm" onClick={() => bientotDisponible("Le signalement")}>
               <Flag className="size-4" /> SIGNALER
             </Bouton>
           )}

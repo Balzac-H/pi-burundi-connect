@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Bouton, Carte, Etiquette, Avatar, Note, BoutonSuivre, LienBouton, BandeauPi } from "@/components/ui-kit";
 import { parJob, parUtilisateur } from "@/lib/data";
 import { store, useStore } from "@/lib/store";
-import { toast } from "sonner";
+import { bientotDisponible } from "@/lib/utils";
 import { ArrowLeft, Share2, Flag } from "lucide-react";
 
 export const Route = createFileRoute("/jobs/$id")({
@@ -107,10 +107,10 @@ function DetailJob() {
         >
           {postule ? "POSTULATION ENVOYÉE ✓" : "POSTULER MAINTENANT"}
         </Bouton>
-        <Bouton variante="contour" taille="sm" onClick={() => toast.success("Lien copié !")}>
+        <Bouton variante="contour" taille="sm" onClick={() => bientotDisponible("Le partage d'offre")}>
           <Share2 className="size-4" /> PARTAGER
         </Bouton>
-        <Bouton variante="danger" taille="sm" onClick={() => toast("Signalement transmis aux modérateurs.")}>
+        <Bouton variante="danger" taille="sm" onClick={() => bientotDisponible("Le signalement")}>
           <Flag className="size-4" /> SIGNALER
         </Bouton>
       </div>
