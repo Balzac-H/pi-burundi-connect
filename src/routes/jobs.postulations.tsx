@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Bouton, Carte, Etiquette, LienBouton } from "@/components/ui-kit";
 import { jobs, parJob, parUtilisateur } from "@/lib/data";
 import { store, useStore } from "@/lib/store";
+import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/jobs/postulations")({
@@ -58,7 +59,7 @@ function Postulations() {
                   taille="sm"
                   onClick={() => {
                     store.annulerCandidature(j!.id);
-                    toast("Postulation annulée.");
+                    toast.success("Postulation annulée.");
                   }}
                 >
                   ANNULER
@@ -83,7 +84,7 @@ function Postulations() {
               <div className="flex flex-wrap gap-2">
                 <LienBouton to="/jobs/$id" params={{ id: j.id }} variante="contour" taille="sm">VOIR DÉTAIL</LienBouton>
                 <LienBouton to="/messages" variante="secondaire" taille="sm">CHAT</LienBouton>
-                <Bouton taille="sm" onClick={() => toast.success("Job marqué comme commencé.")}>MARQUER COMMENCÉ</Bouton>
+                <Bouton taille="sm" onClick={() => bientotDisponible("Le marquage comme commencé")}>MARQUER COMMENCÉ</Bouton>
               </div>
             </Carte>
           ))}
@@ -101,7 +102,7 @@ function Postulations() {
               </div>
               <p className="text-xs text-muted-foreground">{t.montant} · {t.employeur}</p>
               <p className="text-sm">⭐⭐⭐⭐⭐ <span className="italic text-muted-foreground">« {t.avis} »</span></p>
-              <Bouton taille="sm" variante="contour" onClick={() => toast.success("Merci pour votre avis !")}>
+              <Bouton taille="sm" variante="contour" onClick={() => bientotDisponible("Laisser un avis")}>
                 LAISSER UN AVIS
               </Bouton>
             </Carte>
