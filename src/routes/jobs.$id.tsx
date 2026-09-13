@@ -3,6 +3,7 @@ import { Bouton, Carte, Etiquette, Avatar, Note, BoutonSuivre, LienBouton, Bande
 import { parJob, parUtilisateur } from "@/lib/data";
 import { store, useStore } from "@/lib/store";
 import { bientotDisponible } from "@/lib/utils";
+import { toast } from "sonner";
 import { ArrowLeft, Share2, Flag } from "lucide-react";
 
 export const Route = createFileRoute("/jobs/$id")({
