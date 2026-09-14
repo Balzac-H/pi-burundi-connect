@@ -89,12 +89,22 @@ function shallowEqual(a: unknown, b: unknown) {
   return true;
 }
 
+const serverSnapshots = new WeakMap<(s: AppState) => unknown, unknown>();
+
 export function useStore<T>(selecteur: (s: AppState) => T): T {
   const selecteurRef = useRef(selecteur);
   selecteurRef.current = selecteur;
 
   const getSnapshot = useCallback(() => selecteurRef.current(state), []);
-  const getServerSnapshot = useCallback(() => selecteurRef.current(initial), []);
+
+  const getServerSnapshot = useCallback(() => {
+    let cached = serverSnapshots.get(selecteurRef.current);
+    if (cached === undefined) {
+      cached = selecteurRef.current(initial);
+      serverSnapshots.set(selecteurRef.current, cached);
+    }
+    return cached as T;
+  }, []);
 
   return useSyncExternalStore(
     store.subscribe,
