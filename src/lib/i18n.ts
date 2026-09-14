@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export type Langue = "fr" | "rn" | "sw" | "en";
 
@@ -112,8 +112,18 @@ function subscribe(fn: () => void) {
   return () => listeners.delete(fn);
 }
 
+function getLangue() {
+  return langueCourante;
+}
+
+function getLangueServer() {
+  return "fr" as Langue;
+}
+
 export function useLangue(): Langue {
-  return useSyncExternalStore(subscribe, () => langueCourante, () => "fr" as Langue);
+  const getSnapshot = useCallback(getLangue, []);
+  const getServerSnapshot = useCallback(getLangueServer, []);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 export function useT() {
