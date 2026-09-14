@@ -36,12 +36,14 @@ function charger() {
   }
 }
 
+const VIDE: NotifLive[] = [];
+
 function getNotifs() {
   return liste;
 }
 
 function getNotifsServer() {
-  return [];
+  return VIDE;
 }
 
 export const notifsLive = {
