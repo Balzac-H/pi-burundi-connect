@@ -169,3 +169,12 @@ function Portefeuille() {
     </div>
   );
 }
+
+function Ligne({ libelle, valeur, fort }: { libelle: string; valeur: string; fort?: boolean }) {
+  return (
+    <div className={`flex justify-between gap-2 ${fort ? "font-bold text-primary" : "text-muted-foreground"}`}>
+      <span>{libelle}</span>
+      <span>{valeur}</span>
+    </div>
+  );
+}
