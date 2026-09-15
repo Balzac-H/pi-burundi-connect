@@ -7,9 +7,9 @@ import { Heart } from "lucide-react";
 export const Route = createFileRoute("/favoris")({
   head: () => ({
     meta: [
-      { title: "Mes favoris — BURUNDI PI CONNECT" },
-      { name: "description", content: "Retrouvez les produits sauvegardés et les vendeurs que vous suivez sur Burundi Pi Connect." },
-      { property: "og:title", content: "Mes favoris — BURUNDI PI CONNECT" },
+      { title: "Mes favoris — WICO" },
+      { name: "description", content: "Retrouvez les produits sauvegardés et les vendeurs que vous suivez sur WICO." },
+      { property: "og:title", content: "Mes favoris — WICO" },
       { property: "og:description", content: "Produits sauvegardés et profils suivis." },
     ],
   }),

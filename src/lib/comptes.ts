@@ -103,7 +103,7 @@ export function normaliserNumero(numero: string): string {
 
 export const numeroValide = (numero: string) => normaliserNumero(numero).length >= 11;
 
-export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via BURUNDI PI CONNECT") =>
+export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via WICO") =>
   `https://wa.me/${normaliserNumero(numero)}?text=${encodeURIComponent(texte)}`;
 
 /** Ouvre WhatsApp de façon fiable (nouvel onglet, avec repli si bloqué : iframe/preview). */

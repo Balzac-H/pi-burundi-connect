@@ -10,10 +10,10 @@ import { Trash2 } from "lucide-react";
 export const Route = createFileRoute("/market/boutique")({
   head: () => ({
     meta: [
-      { title: "Ma boutique — BURUNDI PI CONNECT" },
+      { title: "Ma boutique — WICO" },
       { name: "description", content: "Gérez vos annonces, vos photos de produits et votre stock sur le Market en Pi." },
-      { property: "og:title", content: "Ma boutique — BURUNDI PI CONNECT" },
-      { property: "og:description", content: "Vos produits en vente sur Burundi Pi Connect." },
+      { property: "og:title", content: "Ma boutique — WICO" },
+      { property: "og:description", content: "Vos produits en vente sur WICO." },
     ],
   }),
   component: Boutique,

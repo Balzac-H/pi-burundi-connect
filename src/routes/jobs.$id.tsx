@@ -13,7 +13,7 @@ export const Route = createFileRoute("/jobs/$id")({
       meta: [
         { title: j ? `${j.titre} — Emploi ${j.salaire}` : "Offre introuvable" },
         { name: "description", content: j ? `${j.categorie} à ${j.lieu}. Salaire ${j.salaire}, durée ${j.duree}.` : "Cette offre n'existe pas." },
-        { property: "og:title", content: j ? `${j.titre} — BURUNDI PI CONNECT` : "Offre introuvable" },
+        { property: "og:title", content: j ? `${j.titre} — WICO` : "Offre introuvable" },
         { property: "og:description", content: j ? j.description.slice(0, 150) : "Offre d'emploi indisponible." },
       ],
     };

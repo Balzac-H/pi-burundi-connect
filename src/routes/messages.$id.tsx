@@ -11,9 +11,9 @@ export const Route = createFileRoute("/messages/$id")({
     const nom = c ? parUtilisateur(c.utilisateurId).nom : "Conversation";
     return {
       meta: [
-        { title: `Chat avec ${nom} — BURUNDI PI CONNECT` },
+        { title: `Chat avec ${nom} — WICO` },
         { name: "description", content: c ? `Conversation ${c.contexte} avec ${nom}.` : "Conversation introuvable." },
-        { property: "og:title", content: `Chat avec ${nom} — BURUNDI PI CONNECT` },
+        { property: "og:title", content: `Chat avec ${nom} — WICO` },
         { property: "og:description", content: "Messagerie directe entre membres de la plateforme." },
       ],
     };

@@ -10,9 +10,9 @@ import { LogOut, Pencil, Share2, MessageCircle } from "lucide-react";
 export const Route = createFileRoute("/profil/")({
   head: () => ({
     meta: [
-      { title: "Mon profil — BURUNDI PI CONNECT" },
-      { name: "description", content: "Gérez votre photo, vos informations, votre numéro WhatsApp et vos produits en vente sur Burundi Pi Connect." },
-      { property: "og:title", content: "Mon profil — BURUNDI PI CONNECT" },
+      { title: "Mon profil — WICO" },
+      { name: "description", content: "Gérez votre photo, vos informations, votre numéro WhatsApp et vos produits en vente sur WICO." },
+      { property: "og:title", content: "Mon profil — WICO" },
       { property: "og:description", content: "Votre compte, vos produits et vos contacts sur la plateforme." },
     ],
   }),

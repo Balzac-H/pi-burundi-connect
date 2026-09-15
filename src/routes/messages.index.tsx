@@ -8,9 +8,9 @@ import { BesoinCompte } from "@/components/BesoinCompte";
 export const Route = createFileRoute("/messages/")({
   head: () => ({
     meta: [
-      { title: "Messages — BURUNDI PI CONNECT" },
+      { title: "Messages — WICO" },
       { name: "description", content: "Discutez avec les employeurs, vendeurs et clients directement dans l'application." },
-      { property: "og:title", content: "Messages — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Messages — WICO" },
       { property: "og:description", content: "Toutes vos conversations jobs et market au même endroit." },
     ],
   }),

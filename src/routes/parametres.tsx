@@ -7,9 +7,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/parametres")({
   head: () => ({
     meta: [
-      { title: "Paramètres — BURUNDI PI CONNECT" },
+      { title: "Paramètres — WICO" },
       { name: "description", content: "Gérez votre compte, la sécurité 2FA, les notifications et vos préférences de confidentialité." },
-      { property: "og:title", content: "Paramètres — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Paramètres — WICO" },
       { property: "og:description", content: "Compte, sécurité et préférences." },
     ],
   }),

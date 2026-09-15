@@ -10,9 +10,9 @@ import { BesoinCompte } from "@/components/BesoinCompte";
 export const Route = createFileRoute("/paiement")({
   head: () => ({
     meta: [
-      { title: "Confirmer l'achat — BURUNDI PI CONNECT" },
+      { title: "Confirmer l'achat — WICO" },
       { name: "description", content: "Récapitulatif de commande et paiement sécurisé en Pi via Pi Network." },
-      { property: "og:title", content: "Confirmer l'achat — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Confirmer l'achat — WICO" },
       { property: "og:description", content: "Paiement sécurisé en Pi, livraison au Burundi." },
     ],
   }),

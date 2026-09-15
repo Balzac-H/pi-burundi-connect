@@ -10,9 +10,9 @@ import { X } from "lucide-react";
 export const Route = createFileRoute("/portefeuille")({
   head: () => ({
     meta: [
-      { title: "Wallet Pi — BURUNDI PI CONNECT" },
-      { name: "description", content: "Consultez votre solde Pi, votre escrow et l'historique de vos transactions sur Burundi Pi Connect." },
-      { property: "og:title", content: "Wallet Pi — BURUNDI PI CONNECT" },
+      { title: "Wallet Pi — WICO" },
+      { name: "description", content: "Consultez votre solde Pi, votre escrow et l'historique de vos transactions sur WICO." },
+      { property: "og:title", content: "Wallet Pi — WICO" },
       { property: "og:description", content: "Solde, escrow et transactions Pi en un coup d'œil." },
     ],
   }),

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/market/")({
     meta: [
       { title: "Market — Acheter et vendre en Pi au Burundi" },
       { name: "description", content: "Produits frais, vêtements, électronique et services près de chez vous. Achetez et vendez en Pi." },
-      { property: "og:title", content: "Market — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Market — WICO" },
       { property: "og:description", content: "Le marché peer-to-peer du Burundi, paiements en Pi." },
     ],
   }),

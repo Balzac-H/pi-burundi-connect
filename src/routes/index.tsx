@@ -16,12 +16,12 @@ import catServices from "@/assets/cat-services.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Accueil — BURUNDI PI CONNECT" },
+      { title: "Accueil — WICO" },
       {
         name: "description",
         content: "Recherchez produits, services et emplois près de chez vous au Burundi. Paiements en Pi, contact WhatsApp direct.",
       },
-      { property: "og:title", content: "Accueil — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Accueil — WICO" },
       { property: "og:description", content: "Recherchez produits, services et emplois près de chez vous au Burundi. Paiements en Pi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -70,7 +70,7 @@ function Accueil() {
         <p className="text-sm opacity-90">
           {t("bonjour")}, <span className="font-bold">{utilisateur?.email?.split("@")[0] ?? t("invite")}</span> 👋
         </p>
-        <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">BURUNDI PI CONNECT</h1>
+        <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">WICO</h1>
         <p className="mt-1 max-w-xl text-sm opacity-90">{t("sloganAccueil")}</p>
 
         <form

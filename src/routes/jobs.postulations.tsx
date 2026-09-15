@@ -9,9 +9,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/jobs/postulations")({
   head: () => ({
     meta: [
-      { title: "Mes postulations — BURUNDI PI CONNECT" },
+      { title: "Mes postulations — WICO" },
       { name: "description", content: "Suivez vos candidatures : en attente, acceptées, terminées, et laissez vos avis." },
-      { property: "og:title", content: "Mes postulations — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Mes postulations — WICO" },
       { property: "og:description", content: "Gérez toutes vos candidatures d'emploi en un endroit." },
     ],
   }),
