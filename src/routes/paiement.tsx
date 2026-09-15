@@ -6,13 +6,14 @@ import { store, useStore, formatPi } from "@/lib/store";
 import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
+import { processPayment } from "@/lib/paiements";
 
 export const Route = createFileRoute("/paiement")({
   head: () => ({
     meta: [
-      { title: "Confirmer l'achat — BURUNDI PI CONNECT" },
+      { title: "Confirmer l'achat — WICO" },
       { name: "description", content: "Récapitulatif de commande et paiement sécurisé en Pi via Pi Network." },
-      { property: "og:title", content: "Confirmer l'achat — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Confirmer l'achat — WICO" },
       { property: "og:description", content: "Paiement sécurisé en Pi, livraison au Burundi." },
     ],
   }),
@@ -102,11 +103,25 @@ function Paiement() {
         <Bouton
           className="flex-1"
           disabled={solde < total}
-          onClick={() => {
+          onClick={async () => {
+            const res = await processPayment({
+              acheteur: "Moi",
+              vendeur: parUtilisateur(lignes[0].produit!.vendeurId).nom,
+              lignes: lignes.map((l) => ({
+                libelle: `${l.produit!.titre}`,
+                quantite: l.quantite,
+                montant: l.produit!.prix * l.quantite,
+              })),
+              livraison: FRAIS_LIVRAISON,
+            });
+            if (!res.ok) {
+              toast.error(res.erreur);
+              return;
+            }
             store.debiter(total);
             store.viderPanier();
-            setReference("#BPC" + Date.now().toString().slice(-11));
-            toast.success("Paiement confirmé sur la blockchain Pi !");
+            setReference(res.reference);
+            toast.success("Paiement confirmé — facture disponible dans le portefeuille.");
           }}
         >
           CONFIRMER LE PAIEMENT

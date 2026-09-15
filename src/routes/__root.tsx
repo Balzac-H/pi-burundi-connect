@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
+import { AssistantWico } from "../components/AssistantWico";
 
 import { EtatReseau } from "../components/EtatReseau";
 import { enregistrerServiceWorker } from "../lib/pwa";
@@ -84,21 +85,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Accueil — BURUNDI PI CONNECT" },
+      { title: "Accueil — WICO" },
       {
         name: "description",
         content:
           "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi.",
       },
-      { name: "author", content: "Burundi Pi Connect" },
+      { name: "author", content: "WICO" },
       { name: "theme-color", content: "#1F4E3D" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "Pi Connect" },
+      { name: "apple-mobile-web-app-title", content: "WICO" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "Accueil — BURUNDI PI CONNECT" },
-      { name: "twitter:title", content: "Accueil — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Accueil — WICO" },
+      { name: "twitter:title", content: "Accueil — WICO" },
       { property: "og:description", content: "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi." },
       { name: "twitter:description", content: "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9bd5e4c1-a346-48b0-823c-12f889e10520/id-preview-42fe7499--4c2efe0c-fc97-45aa-becc-558c99928a5d.lovable.app-1785175859727.png" },
@@ -151,6 +152,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <EtatReseau />
+      {!sansShell && <AssistantWico />}
       <Toaster position="top-center" richColors />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       {sansShell ? (

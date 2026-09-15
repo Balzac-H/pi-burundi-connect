@@ -8,9 +8,9 @@ import { chargerProfil, enregistrerProfil, televerserPhoto, numeroValide, normal
 export const Route = createFileRoute("/profil/modifier")({
   head: () => ({
     meta: [
-      { title: "Modifier mon profil — BURUNDI PI CONNECT" },
+      { title: "Modifier mon profil — WICO" },
       { name: "description", content: "Mettez à jour votre photo, bio, compétences, numéro WhatsApp, localisation et prix horaire." },
-      { property: "og:title", content: "Modifier mon profil — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Modifier mon profil — WICO" },
       { property: "og:description", content: "Gérez vos informations publiques sur la plateforme." },
     ],
   }),

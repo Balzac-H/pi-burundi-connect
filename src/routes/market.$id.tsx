@@ -15,7 +15,7 @@ export const Route = createFileRoute("/market/$id")({
       meta: [
         { title: p ? `${p.titre} — ${p.prix} π` : "Produit introuvable" },
         { name: "description", content: p ? p.description.slice(0, 155) : "Ce produit n'est plus disponible." },
-        { property: "og:title", content: p ? `${p.titre} — BURUNDI PI CONNECT` : "Produit introuvable" },
+        { property: "og:title", content: p ? `${p.titre} — WICO` : "Produit introuvable" },
         { property: "og:description", content: p ? `${p.prix} π · ${p.lieu}` : "Produit indisponible." },
       ],
     };

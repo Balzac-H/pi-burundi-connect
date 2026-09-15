@@ -10,9 +10,9 @@ import { lovable } from "@/integrations/lovable";
 export const Route = createFileRoute("/connexion")({
   head: () => ({
     meta: [
-      { title: "Connexion — BURUNDI PI CONNECT" },
-      { name: "description", content: "Connectez-vous ou créez votre compte Burundi Pi Connect avec votre email et votre mot de passe." },
-      { property: "og:title", content: "Connexion — BURUNDI PI CONNECT" },
+      { title: "Connexion — WICO" },
+      { name: "description", content: "Connectez-vous ou créez votre compte WICO avec votre email et votre mot de passe." },
+      { property: "og:title", content: "Connexion — WICO" },
       { property: "og:description", content: "Accédez à la plateforme peer-to-peer du Burundi." },
     ],
   }),
@@ -77,7 +77,7 @@ function Connexion() {
           <span className="mx-auto grid size-16 place-items-center rounded-2xl gradient-primary text-3xl font-bold text-primary-foreground">
             π
           </span>
-          <h1 className="mt-3 text-2xl font-extrabold text-primary">BURUNDI PI CONNECT</h1>
+          <h1 className="mt-3 text-2xl font-extrabold text-primary">WICO</h1>
           <p className="text-sm text-muted-foreground">Emplois, marché et paiements en Pi</p>
         </div>
 

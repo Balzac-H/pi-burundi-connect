@@ -10,7 +10,7 @@ export const Route = createFileRoute("/vendeurs")({
     meta: [
       { title: "Rechercher des vendeurs et prestataires au Burundi" },
       { name: "description", content: "Trouvez des vendeurs, artisans et prestataires près de chez vous : photo, compétences, ville et contact WhatsApp direct." },
-      { property: "og:title", content: "Rechercher des vendeurs — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Rechercher des vendeurs — WICO" },
       { property: "og:description", content: "Annuaire des vendeurs et prestataires de la communauté Pi au Burundi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

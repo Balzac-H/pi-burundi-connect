@@ -8,9 +8,9 @@ import { notifsLive, useNotifsLive, compterNonLues } from "@/lib/notifications";
 export const Route = createFileRoute("/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — BURUNDI PI CONNECT" },
+      { title: "Notifications — WICO" },
       { name: "description", content: "Candidatures, messages, paiements Pi et nouvelles annonces : suivez toute votre activité en direct." },
-      { property: "og:title", content: "Notifications — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Notifications — WICO" },
       { property: "og:description", content: "Centre de notifications de la plateforme." },
     ],
   }),

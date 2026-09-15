@@ -34,10 +34,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="grid size-9 place-items-center rounded-xl gradient-primary text-lg font-bold text-primary-foreground">
               π
             </span>
-            <span className="text-sm font-bold leading-tight text-primary sm:text-base">
-              BURUNDI
-              <span className="block text-[0.65rem] font-semibold tracking-widest text-secondary sm:text-xs">
-                PI CONNECT
+            <span className="text-base font-extrabold leading-tight tracking-wide text-primary sm:text-lg">
+              WICO
+              <span className="block text-[0.6rem] font-semibold tracking-widest text-secondary sm:text-[0.65rem]">
+                WISDOM CONNECT
               </span>
             </span>
           </Link>

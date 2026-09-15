@@ -8,9 +8,9 @@ import { BesoinCompte } from "@/components/BesoinCompte";
 export const Route = createFileRoute("/jobs/creer")({
   head: () => ({
     meta: [
-      { title: "Publier une offre d'emploi — BURUNDI PI CONNECT" },
+      { title: "Publier une offre d'emploi — WICO" },
       { name: "description", content: "Publiez gratuitement une offre d'emploi payée en Pi et recrutez des travailleurs près de chez vous." },
-      { property: "og:title", content: "Publier une offre d'emploi — BURUNDI PI CONNECT" },
+      { property: "og:title", content: "Publier une offre d'emploi — WICO" },
       { property: "og:description", content: "Recrutez rapidement au Burundi, paiement en Pi." },
     ],
   }),

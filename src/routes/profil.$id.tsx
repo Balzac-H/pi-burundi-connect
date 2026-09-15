@@ -7,9 +7,9 @@ export const Route = createFileRoute("/profil/$id")({
     const u = parUtilisateur(params.id);
     return {
       meta: [
-        { title: `${u.nom} — Profil BURUNDI PI CONNECT` },
+        { title: `${u.nom} — Profil WICO` },
         { name: "description", content: `${u.nom}, ${u.metier} à ${u.ville}. Note ${u.note}/5 sur ${u.avis} avis.` },
-        { property: "og:title", content: `${u.nom} — BURUNDI PI CONNECT` },
+        { property: "og:title", content: `${u.nom} — WICO` },
         { property: "og:description", content: u.bio },
       ],
     };
