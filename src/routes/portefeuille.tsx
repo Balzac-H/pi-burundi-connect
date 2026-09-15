@@ -4,6 +4,7 @@ import { Bouton, Carte, Champ, Saisie, Zone, BandeauPi, TitreSection } from "@/c
 import { transactions } from "@/lib/data";
 import { useStore, formatPi, enFBu } from "@/lib/store";
 import { bientotDisponible } from "@/lib/utils";
+import { useFactures, tauxCommission } from "@/lib/facturation";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 
@@ -25,6 +26,7 @@ function Portefeuille() {
   const disponible = solde - escrow;
   const [modal, setModal] = useState(false);
   const [montant, setMontant] = useState("");
+  const factures = useFactures();
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
