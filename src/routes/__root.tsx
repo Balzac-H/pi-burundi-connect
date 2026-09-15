@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
+import { AssistantWico } from "../components/AssistantWico";
 
 import { EtatReseau } from "../components/EtatReseau";
 import { enregistrerServiceWorker } from "../lib/pwa";
@@ -151,6 +152,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <EtatReseau />
+      {!sansShell && <AssistantWico />}
       <Toaster position="top-center" richColors />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       {sansShell ? (
