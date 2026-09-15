@@ -148,7 +148,16 @@ function Bulle({ role, children }: { role: "user" | "assistant"; children: React
           : "bg-muted text-foreground",
       )}
     >
-      {children}
+      {typeof children === "string" ? nettoyer(children) : children}
     </div>
   );
+}
+
+/** Retire le balisage Markdown pour un affichage lisible en clair. */
+function nettoyer(texte: string) {
+  return texte
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/^\s*\*\s+/gm, "• ")
+    .replace(/^#{1,6}\s*/gm, "")
+    .trim();
 }
