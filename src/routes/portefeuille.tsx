@@ -57,6 +57,53 @@ function Portefeuille() {
       <BandeauPi texte="Transactions sécurisées sur la blockchain Pi" />
 
       <section>
+        <TitreSection>Mes factures</TitreSection>
+        {factures.length === 0 ? (
+          <Carte>
+            <p className="text-sm text-muted-foreground">
+              Aucune facture pour le moment. Chaque vente confirmée génère automatiquement une facture
+              (commission vendeur : {(tauxCommission() * 100).toLocaleString("fr-FR")} %).
+            </p>
+          </Carte>
+        ) : (
+          <div className="space-y-2">
+            {factures.map((f) => (
+              <Carte key={f.id} className="space-y-1 text-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-bold text-primary">Facture {f.id}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(f.date).toLocaleString("fr-FR")} · Vendeur : {f.vendeur}
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-semibold text-accent">Payée</span>
+                </div>
+                <ul className="text-xs text-muted-foreground">
+                  {f.lignes.map((l, i) => (
+                    <li key={i}>
+                      {l.libelle} × {l.quantite} — {formatPi(l.montant)}
+                    </li>
+                  ))}
+                </ul>
+                <div className="space-y-0.5 border-t border-border/60 pt-1 text-xs">
+                  <Ligne libelle="Montant brut payé par l'acheteur" valeur={formatPi(f.montantBrut)} />
+                  <Ligne
+                    libelle={`Commission WICO (${(f.tauxCommission * 100).toLocaleString("fr-FR")} %)`}
+                    valeur={`− ${formatPi(f.commission)}`}
+                  />
+                  <Ligne
+                    libelle="Montant net reçu par le vendeur"
+                    valeur={formatPi(f.montantNetVendeur)}
+                    fort
+                  />
+                </div>
+              </Carte>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section>
         <TitreSection>Historique des transactions</TitreSection>
         <Carte className="divide-y divide-border/60 p-0">
           {transactions.map((t, i) => (
