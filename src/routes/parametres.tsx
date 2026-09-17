@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
+import { useTheme, definirTheme, themes, type Theme } from "@/lib/theme";
 import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/components/ui-kit";
 import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/parametres")({
 
 function Parametres() {
   const langue = useLangue();
+  const theme = useTheme();
   const navigate = useNavigate();
 
   return (
