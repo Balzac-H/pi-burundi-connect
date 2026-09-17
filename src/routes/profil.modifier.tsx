@@ -135,11 +135,29 @@ function Modifier() {
         <Champ label="Localisation" obligatoire>
           <Saisie name="ville" required defaultValue={profil?.ville ?? ""} maxLength={120} key={`v${profil?.id ?? ""}`} />
         </Champ>
-        <Champ label="Numéro de téléphone (WhatsApp)" aide="Format burundais vérifié automatiquement" obligatoire>
-          <Saisie name="telephone" required type="tel" defaultValue={profil?.telephone ?? ""} maxLength={20} key={`t${profil?.id ?? ""}`} />
+        <Champ label="Numéro de téléphone" aide="Chiffres uniquement, sans le zéro initial" obligatoire>
+          <div className="flex gap-2">
+            <Selection name="indicatif" className="max-w-44" defaultValue={tel.indicatif} key={`i${profil?.id ?? ""}`}>
+              {indicatifs.map((i) => (
+                <option key={i.code} value={i.code}>{i.pays}</option>
+              ))}
+            </Selection>
+            <Saisie name="telephone" required type="tel" inputMode="numeric" placeholder="79 000 000" defaultValue={tel.local} maxLength={15} key={`t${profil?.id ?? ""}`} />
+          </div>
         </Champ>
-        <Champ label="Numéro WhatsApp" aide="Vérifié et affiché avec un bouton de discussion directe. Format : +257 79 000 000">
-          <Saisie name="whatsapp" type="tel" placeholder="+257 79 000 000" defaultValue={profil?.whatsapp ?? ""} maxLength={20} key={`w${profil?.id ?? ""}`} />
+        <Champ
+          label="Numéro WhatsApp"
+          aide="Affiché avec un bouton de discussion directe. Laissez vide pour réutiliser le numéro de téléphone."
+          obligatoire
+        >
+          <div className="flex gap-2">
+            <Selection name="indicatifWhatsapp" className="max-w-44" defaultValue={wa.indicatif} key={`iw${profil?.id ?? ""}`}>
+              {indicatifs.map((i) => (
+                <option key={i.code} value={i.code}>{i.pays}</option>
+              ))}
+            </Selection>
+            <Saisie name="whatsapp" type="tel" inputMode="numeric" placeholder="79 000 000" defaultValue={wa.local} maxLength={15} key={`w${profil?.id ?? ""}`} />
+          </div>
         </Champ>
         <Champ label="Prix horaire (Pi)">
           <Saisie name="prix" type="number" min={0} defaultValue={profil?.prix_horaire ?? undefined} key={`p${profil?.id ?? ""}`} />
