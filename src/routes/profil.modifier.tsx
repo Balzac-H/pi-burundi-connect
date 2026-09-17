@@ -62,15 +62,19 @@ function Modifier() {
     e.preventDefault();
     if (!utilisateur) return;
     const f = new FormData(e.currentTarget);
-    const telephone = String(f.get("telephone") ?? "").trim();
-    const whatsapp = String(f.get("whatsapp") ?? "").trim();
+    const telephone = composerNumero(String(f.get("indicatif") ?? "257"), String(f.get("telephone") ?? ""));
+    const brutWhatsapp = String(f.get("whatsapp") ?? "").trim();
+    const whatsapp = brutWhatsapp
+      ? composerNumero(String(f.get("indicatifWhatsapp") ?? "257"), brutWhatsapp)
+      : telephone;
 
-    if (!numeroValide(telephone)) {
-      toast.error("Numéro de téléphone invalide. Exemple : +257 79 000 000 ou 79 000 000.");
+    const valide = (n: string) => /^\d{10,15}$/.test(n);
+    if (!valide(telephone)) {
+      toast.error("Numéro de téléphone invalide : uniquement des chiffres, ex. 79 000 000.");
       return;
     }
-    if (whatsapp && !numeroValide(whatsapp)) {
-      toast.error("Numéro WhatsApp invalide. Exemple : +257 79 000 000 ou 79 000 000.");
+    if (!valide(whatsapp)) {
+      toast.error("Numéro WhatsApp invalide : uniquement des chiffres, ex. 79 000 000.");
       return;
     }
 
@@ -79,8 +83,8 @@ function Modifier() {
         nom: String(f.get("nom") ?? ""),
         bio: String(f.get("bio") ?? ""),
         ville: String(f.get("ville") ?? ""),
-        telephone: `+${normaliserNumero(telephone)}`,
-        whatsapp: whatsapp ? `+${normaliserNumero(whatsapp)}` : null,
+        telephone: `+${telephone}`,
+        whatsapp: `+${whatsapp}`,
         statut: String(f.get("statut") ?? "prestataire"),
         prix_horaire: f.get("prix") ? Number(f.get("prix")) : null,
         competences: String(f.get("competences") ?? "")
