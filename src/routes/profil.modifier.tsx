@@ -3,7 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import { Bouton, Carte, Champ, Saisie, Selection, Zone, Avatar, LienBouton } from "@/components/ui-kit";
 import { toast } from "sonner";
 import { useSession } from "@/lib/auth";
-import { chargerProfil, enregistrerProfil, televerserPhoto, numeroValide, normaliserNumero, type Profil } from "@/lib/comptes";
+import {
+  chargerProfil,
+  enregistrerProfil,
+  televerserPhoto,
+  composerNumero,
+  separerNumero,
+  indicatifs,
+  type Profil,
+} from "@/lib/comptes";
 
 export const Route = createFileRoute("/profil/modifier")({
   head: () => ({
