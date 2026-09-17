@@ -3,7 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import { Bouton, Carte, Champ, Saisie, Selection, Zone, Avatar, LienBouton } from "@/components/ui-kit";
 import { toast } from "sonner";
 import { useSession } from "@/lib/auth";
-import { chargerProfil, enregistrerProfil, televerserPhoto, numeroValide, normaliserNumero, type Profil } from "@/lib/comptes";
+import {
+  chargerProfil,
+  enregistrerProfil,
+  televerserPhoto,
+  composerNumero,
+  separerNumero,
+  indicatifs,
+  type Profil,
+} from "@/lib/comptes";
 
 export const Route = createFileRoute("/profil/modifier")({
   head: () => ({
@@ -33,6 +41,9 @@ function Modifier() {
     });
   }, [utilisateur]);
 
+  const tel = separerNumero(profil?.telephone);
+  const wa = separerNumero(profil?.whatsapp);
+
   if (chargement) return <p className="py-10 text-center text-sm text-muted-foreground">Chargement…</p>;
   if (!utilisateur) return <NonConnecte />;
 
@@ -54,15 +65,19 @@ function Modifier() {
     e.preventDefault();
     if (!utilisateur) return;
     const f = new FormData(e.currentTarget);
-    const telephone = String(f.get("telephone") ?? "").trim();
-    const whatsapp = String(f.get("whatsapp") ?? "").trim();
+    const telephone = composerNumero(String(f.get("indicatif") ?? "257"), String(f.get("telephone") ?? ""));
+    const brutWhatsapp = String(f.get("whatsapp") ?? "").trim();
+    const whatsapp = brutWhatsapp
+      ? composerNumero(String(f.get("indicatifWhatsapp") ?? "257"), brutWhatsapp)
+      : telephone;
 
-    if (!numeroValide(telephone)) {
-      toast.error("Numéro de téléphone invalide. Exemple : +257 79 000 000 ou 79 000 000.");
+    const valide = (n: string) => /^\d{10,15}$/.test(n);
+    if (!valide(telephone)) {
+      toast.error("Numéro de téléphone invalide : uniquement des chiffres, ex. 79 000 000.");
       return;
     }
-    if (whatsapp && !numeroValide(whatsapp)) {
-      toast.error("Numéro WhatsApp invalide. Exemple : +257 79 000 000 ou 79 000 000.");
+    if (!valide(whatsapp)) {
+      toast.error("Numéro WhatsApp invalide : uniquement des chiffres, ex. 79 000 000.");
       return;
     }
 
@@ -71,8 +86,8 @@ function Modifier() {
         nom: String(f.get("nom") ?? ""),
         bio: String(f.get("bio") ?? ""),
         ville: String(f.get("ville") ?? ""),
-        telephone: `+${normaliserNumero(telephone)}`,
-        whatsapp: whatsapp ? `+${normaliserNumero(whatsapp)}` : null,
+        telephone: `+${telephone}`,
+        whatsapp: `+${whatsapp}`,
         statut: String(f.get("statut") ?? "prestataire"),
         prix_horaire: f.get("prix") ? Number(f.get("prix")) : null,
         competences: String(f.get("competences") ?? "")
@@ -123,11 +138,29 @@ function Modifier() {
         <Champ label="Localisation" obligatoire>
           <Saisie name="ville" required defaultValue={profil?.ville ?? ""} maxLength={120} key={`v${profil?.id ?? ""}`} />
         </Champ>
-        <Champ label="Numéro de téléphone (WhatsApp)" aide="Format burundais vérifié automatiquement" obligatoire>
-          <Saisie name="telephone" required type="tel" defaultValue={profil?.telephone ?? ""} maxLength={20} key={`t${profil?.id ?? ""}`} />
+        <Champ label="Numéro de téléphone" aide="Chiffres uniquement, sans le zéro initial" obligatoire>
+          <div className="flex gap-2">
+            <Selection name="indicatif" className="max-w-44" defaultValue={tel.indicatif} key={`i${profil?.id ?? ""}`}>
+              {indicatifs.map((i) => (
+                <option key={i.code} value={i.code}>{i.pays}</option>
+              ))}
+            </Selection>
+            <Saisie name="telephone" required type="tel" inputMode="numeric" placeholder="79 000 000" defaultValue={tel.local} maxLength={15} key={`t${profil?.id ?? ""}`} />
+          </div>
         </Champ>
-        <Champ label="Numéro WhatsApp" aide="Vérifié et affiché avec un bouton de discussion directe. Format : +257 79 000 000">
-          <Saisie name="whatsapp" type="tel" placeholder="+257 79 000 000" defaultValue={profil?.whatsapp ?? ""} maxLength={20} key={`w${profil?.id ?? ""}`} />
+        <Champ
+          label="Numéro WhatsApp"
+          aide="Affiché avec un bouton de discussion directe. Laissez vide pour réutiliser le numéro de téléphone."
+          obligatoire
+        >
+          <div className="flex gap-2">
+            <Selection name="indicatifWhatsapp" className="max-w-44" defaultValue={wa.indicatif} key={`iw${profil?.id ?? ""}`}>
+              {indicatifs.map((i) => (
+                <option key={i.code} value={i.code}>{i.pays}</option>
+              ))}
+            </Selection>
+            <Saisie name="whatsapp" type="tel" inputMode="numeric" placeholder="79 000 000" defaultValue={wa.local} maxLength={15} key={`w${profil?.id ?? ""}`} />
+          </div>
         </Champ>
         <Champ label="Prix horaire (Pi)">
           <Saisie name="prix" type="number" min={0} defaultValue={profil?.prix_horaire ?? undefined} key={`p${profil?.id ?? ""}`} />

@@ -15,7 +15,7 @@ export type Utilisateur = {
   ventes: number;
   satisfaction: number;
   prixHoraire?: number;
-  whatsapp: string;
+  whatsapp: string | null;
   membreDepuis: string;
 };
 
@@ -37,7 +37,7 @@ export const utilisateurs: Utilisateur[] = [
     ventes: 120,
     satisfaction: 98,
     prixHoraire: 0.012,
-    whatsapp: "+25779000001",
+    whatsapp: null, // numéro non vérifié (profil de démonstration)
     membreDepuis: "2023",
   },
   {
@@ -56,7 +56,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 45,
     ventes: 12,
     satisfaction: 98,
-    whatsapp: "+25779000002",
+    whatsapp: null, // numéro non vérifié (profil de démonstration)
     membreDepuis: "2022",
   },
   {
@@ -75,7 +75,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 8,
     ventes: 980,
     satisfaction: 99,
-    whatsapp: "+25779000003",
+    whatsapp: null, // numéro non vérifié (profil de démonstration)
     membreDepuis: "2022",
   },
   {
@@ -95,7 +95,7 @@ export const utilisateurs: Utilisateur[] = [
     ventes: 4,
     satisfaction: 96,
     prixHoraire: 0.015,
-    whatsapp: "+25779000004",
+    whatsapp: null, // numéro non vérifié (profil de démonstration)
     membreDepuis: "2021",
   },
   {
@@ -114,7 +114,7 @@ export const utilisateurs: Utilisateur[] = [
     jobsCompletes: 0,
     ventes: 640,
     satisfaction: 95,
-    whatsapp: "+25779000005",
+    whatsapp: null, // numéro non vérifié (profil de démonstration)
     membreDepuis: "2023",
   },
 ];

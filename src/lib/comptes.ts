@@ -91,6 +91,33 @@ export async function supprimerProduit(id: string) {
   if (error) throw error;
 }
 
+/** Indicatifs proposés dans les formulaires (Burundi par défaut). */
+export const indicatifs = [
+  { code: "257", pays: "🇧🇮 Burundi (+257)" },
+  { code: "250", pays: "🇷🇼 Rwanda (+250)" },
+  { code: "255", pays: "🇹🇿 Tanzanie (+255)" },
+  { code: "256", pays: "🇺🇬 Ouganda (+256)" },
+  { code: "254", pays: "🇰🇪 Kenya (+254)" },
+  { code: "243", pays: "🇨🇩 RD Congo (+243)" },
+  { code: "32", pays: "🇧🇪 Belgique (+32)" },
+  { code: "33", pays: "🇫🇷 France (+33)" },
+];
+
+/** Assemble indicatif + numéro local en format international sans « + » ni espace. */
+export function composerNumero(indicatif: string, local: string): string {
+  const ind = (indicatif ?? "").replace(/\D/g, "");
+  const n = (local ?? "").replace(/\D/g, "").replace(/^0+/, "");
+  return `${ind}${n}`;
+}
+
+/** Sépare un numéro enregistré en indicatif connu + partie locale. */
+export function separerNumero(numero: string | null | undefined): { indicatif: string; local: string } {
+  const n = (numero ?? "").replace(/\D/g, "");
+  const trouve = indicatifs.find((i) => n.startsWith(i.code));
+  if (!trouve) return { indicatif: "257", local: n };
+  return { indicatif: trouve.code, local: n.slice(trouve.code.length) };
+}
+
 /** Normalise un numéro burundais vers le format international attendu par WhatsApp (257XXXXXXXX). */
 export function normaliserNumero(numero: string): string {
   let n = (numero ?? "").replace(/\D/g, "");

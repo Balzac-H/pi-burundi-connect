@@ -18,6 +18,7 @@ import { AssistantWico } from "../components/AssistantWico";
 
 import { EtatReseau } from "../components/EtatReseau";
 import { enregistrerServiceWorker } from "../lib/pwa";
+import { initTheme } from "../lib/theme";
 
 
 function NotFoundComponent() {
@@ -111,7 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/icon-192.png" },
@@ -145,6 +146,7 @@ function RootComponent() {
   const sansShell = chemin.startsWith("/connexion");
 
   useEffect(() => {
+    initTheme();
     enregistrerServiceWorker();
   }, []);
 

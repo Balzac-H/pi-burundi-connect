@@ -96,14 +96,18 @@ function DetailProduit() {
           <LienBouton to="/profil/$id" params={{ id: v.id }} variante="contour" taille="sm">PROFIL VENDEUR</LienBouton>
           <BoutonSuivre id={v.id} />
           <LienBouton to="/messages" variante="secondaire" taille="sm">CHAT DIRECT</LienBouton>
-          <a
-            href={lienWhatsApp(v.whatsapp, `Bonjour ${v.nom}, je suis intéressé par « ${produit.titre} » (${formatPi(produit.prix)})`)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success transition hover:bg-success/25"
-          >
-            💬 CONTACT WHATSAPP
-          </a>
+          {v.whatsapp ? (
+            <a
+              href={lienWhatsApp(v.whatsapp, `Bonjour ${v.nom}, je suis intéressé par « ${produit.titre} » (${formatPi(produit.prix)})`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success transition hover:bg-success/25"
+            >
+              💬 CONTACT WHATSAPP
+            </a>
+          ) : (
+            <Etiquette>📵 Numéro non vérifié</Etiquette>
+          )}
         </div>
       </Carte>
 

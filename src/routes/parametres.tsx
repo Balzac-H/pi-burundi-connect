@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
+import { useTheme, definirTheme, themes, type Theme } from "@/lib/theme";
 import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/components/ui-kit";
 import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/parametres")({
 
 function Parametres() {
   const langue = useLangue();
+  const theme = useTheme();
   const navigate = useNavigate();
 
   return (
@@ -37,6 +39,15 @@ function Parametres() {
             {langues.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.drapeau} {l.nom}
+              </option>
+            ))}
+          </Selection>
+        </Champ>
+        <Champ label="Thème" aide="Mémorisé sur cet appareil et appliqué à toute l'application">
+          <Selection value={theme} onChange={(e) => definirTheme(e.target.value as Theme)}>
+            {themes.map((t) => (
+              <option key={t.code} value={t.code}>
+                {t.icone} {t.nom}
               </option>
             ))}
           </Selection>

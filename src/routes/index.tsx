@@ -226,14 +226,20 @@ function Accueil() {
                   <p className="truncate text-xs text-muted-foreground">{u.metier}</p>
                   <Note note={u.note} />
                 </div>
-                <a
-                  href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom} 👋`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-lg bg-success/15 px-2 py-1 text-xs font-semibold text-success"
-                >
-                  💬
-                </a>
+                {u.whatsapp ? (
+                  <a
+                    href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom} 👋`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-lg bg-success/15 px-2 py-1 text-xs font-semibold text-success"
+                  >
+                    💬
+                  </a>
+                ) : (
+                  <span className="rounded-lg bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                    Non vérifié
+                  </span>
+                )}
               </Carte>
             ))}
         </div>
