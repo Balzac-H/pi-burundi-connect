@@ -41,6 +41,9 @@ function Modifier() {
     });
   }, [utilisateur]);
 
+  const tel = separerNumero(profil?.telephone);
+  const wa = separerNumero(profil?.whatsapp);
+
   if (chargement) return <p className="py-10 text-center text-sm text-muted-foreground">Chargement…</p>;
   if (!utilisateur) return <NonConnecte />;
 
