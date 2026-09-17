@@ -43,6 +43,15 @@ function Parametres() {
             ))}
           </Selection>
         </Champ>
+        <Champ label="Thème" aide="Mémorisé sur cet appareil et appliqué à toute l'application">
+          <Selection value={theme} onChange={(e) => definirTheme(e.target.value as Theme)}>
+            {themes.map((t) => (
+              <option key={t.code} value={t.code}>
+                {t.icone} {t.nom}
+              </option>
+            ))}
+          </Selection>
+        </Champ>
         <LienBouton to="/profil/modifier" variante="contour" taille="sm">Modifier mon profil</LienBouton>
       </Carte>
 
