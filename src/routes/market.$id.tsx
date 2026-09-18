@@ -4,6 +4,7 @@ import { Bouton, Carte, Etiquette, Avatar, Note, BoutonSuivre, LienBouton, Bande
 import { parProduit, parUtilisateur, avisProduit } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
 import { lienWhatsApp } from "@/lib/comptes";
+import { imageProduit } from "@/lib/produits-visuels";
 import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { ArrowLeft, Heart, Share2, Flag } from "lucide-react";
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/market/$id")({
         { name: "description", content: p ? p.description.slice(0, 155) : "Ce produit n'est plus disponible." },
         { property: "og:title", content: p ? `${p.titre} — WICO` : "Produit introuvable" },
         { property: "og:description", content: p ? `${p.prix} π · ${p.lieu}` : "Produit indisponible." },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary" },
       ],
     };
   },
@@ -57,25 +60,25 @@ function DetailProduit() {
         </div>
       </div>
 
-      <Carte className="space-y-3">
-        <div className="grid h-56 place-items-center rounded-lg bg-primary-soft text-8xl">{produit.emoji}</div>
+      <Carte className="space-y-3 p-0 pb-4">
+        <img src={imageProduit(produit.id, produit.categorie)} alt={produit.titre} className="aspect-square max-h-[34rem] w-full rounded-t-lg bg-muted object-cover" />
         <div className="flex gap-2">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="grid size-16 place-items-center rounded-lg bg-muted text-2xl">{produit.emoji}</div>
+            <img key={i} src={imageProduit(produit.id, produit.categorie)} alt="" className="ml-4 size-16 rounded-lg bg-muted object-cover first:ml-4 [&+img]:ml-0" />
           ))}
         </div>
 
-        <h1 className="text-2xl font-extrabold text-primary">{produit.titre}</h1>
-        <p className="text-xl font-bold">{formatPi(produit.prix)} <span className="text-sm font-normal text-muted-foreground">/ {produit.unite}</span></p>
-        <Note note={produit.note} avis={produit.avis} />
-        <div className="flex flex-wrap gap-2">
+        <h1 className="px-4 text-2xl font-extrabold text-foreground">{produit.titre}</h1>
+        <p className="px-4 text-3xl font-extrabold text-primary">{formatPi(produit.prix)} <span className="text-sm font-normal text-muted-foreground">/ {produit.unite}</span></p>
+        <div className="px-4"><Note note={produit.note} avis={produit.avis} /></div>
+        <div className="flex flex-wrap gap-2 px-4">
           <Etiquette ton="succes">✅ En stock : {produit.stock}</Etiquette>
           <Etiquette>📍 {produit.lieu}</Etiquette>
           <Etiquette>🚚 {produit.livraison}</Etiquette>
           <Etiquette>📅 {produit.disponible}</Etiquette>
         </div>
-        <div>
-          <h2 className="text-sm font-bold uppercase text-muted-foreground">Description</h2>
+        <div className="px-4">
+          <h2 className="text-base font-bold text-foreground">Description</h2>
           <p className="mt-1 text-sm">{produit.description}</p>
         </div>
       </Carte>
