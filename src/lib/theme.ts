@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Theme = "clair" | "sombre" | "auto";
 
@@ -29,9 +30,31 @@ export function initTheme() {
   window
     .matchMedia("(prefers-color-scheme: dark)")
     .addEventListener("change", () => courant === "auto" && appliquer(courant));
+  supabase.auth.onAuthStateChange((evt, session) => {
+    if ((evt === "SIGNED_IN" || evt === "INITIAL_SESSION") && session?.user) {
+      setTimeout(() => chargerThemeCompte(session.user.id), 0);
+    }
+  });
+}
+
+function appliquerLocal(theme: Theme) {
+  courant = theme;
+  if (typeof window !== "undefined") window.localStorage.setItem(CLE, theme);
+  appliquer(theme);
+  abonnes.forEach((f) => f());
+}
+
+/** Charge le thème mémorisé dans le compte à chaque connexion. */
+async function chargerThemeCompte(userId: string) {
+  const { data } = await supabase.from("profils").select("theme").eq("id", userId).maybeSingle();
+  const t = (data as { theme?: string | null } | null)?.theme;
+  if (t === "clair" || t === "sombre" || t === "auto") appliquerLocal(t);
 }
 
 export function definirTheme(theme: Theme) {
+  supabase.auth.getUser().then(({ data }) => {
+    if (data.user) supabase.from("profils").update({ theme } as never).eq("id", data.user.id).then(() => {});
+  });
   courant = theme;
   if (typeof window !== "undefined") window.localStorage.setItem(CLE, theme);
   appliquer(theme);
