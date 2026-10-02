@@ -89,6 +89,7 @@ function Modifier() {
         telephone: `+${telephone}`,
         whatsapp: `+${whatsapp}`,
         statut: String(f.get("statut") ?? "prestataire"),
+        type_compte: String(f.get("type_compte") ?? "chercheur"),
         prix_horaire: f.get("prix") ? Number(f.get("prix")) : null,
         competences: String(f.get("competences") ?? "")
           .split(",")
@@ -164,6 +165,13 @@ function Modifier() {
         </Champ>
         <Champ label="Prix horaire (Pi)">
           <Saisie name="prix" type="number" min={0} defaultValue={profil?.prix_horaire ?? undefined} key={`p${profil?.id ?? ""}`} />
+        </Champ>
+        <Champ label="Type de compte" obligatoire>
+          <Selection name="type_compte" defaultValue={profil?.type_compte ?? "chercheur"} key={`t${profil?.id ?? ""}`}>
+            <option value="vendeur">Vendeur</option>
+            <option value="employeur">Employeur</option>
+            <option value="chercheur">Chercheur d'emploi</option>
+          </Selection>
         </Champ>
         <Champ label="Statut">
           <Selection name="statut" defaultValue={profil?.statut ?? "prestataire"} key={`s${profil?.id ?? ""}`}>
