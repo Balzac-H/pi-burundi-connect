@@ -16,6 +16,7 @@ export type Profil = {
   telephone: string | null;
   prix_horaire: number | null;
   statut: string;
+  type_compte?: string;
 };
 
 export type ProduitDb = {
@@ -61,7 +62,7 @@ export async function chercherProfils(recherche: string): Promise<Profil[]> {
 
 
 export async function enregistrerProfil(id: string, valeurs: Partial<Profil>) {
-  const { error } = await supabase.from("profils").upsert({ id, ...valeurs });
+  const { error } = await supabase.from("profils").upsert({ id, ...valeurs } as never);
   if (error) throw error;
 }
 

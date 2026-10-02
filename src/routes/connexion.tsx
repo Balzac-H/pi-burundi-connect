@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bouton, Champ, Saisie } from "@/components/ui-kit";
+import { Bouton, Champ, Saisie, Selection } from "@/components/ui-kit";
+import { typesCompte } from "@/lib/annonces";
 import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,8 @@ function Connexion() {
   const [telephone, setTelephone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [email, setEmail] = useState("");
+  const [typeCompte, setTypeCompte] = useState("vendeur");
+  const [attenteConfirmation, setAttenteConfirmation] = useState(false);
   const [motDePasse, setMotDePasse] = useState("");
   const navigate = useNavigate();
 
@@ -34,17 +37,21 @@ function Connexion() {
     setEnCours(true);
     try {
       if (inscription) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password: motDePasse,
           options: {
             emailRedirectTo: window.location.origin,
-            data: { nom, telephone, whatsapp },
+            data: { nom, telephone, whatsapp, type_compte: typeCompte },
           },
         });
         if (error) throw error;
-        toast.success("Compte créé ! Complétez votre profil.");
-        navigate({ to: "/profil/modifier" });
+        if (data.session) {
+          toast.success("Compte créé ! Complétez votre profil.");
+          navigate({ to: "/profil/modifier" });
+        } else {
+          setAttenteConfirmation(true);
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password: motDePasse });
         if (error) throw error;
@@ -108,6 +115,15 @@ function Connexion() {
 
 
 
+        {attenteConfirmation ? (
+          <div className="card-surface space-y-2 p-5 text-center">
+            <h2 className="text-lg font-bold">Confirmez votre email 📩</h2>
+            <p className="text-sm text-muted-foreground">
+              Un lien de confirmation a été envoyé à <strong>{email}</strong>. Cliquez dessus pour activer votre compte :
+              votre profil recevra alors le badge « Vérifié ».
+            </p>
+          </div>
+        ) : (
         <form className="card-surface space-y-4 p-5" onSubmit={soumettre}>
           <h2 className="text-lg font-bold">{inscription ? "Créer un compte" : "Se connecter"}</h2>
 
@@ -115,6 +131,13 @@ function Connexion() {
             <>
               <Champ label="Nom complet" obligatoire>
                 <Saisie required value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Ex. Didier Ndayisenga" maxLength={100} />
+              </Champ>
+              <Champ label="Type de compte" obligatoire>
+                <Selection value={typeCompte} onChange={(e) => setTypeCompte(e.target.value)}>
+                  {typesCompte.map((t) => (
+                    <option key={t.code} value={t.code}>{t.nom}</option>
+                  ))}
+                </Selection>
               </Champ>
               <Champ label="Numéro de téléphone" obligatoire>
                 <Saisie required type="tel" inputMode="tel" value={telephone} onChange={(e) => setTelephone(e.target.value)} placeholder="+257 79 000 000" maxLength={20} />
@@ -169,6 +192,7 @@ function Connexion() {
             </button>
           </div>
         </form>
+        )}
       </div>
     </div>
   );
