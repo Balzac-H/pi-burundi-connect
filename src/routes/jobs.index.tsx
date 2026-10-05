@@ -70,6 +70,9 @@ function ListeJobs() {
         />
       </Carte>
 
+      <JobsCommunaute recherche={recherche} categorie={categorie} />
+
+      <h2 className="text-lg font-bold">Exemples d'offres</h2>
       <div className="grid gap-3 lg:grid-cols-2">
         {resultats.map((j) => {
           const emp = parUtilisateur(j.employeurId);
