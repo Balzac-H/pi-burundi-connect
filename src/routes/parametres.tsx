@@ -4,6 +4,7 @@ import { useTheme, definirTheme, themes, type Theme } from "@/lib/theme";
 import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/components/ui-kit";
 import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
+import { BoutonTheme } from "@/components/Confiance";
 
 export const Route = createFileRoute("/parametres")({
   head: () => ({
@@ -52,7 +53,11 @@ function Parametres() {
             ))}
           </Selection>
         </Champ>
-        <LienBouton to="/profil/modifier" variante="contour" taille="sm">Modifier mon profil</LienBouton>
+        <div className="flex flex-wrap gap-2">
+          <BoutonTheme />
+          <LienBouton to="/profil/modifier" variante="contour" taille="sm">Modifier mon profil</LienBouton>
+          <LienBouton to="/admin" variante="fantome" taille="sm">Espace admin</LienBouton>
+        </div>
       </Carte>
 
       <Carte className="space-y-3">

@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { Bouton, Carte, Champ, Saisie, Selection, Zone } from "@/components/ui-kit";
 import { categoriesJobs } from "@/lib/data";
-import { bientotDisponible } from "@/lib/utils";
+import { creerJob } from "@/lib/annonces";
+import { useSession } from "@/lib/auth";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
 
@@ -19,24 +21,52 @@ export const Route = createFileRoute("/jobs/creer")({
 
 function CreerOffre() {
   const navigate = useNavigate();
+  const { utilisateur } = useSession();
+  const [envoi, setEnvoi] = useState(false);
 
   return (
     <form
       className="mx-auto max-w-2xl space-y-4"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        toast.success("Offre publiée avec succès !");
-        navigate({ to: "/jobs" });
+        if (!utilisateur) return;
+        const f = new FormData(e.currentTarget);
+        const titre = String(f.get("titre") ?? "").trim();
+        const description = String(f.get("description") ?? "").trim();
+        if (titre.length < 3 || description.length < 10) {
+          toast.error("Titre (3 caractères min.) et description (10 min.) requis.");
+          return;
+        }
+        const salaire = Number(f.get("salaire"));
+        setEnvoi(true);
+        try {
+          await creerJob({
+            employeur_id: utilisateur.id,
+            titre: titre.slice(0, 100),
+            description: description.slice(0, 1000),
+            categorie: String(f.get("categorie") || "Autre"),
+            localisation: String(f.get("localisation") ?? "").trim().slice(0, 150),
+            salaire: Number.isFinite(salaire) && salaire > 0 ? salaire : null,
+            duree: String(f.get("duree") || "") || null,
+            urgent: f.get("urgent") === "on",
+          });
+          toast.success("Offre publiée, visible par tous !");
+          navigate({ to: "/jobs" });
+        } catch (err) {
+          toast.error(err instanceof Error ? err.message : "Échec de la publication.");
+        } finally {
+          setEnvoi(false);
+        }
       }}
     >
       <h1 className="text-2xl font-extrabold text-primary">Créer une offre d'emploi</h1>
 
       <Carte className="space-y-4">
         <Champ label="Titre du poste" obligatoire>
-          <Saisie required maxLength={100} placeholder="Ex. Fabrication de portes en bois" />
+          <Saisie name="titre" required maxLength={100} placeholder="Ex. Fabrication de portes en bois" />
         </Champ>
         <Champ label="Catégorie" obligatoire>
-          <Selection required defaultValue="">
+          <Selection name="categorie" required defaultValue="">
             <option value="" disabled>Choisir une catégorie</option>
             {categoriesJobs.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -44,53 +74,30 @@ function CreerOffre() {
           </Selection>
         </Champ>
         <Champ label="Description détaillée" obligatoire aide="Max 1000 caractères">
-          <Zone required maxLength={1000} placeholder="Décrivez la mission, les conditions, le matériel fourni…" />
+          <Zone name="description" required maxLength={1000} placeholder="Décrivez la mission, les conditions, le matériel fourni…" />
         </Champ>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Champ label="Salaire (Pi)" obligatoire>
-            <Saisie required type="number" min={1} placeholder="1500" />
+          <Champ label="Salaire (π)">
+            <Saisie name="salaire" type="number" min={0} step="0.001" placeholder="0.05" />
           </Champ>
           <Champ label="Durée" obligatoire>
-            <Selection required defaultValue="jours">
-              <option value="heures">Heures</option>
-              <option value="jours">Jours</option>
-              <option value="semaines">Semaines</option>
-              <option value="permanent">Permanent</option>
+            <Selection name="duree" required defaultValue="Jours">
+              <option>Heures</option>
+              <option>Jours</option>
+              <option>Semaines</option>
+              <option>Permanent</option>
             </Selection>
           </Champ>
-          <Champ label="Date de début" obligatoire>
-            <Saisie required type="date" />
-          </Champ>
-          <Champ label="Nombre de postes" obligatoire>
-            <Saisie required type="number" min={1} defaultValue={1} />
-          </Champ>
         </div>
-        <Champ label="Localisation / Adresse" obligatoire>
-          <Saisie required maxLength={150} placeholder="Quartier Rohero, Bujumbura" />
-        </Champ>
-        <Champ label="Compétences requises" aide="Séparées par des virgules">
-          <Saisie maxLength={200} placeholder="Menuiserie, bois massif" />
-        </Champ>
-        <Champ label="Niveau d'expérience">
-          <Selection defaultValue="Intermédiaire">
-            <option>Débutant</option>
-            <option>Intermédiaire</option>
-            <option>Expert</option>
-          </Selection>
+        <Champ label="Localisation" obligatoire>
+          <Saisie name="localisation" required maxLength={150} placeholder="Quartier Rohero, Bujumbura" />
         </Champ>
         <label className="flex items-center gap-2 text-sm font-semibold">
-          <input type="checkbox" className="size-4 accent-[oklch(0.36_0.062_159)]" /> Permis / certification requis
-        </label>
-        <label className="flex items-center gap-2 text-sm font-semibold">
-          <input type="checkbox" className="size-4 accent-[oklch(0.76_0.171_62)]" /> ⚡ Offre urgente
+          <input name="urgent" type="checkbox" className="size-4" /> ⚡ Offre urgente
         </label>
       </Carte>
 
-      <div className="flex flex-wrap gap-2">
-        <Bouton type="submit">PUBLIER L'OFFRE</Bouton>
-        <Bouton type="button" variante="contour" onClick={() => bientotDisponible("L'aperçu d'offre")}>APERÇU</Bouton>
-        <Bouton type="button" variante="fantome" onClick={() => bientotDisponible("L'enregistrement de brouillon")}>BROUILLON</Bouton>
-      </div>
+      <Bouton type="submit" disabled={envoi}>{envoi ? "Publication…" : "Publier l'offre"}</Bouton>
     </form>
   );
 }
