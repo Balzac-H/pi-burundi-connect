@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { listerJobs, idsVerifies, type JobDb } from "@/lib/annonces";
+import { BadgeVerifie, BoutonSignaler } from "@/components/Confiance";
 import { Bouton, Carte, Etiquette, Saisie, Selection, LienBouton, Avatar, Note, Distance } from "@/components/ui-kit";
 import { jobs, parUtilisateur, categoriesJobs } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
