@@ -6,6 +6,7 @@ import { chargerProfil, listerProduits, lienWhatsApp, numeroValide, normaliserNu
 import { formatPi } from "@/lib/store";
 import { toast } from "sonner";
 import { LogOut, Pencil, Share2, MessageCircle } from "lucide-react";
+import { BoutonTheme } from "@/components/Confiance";
 
 export const Route = createFileRoute("/profil/")({
   head: () => ({
@@ -87,6 +88,7 @@ function MonProfil() {
         <div className="flex flex-wrap gap-2">
           <LienBouton to="/profil/modifier" taille="sm"><Pencil className="size-4" /> MODIFIER</LienBouton>
           <LienBouton to="/portefeuille" variante="pi" taille="sm">π MON WALLET</LienBouton>
+          <BoutonTheme />
           <Bouton variante="contour" taille="sm" onClick={() => toast.success("Lien du profil copié !")}>
             <Share2 className="size-4" /> PARTAGER
           </Bouton>

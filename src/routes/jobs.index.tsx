@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { listerJobs, idsVerifies, type JobDb } from "@/lib/annonces";
+import { BadgeVerifie, BoutonSignaler } from "@/components/Confiance";
 import { Bouton, Carte, Etiquette, Saisie, Selection, LienBouton, Avatar, Note, Distance } from "@/components/ui-kit";
 import { jobs, parUtilisateur, categoriesJobs } from "@/lib/data";
 import { store, useStore, formatPi } from "@/lib/store";
@@ -70,6 +72,9 @@ function ListeJobs() {
         />
       </Carte>
 
+      <JobsCommunaute recherche={recherche} categorie={categorie} />
+
+      <h2 className="text-lg font-bold">Exemples d'offres</h2>
       <div className="grid gap-3 lg:grid-cols-2">
         {resultats.map((j) => {
           const emp = parUtilisateur(j.employeurId);
@@ -112,5 +117,48 @@ function ListeJobs() {
         )}
       </div>
     </div>
+  );
+}
+
+function JobsCommunaute({ recherche, categorie }: { recherche: string; categorie: string }) {
+  const [liste, setListe] = useState<JobDb[]>([]);
+  const [verifies, setVerifies] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    listerJobs().then(async (j) => {
+      setListe(j);
+      setVerifies(await idsVerifies(j.map((x) => x.employeur_id)));
+    });
+  }, []);
+  const filtres = liste.filter(
+    (j) => (!categorie || j.categorie === categorie) &&
+      (j.titre + j.description + j.categorie).toLowerCase().includes(recherche.toLowerCase()),
+  );
+  if (!filtres.length) return null;
+  return (
+    <section className="space-y-2">
+      <h2 className="text-lg font-bold">Offres des membres</h2>
+      <div className="grid gap-3 lg:grid-cols-2">
+        {filtres.map((j) => (
+          <Carte key={j.id} className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs font-semibold text-accent">{j.categorie}</p>
+              <BadgeVerifie verifie={verifies.has(j.employeur_id)} />
+            </div>
+            <h3 className="font-bold leading-snug">{j.titre}</h3>
+            <p className="line-clamp-3 text-sm text-muted-foreground">{j.description}</p>
+            <div className="flex flex-wrap gap-2">
+              {j.salaire != null && <Etiquette ton="pi">{formatPi(Number(j.salaire))}</Etiquette>}
+              {j.duree && <Etiquette>⏱️ {j.duree}</Etiquette>}
+              {j.localisation && <Etiquette>📍 {j.localisation}</Etiquette>}
+              {j.urgent && <Etiquette ton="urgent">⚡ Urgent</Etiquette>}
+            </div>
+            <div className="flex items-center justify-between">
+              <Link to="/profil/$id" params={{ id: j.employeur_id }} className="text-sm font-semibold text-primary">Voir l'employeur</Link>
+              <BoutonSignaler cibleType="job" cibleId={j.id} utilisateurId={j.employeur_id} />
+            </div>
+          </Carte>
+        ))}
+      </div>
+    </section>
   );
 }

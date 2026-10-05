@@ -17,6 +17,7 @@ import { Route as PaiementRouteImport } from './routes/paiement'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as FavorisRouteImport } from './routes/favoris'
 import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfilIndexRouteImport } from './routes/profil.index'
 import { Route as MessagesIndexRouteImport } from './routes/messages.index'
@@ -70,6 +71,11 @@ const FavorisRoute = FavorisRouteImport.update({
 const ConnexionRoute = ConnexionRouteImport.update({
   id: '/connexion',
   path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -145,6 +151,7 @@ const JobsIdRoute = JobsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
   '/notifications': typeof NotificationsRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
   '/notifications': typeof NotificationsRoute
@@ -194,6 +202,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
   '/notifications': typeof NotificationsRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/connexion'
     | '/favoris'
     | '/notifications'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/connexion'
     | '/favoris'
     | '/notifications'
@@ -268,6 +279,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/connexion'
     | '/favoris'
     | '/notifications'
@@ -293,6 +305,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   ConnexionRoute: typeof ConnexionRoute
   FavorisRoute: typeof FavorisRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -372,6 +385,13 @@ declare module '@tanstack/react-router' {
       path: '/connexion'
       fullPath: '/connexion'
       preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -477,6 +497,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   ConnexionRoute: ConnexionRoute,
   FavorisRoute: FavorisRoute,
   NotificationsRoute: NotificationsRoute,
