@@ -15,13 +15,13 @@ export type AppState = {
 const initial: AppState = {
   connecte: true,
   utilisateurId: "u-moi",
-  suivis: ["u-marie"],
-  favoris: ["p-tomates"],
+  suivis: [],
+  favoris: [],
   panier: [],
-  soldePi: 0.842,
-  soldeEscrow: 0.125,
-  notificationsNonLues: 3,
-  candidatures: ["j-menuiserie"],
+  soldePi: 0,
+  soldeEscrow: 0,
+  notificationsNonLues: 0,
+  candidatures: [],
 };
 
 let state: AppState = initial;
