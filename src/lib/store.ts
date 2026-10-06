@@ -115,5 +115,3 @@ export function useStore<T>(selecteur: (s: AppState) => T): T {
 
 export const formatPi = (n: number) =>
   `${n.toLocaleString("fr-FR", { minimumFractionDigits: n < 0.01 ? 3 : 2, maximumFractionDigits: 4 })} π`;
-export const enFBu = (pi: number) =>
-  `${Math.round(pi * 3_000_000).toLocaleString("fr-FR")} FBu`;

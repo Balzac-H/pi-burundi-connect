@@ -1,0 +1,23 @@
+import { supabase } from "@/integrations/supabase/client";
+import { authentifierPi, type PaymentDTO } from "@/lib/pi";
+import { piAuth, piCancel, piComplete } from "@/lib/pi.functions";
+
+async function traiterIncomplet(p: PaymentDTO) {
+  try {
+    if (p.transaction?.txid) await piComplete({ data: { paymentId: p.identifier, txid: p.transaction.txid } });
+    else await piCancel({ data: { paymentId: p.identifier } });
+  } catch (e) {
+    console.error("Paiement incomplet", e);
+  }
+}
+
+/** Connexion Pi complète : SDK → vérification serveur → session WICO. */
+export async function connexionPi(): Promise<string> {
+  const enAttente: PaymentDTO[] = [];
+  const { accessToken } = await authentifierPi((p) => enAttente.push(p));
+  const { tokenHash, username } = await piAuth({ data: { accessToken } });
+  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "magiclink" });
+  if (error) throw error;
+  for (const p of enAttente) await traiterIncomplet(p);
+  return username;
+}
