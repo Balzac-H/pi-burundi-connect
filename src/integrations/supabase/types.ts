@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      follows: {
+        Row: {
+          created_at: string
+          suiveur_id: string
+          suivi_id: string
+        }
+        Insert: {
+          created_at?: string
+          suiveur_id: string
+          suivi_id: string
+        }
+        Update: {
+          created_at?: string
+          suiveur_id?: string
+          suivi_id?: string
+        }
+        Relationships: []
+      }
       jobs: {
         Row: {
           categorie: string
@@ -56,6 +74,201 @@ export type Database = {
         }
         Relationships: []
       }
+      litiges: {
+        Row: {
+          auteur_id: string
+          created_at: string
+          description: string
+          id: string
+          order_id: string
+          statut: string
+        }
+        Insert: {
+          auteur_id: string
+          created_at?: string
+          description: string
+          id?: string
+          order_id: string
+          statut?: string
+        }
+        Update: {
+          auteur_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          order_id?: string
+          statut?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "litiges_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          contenu: string
+          created_at: string
+          destinataire_id: string
+          expediteur_id: string
+          id: string
+          lu: boolean
+        }
+        Insert: {
+          contenu: string
+          created_at?: string
+          destinataire_id: string
+          expediteur_id: string
+          id?: string
+          lu?: boolean
+        }
+        Update: {
+          contenu?: string
+          created_at?: string
+          destinataire_id?: string
+          expediteur_id?: string
+          id?: string
+          lu?: boolean
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          contenu: string | null
+          created_at: string
+          id: string
+          lien: string | null
+          lu: boolean
+          titre: string
+          user_id: string
+        }
+        Insert: {
+          contenu?: string | null
+          created_at?: string
+          id?: string
+          lien?: string | null
+          lu?: boolean
+          titre: string
+          user_id: string
+        }
+        Update: {
+          contenu?: string | null
+          created_at?: string
+          id?: string
+          lien?: string | null
+          lu?: boolean
+          titre?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          acheteur_id: string
+          created_at: string
+          id: string
+          montant: number
+          produit_id: string | null
+          quantite: number
+          recu_confirme: boolean
+          statut: string
+          titre: string
+          unite: string
+          updated_at: string
+          vendeur_id: string
+        }
+        Insert: {
+          acheteur_id: string
+          created_at?: string
+          id?: string
+          montant: number
+          produit_id?: string | null
+          quantite: number
+          recu_confirme?: boolean
+          statut?: string
+          titre: string
+          unite?: string
+          updated_at?: string
+          vendeur_id: string
+        }
+        Update: {
+          acheteur_id?: string
+          created_at?: string
+          id?: string
+          montant?: number
+          produit_id?: string | null
+          quantite?: number
+          recu_confirme?: boolean
+          statut?: string
+          titre?: string
+          unite?: string
+          updated_at?: string
+          vendeur_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "produits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          commission: number | null
+          created_at: string
+          facture: Json | null
+          id: string
+          montant: number
+          order_id: string
+          pi_payment_id: string
+          statut: string
+          txid: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commission?: number | null
+          created_at?: string
+          facture?: Json | null
+          id?: string
+          montant: number
+          order_id: string
+          pi_payment_id: string
+          statut?: string
+          txid?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commission?: number | null
+          created_at?: string
+          facture?: Json | null
+          id?: string
+          montant?: number
+          order_id?: string
+          pi_payment_id?: string
+          statut?: string
+          txid?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produits: {
         Row: {
           categorie: string
@@ -66,6 +279,8 @@ export type Database = {
           livraison: string | null
           photo_url: string | null
           prix: number
+          publie: boolean
+          quantite_min: number
           stock: number
           titre: string
           unite: string
@@ -81,6 +296,8 @@ export type Database = {
           livraison?: string | null
           photo_url?: string | null
           prix?: number
+          publie?: boolean
+          quantite_min?: number
           stock?: number
           titre: string
           unite?: string
@@ -96,6 +313,8 @@ export type Database = {
           livraison?: string | null
           photo_url?: string | null
           prix?: number
+          publie?: boolean
+          quantite_min?: number
           stock?: number
           titre?: string
           unite?: string
@@ -112,6 +331,8 @@ export type Database = {
           id: string
           nom: string
           photo_url: string | null
+          pi_uid: string | null
+          pi_username: string | null
           prix_horaire: number | null
           statut: string
           telephone: string | null
@@ -128,6 +349,8 @@ export type Database = {
           id: string
           nom?: string
           photo_url?: string | null
+          pi_uid?: string | null
+          pi_username?: string | null
           prix_horaire?: number | null
           statut?: string
           telephone?: string | null
@@ -144,6 +367,8 @@ export type Database = {
           id?: string
           nom?: string
           photo_url?: string | null
+          pi_uid?: string | null
+          pi_username?: string | null
           prix_horaire?: number | null
           statut?: string
           telephone?: string | null
@@ -152,6 +377,51 @@ export type Database = {
           updated_at?: string
           ville?: string | null
           whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      reglages: {
+        Row: {
+          cle: string
+          updated_at: string
+          valeur: Json
+        }
+        Insert: {
+          cle: string
+          updated_at?: string
+          valeur: Json
+        }
+        Update: {
+          cle?: string
+          updated_at?: string
+          valeur?: Json
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          auteur_id: string
+          commentaire: string | null
+          created_at: string
+          id: string
+          note: number
+          vendeur_id: string
+        }
+        Insert: {
+          auteur_id: string
+          commentaire?: string | null
+          created_at?: string
+          id?: string
+          note: number
+          vendeur_id: string
+        }
+        Update: {
+          auteur_id?: string
+          commentaire?: string | null
+          created_at?: string
+          id?: string
+          note?: number
+          vendeur_id?: string
         }
         Relationships: []
       }
@@ -252,6 +522,7 @@ export type Database = {
       }
     }
     Functions: {
+      confirmer_reception: { Args: { _order: string }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
