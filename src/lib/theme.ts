@@ -53,7 +53,12 @@ async function chargerThemeCompte(userId: string) {
 
 export function definirTheme(theme: Theme) {
   supabase.auth.getUser().then(({ data }) => {
-    if (data.user) supabase.from("profils").update({ theme } as never).eq("id", data.user.id).then(() => {});
+    if (data.user)
+      supabase
+        .from("profils")
+        .update({ theme } as never)
+        .eq("id", data.user.id)
+        .then(() => {});
   });
   courant = theme;
   if (typeof window !== "undefined") window.localStorage.setItem(CLE, theme);

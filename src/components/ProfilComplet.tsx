@@ -1,100 +1,276 @@
 import { Link } from "@tanstack/react-router";
-import { Avatar, Bouton, Carte, Etiquette, Note, TitreSection, BoutonSuivre, LienBouton } from "@/components/ui-kit";
-import { parUtilisateur } from "@/lib/data";
-import { bientotDisponible } from "@/lib/utils";
-import { Share2, Flag, MessageCircle, Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Avatar,
+  Bouton,
+  Carte,
+  Etiquette,
+  TitreSection,
+  BoutonSuivre,
+  LienBouton,
+} from "@/components/ui-kit";
+import { BoutonSignaler } from "@/components/Confiance";
+import {
+  chargerProfil,
+  lienWhatsApp,
+  listerMesProduits,
+  type ProduitDb,
+  type Profil,
+} from "@/lib/comptes";
+import { avisDeVendeur, statsProfil, type AvisDb, type StatsProfil } from "@/lib/social";
+import { listerJobs, nomTypeCompte, type JobDb } from "@/lib/annonces";
+import { useSession } from "@/lib/auth";
+import { useT } from "@/lib/i18n";
 import { formatPi } from "@/lib/store";
+import { MessageCircle, Pencil, Share2 } from "lucide-react";
+import { toast } from "sonner";
 
-const historique = [
-  { titre: "Rénovation cuisine", detail: "Job complété · 3 000 Pi", note: 5, avis: "Excellent travail !" },
-  { titre: "Installation électrique", detail: "Job complété · 1 200 Pi", note: 5, avis: "Rapide et propre." },
-  { titre: "Vente : lot de planches", detail: "Market · 900 Pi", note: 4, avis: "Bon produit, livraison correcte." },
-];
+export function ProfilComplet({ id }: { id: string }) {
+  const t = useT();
+  const { utilisateur } = useSession();
+  const monProfil = utilisateur?.id === id;
 
-export function ProfilComplet({ id, monProfil }: { id: string; monProfil?: boolean }) {
-  const u = parUtilisateur(id);
+  const [u, setU] = useState<Profil | null | undefined>(undefined);
+  const [stats, setStats] = useState<StatsProfil | null>(null);
+  const [avis, setAvis] = useState<AvisDb[]>([]);
+  const [annonces, setAnnonces] = useState<ProduitDb[]>([]);
+  const [emplois, setEmplois] = useState<JobDb[]>([]);
+
+  useEffect(() => {
+    let vivant = true;
+    chargerProfil(id)
+      .then(async (p) => {
+        if (!vivant) return;
+        setU(p);
+        const [s, a] = await Promise.all([statsProfil(id), avisDeVendeur(id)]);
+        if (!vivant) return;
+        setStats(s);
+        setAvis(a);
+        if (p?.type_compte === "employeur" || p?.type_compte === "vendeur") {
+          const [prods, jobs] = await Promise.all([listerMesProduits(id), listerJobs(id)]);
+          if (!vivant) return;
+          setAnnonces(prods.filter((x) => x.publie));
+          setEmplois(jobs);
+        }
+      })
+      .catch(() => {
+        if (vivant) setU(null);
+      });
+    return () => {
+      vivant = false;
+    };
+  }, [id]);
+
+  if (u === undefined)
+    return <p className="py-10 text-center text-sm text-muted-foreground">Chargement…</p>;
+  if (!u) {
+    return (
+      <Carte className="text-center">
+        <p className="font-semibold">Profil introuvable.</p>
+        <LienBouton to="/" taille="sm" className="mt-3">
+          {t("accueil")}
+        </LienBouton>
+      </Carte>
+    );
+  }
 
   return (
     <div className="space-y-5">
       <Carte className="space-y-4">
         <div className="flex gap-4">
-          <Avatar emoji={u.emoji} taille="lg" />
+          {u.photo_url ? (
+            <img src={u.photo_url} alt="" className="size-20 shrink-0 rounded-full object-cover" />
+          ) : (
+            <Avatar emoji="👤" taille="lg" />
+          )}
           <div className="min-w-0 flex-1">
             <h1 className="text-xl font-extrabold sm:text-2xl">{u.nom}</h1>
-            <Note note={u.note} avis={u.avis} />
-            <p className="mt-1 text-sm text-muted-foreground">📍 {u.ville}</p>
+            <p className="text-sm text-muted-foreground">{nomTypeCompte(u.type_compte)}</p>
+            <p className="mt-1 text-sm text-muted-foreground">📍 {u.ville ?? "Burundi"}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {u.competences.map((c) => (
+              {(u.competences ?? []).map((c) => (
                 <Etiquette key={c}>🏷️ {c}</Etiquette>
               ))}
             </div>
           </div>
         </div>
-        <p className="text-sm italic text-muted-foreground">« {u.bio} »</p>
-        {u.prixHoraire && (
-          <p className="text-sm font-semibold text-primary">Prix horaire : {formatPi(u.prixHoraire)} / h</p>
+        {u.bio && <p className="text-sm italic text-muted-foreground">« {u.bio} »</p>}
+        {u.prix_horaire != null && (
+          <p className="text-sm font-semibold text-primary">
+            Prix horaire : {formatPi(Number(u.prix_horaire))} / h
+          </p>
         )}
 
         <div className="flex flex-wrap gap-2">
           {monProfil ? (
             <>
-              <LienBouton to="/profil/modifier" taille="sm"><Pencil className="size-4" /> MODIFIER</LienBouton>
-              <LienBouton to="/portefeuille" variante="pi" taille="sm">π MON WALLET</LienBouton>
+              <LienBouton to="/profil/modifier" taille="sm">
+                <Pencil className="size-4" /> MODIFIER
+              </LienBouton>
+              <LienBouton to="/portefeuille" variante="pi" taille="sm">
+                🧾 {t("mesCommandes")}
+              </LienBouton>
             </>
           ) : (
             <>
               <BoutonSuivre id={u.id} taille="md" />
-              <LienBouton to="/messages" variante="secondaire" taille="sm">
-                <MessageCircle className="size-4" /> CONTACT
+              <LienBouton
+                to="/messages/$id"
+                params={{ id: u.id }}
+                variante="secondaire"
+                taille="sm"
+              >
+                <MessageCircle className="size-4" /> {t("chat")}
               </LienBouton>
+              {u.whatsapp && (
+                <a
+                  href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom} 👋`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success"
+                >
+                  💬 {t("contactWhatsapp")}
+                </a>
+              )}
             </>
           )}
-          <Bouton variante="contour" taille="sm" onClick={() => bientotDisponible("Le partage de profil")}>
+          <Bouton
+            variante="contour"
+            taille="sm"
+            onClick={() => {
+              navigator.clipboard?.writeText(window.location.href).then(
+                () => toast.success("Lien du profil copié !"),
+                () => toast("Copiez l'adresse depuis la barre d'URL."),
+              );
+            }}
+          >
             <Share2 className="size-4" /> PARTAGER
           </Bouton>
-          {!monProfil && (
-            <Bouton variante="danger" taille="sm" onClick={() => bientotDisponible("Le signalement")}>
-              <Flag className="size-4" /> SIGNALER
-            </Bouton>
-          )}
+          {!monProfil && <BoutonSignaler cibleType="profil" cibleId={u.id} utilisateurId={u.id} />}
         </div>
       </Carte>
 
       <section>
-        <TitreSection>Statistiques</TitreSection>
+        <TitreSection>{t("statistiques")}</TitreSection>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Stat icone="👥" valeur={u.followers.toLocaleString("fr-FR")} label="Followers" />
-          <Stat icone="🔁" valeur={u.following.toString()} label="Following" />
-          <Stat icone="💼" valeur={u.jobsCompletes.toString()} label="Jobs complétés" />
-          <Stat icone="🛍️" valeur={u.ventes.toString()} label="Ventes Market" />
+          <Stat
+            icone="👥"
+            valeur={(stats?.followers ?? 0).toLocaleString("fr-FR")}
+            label={t("abonnes")}
+          />
+          <Stat icone="🔁" valeur={String(stats?.following ?? 0)} label={t("abonnementsCourt")} />
+          <Stat icone="💼" valeur={String(stats?.offres ?? 0)} label={t("offresPubliees")} />
+          <Stat icone="🛍️" valeur={String(stats?.ventes ?? 0)} label={t("ventesConfirmees")} />
         </div>
         <Carte className="mt-3 flex items-center justify-between">
-          <span className="text-sm font-semibold">✅ Taux de satisfaction</span>
-          <span className="text-lg font-extrabold text-accent">{u.satisfaction} %</span>
+          <span className="text-sm font-semibold">✅ {t("avis")}</span>
+          <span className="text-lg font-extrabold text-accent">
+            {stats?.note ? `${stats.note.toFixed(1)} / 5` : "—"} ({stats?.nbAvis ?? 0})
+          </span>
         </Carte>
       </section>
 
+      {annonces.length > 0 && (
+        <section>
+          <TitreSection
+            action={
+              <Link to="/market" className="text-xs font-semibold text-accent">
+                {t("voirTout")}
+              </Link>
+            }
+          >
+            🛍️ {t("market")}
+          </TitreSection>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {annonces.slice(0, 6).map((p) => (
+              <Link
+                key={p.id}
+                to="/market/$id"
+                params={{ id: p.id }}
+                className="space-y-1 rounded-xl border border-border/60 bg-card p-2"
+              >
+                {p.photo_url ? (
+                  <img
+                    src={p.photo_url}
+                    alt={p.titre}
+                    loading="lazy"
+                    className="h-24 w-full rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-3xl">
+                    🛍️
+                  </div>
+                )}
+                <p className="line-clamp-1 text-xs font-semibold">{p.titre}</p>
+                <p className="text-sm font-extrabold text-primary">{formatPi(Number(p.prix))}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {emplois.length > 0 && (
+        <section>
+          <TitreSection
+            action={
+              <Link to="/jobs" className="text-xs font-semibold text-accent">
+                {t("voirTout")}
+              </Link>
+            }
+          >
+            💼 {t("jobs")}
+          </TitreSection>
+          <div className="space-y-2">
+            {emplois.slice(0, 5).map((j) => (
+              <Carte key={j.id} className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="truncate font-semibold">{j.titre}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {j.localisation} {j.salaire != null ? `· ${formatPi(Number(j.salaire))}` : ""}
+                  </p>
+                </div>
+                <LienBouton to="/jobs/$id" params={{ id: j.id }} variante="contour" taille="sm">
+                  VOIR
+                </LienBouton>
+              </Carte>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section>
-        <TitreSection>Historique & avis</TitreSection>
+        <TitreSection>
+          {t("avis")} ({avis.length})
+        </TitreSection>
         <div className="space-y-3">
-          {historique.map((h) => (
-            <Carte key={h.titre} className="space-y-1">
+          {avis.map((a) => (
+            <Carte key={a.id} className="space-y-1">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="font-semibold">{h.titre}</h3>
-                <Etiquette ton="succes">Complété</Etiquette>
+                <h3 className="font-semibold">{"⭐".repeat(a.note)}</h3>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(a.created_at).toLocaleDateString("fr-FR")}
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground">{h.detail}</p>
-              <p className="text-sm">
-                {"⭐".repeat(h.note)} <span className="italic text-muted-foreground">« {h.avis} »</span>
-              </p>
+              {a.commentaire && (
+                <p className="text-sm italic text-muted-foreground">« {a.commentaire} »</p>
+              )}
             </Carte>
           ))}
+          {avis.length === 0 && (
+            <Carte className="text-sm text-muted-foreground">{t("aucunAvis")}</Carte>
+          )}
         </div>
         {monProfil && (
           <div className="mt-3 flex flex-wrap gap-2">
-            <LienBouton to="/jobs/postulations" variante="contour" taille="sm">Mes postulations</LienBouton>
-            <LienBouton to="/market/boutique" variante="contour" taille="sm">Ma boutique</LienBouton>
-            <Link to="/parametres" className="self-center text-xs font-semibold text-accent">Paramètres</Link>
+            <LienBouton to="/jobs/postulations" variante="contour" taille="sm">
+              Mes postulations
+            </LienBouton>
+            <LienBouton to="/market/boutique" variante="contour" taille="sm">
+              {t("maBoutique")}
+            </LienBouton>
+            <Link to="/parametres" className="self-center text-xs font-semibold text-accent">
+              {t("parametres")}
+            </Link>
           </div>
         )}
       </section>

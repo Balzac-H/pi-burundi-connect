@@ -10,28 +10,32 @@ type Message = { role: "user" | "assistant"; content: string };
 const textes = {
   fr: {
     titre: "Assistant WICO",
-    accueil: "Bonjour 👋 Je suis l'assistant WICO. Comment puis-je vous aider ? Vous cherchez un produit, un service ou un emploi ?",
+    accueil:
+      "Bonjour 👋 Je suis l'assistant WICO. Comment puis-je vous aider ? Vous cherchez un produit, un service ou un emploi ?",
     placeholder: "Écrivez votre question…",
     ouvrir: "Ouvrir l'assistant",
     fermer: "Fermer l'assistant",
   },
   rn: {
     titre: "Umufasha WICO",
-    accueil: "Bwakeye 👋 Ndi umufasha wa WICO. Nogufasha gute ? Urondera igicuruzwa, serivisi canke akazi ?",
+    accueil:
+      "Bwakeye 👋 Ndi umufasha wa WICO. Nogufasha gute ? Urondera igicuruzwa, serivisi canke akazi ?",
     placeholder: "Andika ikibazo cawe…",
     ouvrir: "Fungura umufasha",
     fermer: "Ugara umufasha",
   },
   sw: {
     titre: "Msaidizi WICO",
-    accueil: "Habari 👋 Mimi ni msaidizi wa WICO. Nikusaidie vipi ? Unatafuta bidhaa, huduma au kazi ?",
+    accueil:
+      "Habari 👋 Mimi ni msaidizi wa WICO. Nikusaidie vipi ? Unatafuta bidhaa, huduma au kazi ?",
     placeholder: "Andika swali lako…",
     ouvrir: "Fungua msaidizi",
     fermer: "Funga msaidizi",
   },
   en: {
     titre: "WICO Assistant",
-    accueil: "Hello 👋 I'm the WICO assistant. How can I help? Looking for a product, a service or a job?",
+    accueil:
+      "Hello 👋 I'm the WICO assistant. How can I help? Looking for a product, a service or a job?",
     placeholder: "Type your question…",
     ouvrir: "Open assistant",
     fermer: "Close assistant",
@@ -65,7 +69,10 @@ export function AssistantWico() {
     } catch {
       setMessages([
         ...suite,
-        { role: "assistant", content: "Connexion indisponible. Réessayez quand le réseau revient." },
+        {
+          role: "assistant",
+          content: "Connexion indisponible. Réessayez quand le réseau revient.",
+        },
       ]);
     } finally {
       setEnCours(false);
@@ -89,7 +96,9 @@ export function AssistantWico() {
           className="fixed bottom-36 right-4 z-40 flex max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-xl lg:bottom-24"
         >
           <div className="flex items-center gap-2 border-b border-border/60 gradient-primary px-3 py-2 text-primary-foreground">
-            <span className="grid size-7 place-items-center rounded-lg bg-black/15 text-sm font-bold">W</span>
+            <span className="grid size-7 place-items-center rounded-lg bg-black/15 text-sm font-bold">
+              W
+            </span>
             <p className="text-sm font-bold">{t.titre}</p>
           </div>
 
@@ -143,9 +152,7 @@ function Bulle({ role, children }: { role: "user" | "assistant"; children: React
     <div
       className={cn(
         "max-w-[85%] whitespace-pre-wrap rounded-xl px-3 py-2 text-sm",
-        role === "user"
-          ? "ml-auto bg-primary text-primary-foreground"
-          : "bg-muted text-foreground",
+        role === "user" ? "ml-auto bg-primary text-primary-foreground" : "bg-muted text-foreground",
       )}
     >
       {typeof children === "string" ? nettoyer(children) : children}

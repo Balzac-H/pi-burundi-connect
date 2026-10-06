@@ -23,6 +23,10 @@ export default defineConfig({
         devOptions: { enabled: false },
         manifest: false,
         workbox: {
+          // Les assets client sont publiés dans .output/public (nitro) : le service
+          // worker y est écrit et precaché, puis servi sur /sw.js.
+          globDirectory: ".output/public",
+          swDest: ".output/public/sw.js",
           globPatterns: ["**/*.{js,css,png,svg,ico,woff2}"],
           navigateFallback: "/",
           navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//],

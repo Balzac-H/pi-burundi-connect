@@ -1,180 +1,258 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Bouton, Carte, Champ, Saisie, Zone, BandeauPi, TitreSection } from "@/components/ui-kit";
-import { transactions } from "@/lib/data";
-import { useStore, formatPi, enFBu } from "@/lib/store";
-import { bientotDisponible } from "@/lib/utils";
-import { useFactures, tauxCommission } from "@/lib/facturation";
+import { useCallback, useEffect, useState } from "react";
+import { Bouton, Carte, BandeauPi, TitreSection, Etiquette, LienBouton } from "@/components/ui-kit";
+import { formatPi } from "@/lib/store";
+import {
+  confirmerReception,
+  libelleStatut,
+  mesCommandes,
+  ouvrirLitige,
+  type CommandeAvecPaiement,
+} from "@/lib/commandes";
+import { useSession } from "@/lib/auth";
+import { useT } from "@/lib/i18n";
+import { estAdmin } from "@/lib/annonces";
+import { piRelease } from "@/lib/pi.functions";
 import { toast } from "sonner";
-import { X } from "lucide-react";
+import { BesoinCompte } from "@/components/BesoinCompte";
+import { Copy, PackageCheck, TriangleAlert } from "lucide-react";
 
 export const Route = createFileRoute("/portefeuille")({
   head: () => ({
     meta: [
-      { title: "Wallet Pi — WICO" },
-      { name: "description", content: "Consultez votre solde Pi, votre escrow et l'historique de vos transactions sur WICO." },
-      { property: "og:title", content: "Wallet Pi — WICO" },
-      { property: "og:description", content: "Solde, escrow et transactions Pi en un coup d'œil." },
+      { title: "Mes commandes et paiements — WICO" },
+      {
+        name: "description",
+        content: "Suivez vos commandes, vos paiements en Pi et la libération des fonds sur WICO.",
+      },
+      { property: "og:title", content: "Mes commandes et paiements — WICO" },
+      {
+        property: "og:description",
+        content: "Commandes, paiements Pi et escrow en un coup d'œil.",
+      },
     ],
   }),
-  component: Portefeuille,
+  component: PortefeuilleProtege,
 });
 
 function Portefeuille() {
-  const solde = useStore((s) => s.soldePi);
-  const escrow = useStore((s) => s.soldeEscrow);
-  const disponible = solde - escrow;
-  const [modal, setModal] = useState(false);
-  const [montant, setMontant] = useState("");
-  const factures = useFactures();
+  const t = useT();
+  const { utilisateur } = useSession();
+  const [commandes, setCommandes] = useState<CommandeAvecPaiement[]>([]);
+  const [onglet, setOnglet] = useState<"achats" | "ventes">("achats");
+  const [admin, setAdmin] = useState(false);
+  const [enCours, setEnCours] = useState<string | null>(null);
+
+  const recharger = useCallback(() => {
+    if (!utilisateur?.id) return;
+    mesCommandes(utilisateur.id)
+      .then(setCommandes)
+      .catch(() => setCommandes([]));
+  }, [utilisateur?.id]);
+
+  useEffect(() => {
+    recharger();
+    if (utilisateur?.id)
+      estAdmin(utilisateur.id)
+        .then(setAdmin)
+        .catch(() => undefined);
+  }, [recharger, utilisateur?.id]);
+
+  const visibles = commandes.filter((c) =>
+    onglet === "achats" ? c.acheteur_id === utilisateur?.id : c.vendeur_id === utilisateur?.id,
+  );
+
+  const paye = commandes
+    .filter((c) => c.acheteur_id === utilisateur?.id)
+    .reduce((s, c) => s + (c.statut === "en_attente_paiement" ? 0 : Number(c.montant)), 0);
+  const enEscrow = commandes
+    .filter((c) => c.vendeur_id === utilisateur?.id && c.statut === "payee")
+    .reduce((s, c) => s + Number(c.montant), 0);
+  const libere = commandes
+    .filter((c) => c.vendeur_id === utilisateur?.id)
+    .flatMap((c) => c.payments)
+    .filter((p) => p.statut === "released")
+    .reduce((s, p) => s + Number(p.montant), 0);
+
+  async function confirmer(id: string) {
+    try {
+      await confirmerReception(id);
+      toast.success("Réception confirmée — les fonds seront libérés.");
+      recharger();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Action impossible.");
+    }
+  }
+
+  async function signalerProbleme(c: CommandeAvecPaiement) {
+    const description = window.prompt("Décrivez le problème rencontré :");
+    if (!description?.trim() || !utilisateur) return;
+    try {
+      await ouvrirLitige(c.id, utilisateur.id, description.trim());
+      toast.success("Litige ouvert. L'équipe va examiner votre demande.");
+      recharger();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Signalement impossible.");
+    }
+  }
+
+  async function liberer(paiementId: string) {
+    setEnCours(paiementId);
+    try {
+      const r = await piRelease({ data: { paymentId: paiementId } });
+      toast.success(`Fonds libérés — commission ${formatPi(r.commission)}.`);
+      recharger();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Libération impossible.");
+    } finally {
+      setEnCours(null);
+    }
+  }
+
+  function copierTxid(txid: string) {
+    navigator.clipboard?.writeText(txid).then(
+      () => toast.success("Identifiant de transaction copié."),
+      () => toast("Transaction : " + txid),
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">WALLET PI 💰</h1>
-      <p className="text-xs text-muted-foreground">🔐 Connecté à : pi://didier-n</p>
+      <h1 className="text-2xl font-extrabold text-primary">🧾 {t("mesCommandes")}</h1>
 
-      <Carte className="space-y-2 gradient-pi text-primary-foreground">
-        <p className="text-xs uppercase opacity-90">Solde total</p>
-        <p className="text-3xl font-extrabold">{formatPi(solde)}</p>
-        <p className="text-xs opacity-90">≈ {enFBu(solde)} selon le taux actuel</p>
-        <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-          <div className="rounded-lg bg-black/15 p-2">
-            <p className="opacity-90">Bloqué en escrow</p>
-            <p className="text-base font-bold">{formatPi(escrow)}</p>
-          </div>
-          <div className="rounded-lg bg-black/15 p-2">
-            <p className="opacity-90">Disponible</p>
-            <p className="text-base font-bold">{formatPi(disponible)}</p>
-          </div>
-        </div>
-      </Carte>
-
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <Bouton onClick={() => setModal(true)}>ENVOYER PI</Bouton>
-        <Bouton variante="contour" onClick={() => bientotDisponible("La réception par QR code")}>RECEVOIR</Bouton>
-        <Bouton variante="contour" onClick={() => bientotDisponible("La copie d'adresse")}>ADRESSE</Bouton>
-        <Bouton variante="fantome" onClick={() => bientotDisponible("Les paramètres du wallet")}>PARAMÈTRES</Bouton>
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <Carte>
+          <p className="text-[0.7rem] uppercase text-muted-foreground">Acheté</p>
+          <p className="text-lg font-extrabold text-primary">{formatPi(paye)}</p>
+        </Carte>
+        <Carte>
+          <p className="text-[0.7rem] uppercase text-muted-foreground">En escrow (à recevoir)</p>
+          <p className="text-lg font-extrabold text-secondary">{formatPi(enEscrow)}</p>
+        </Carte>
+        <Carte>
+          <p className="text-[0.7rem] uppercase text-muted-foreground">Libéré (net vendeur)</p>
+          <p className="text-lg font-extrabold text-accent">{formatPi(libere)}</p>
+        </Carte>
       </div>
 
-      <BandeauPi texte="Transactions sécurisées sur la blockchain Pi" />
+      <BandeauPi texte="Paiements confirmés par Pi Network, fonds retenus jusqu'à réception" />
 
-      <section>
-        <TitreSection>Mes factures</TitreSection>
-        {factures.length === 0 ? (
-          <Carte>
-            <p className="text-sm text-muted-foreground">
-              Aucune facture pour le moment. Chaque vente confirmée génère automatiquement une facture
-              (commission vendeur : {(tauxCommission() * 100).toLocaleString("fr-FR")} %).
-            </p>
-          </Carte>
+      <div className="flex gap-2">
+        <Bouton
+          taille="sm"
+          variante={onglet === "achats" ? "primaire" : "contour"}
+          onClick={() => setOnglet("achats")}
+        >
+          Mes achats
+        </Bouton>
+        <Bouton
+          taille="sm"
+          variante={onglet === "ventes" ? "primaire" : "contour"}
+          onClick={() => setOnglet("ventes")}
+        >
+          Mes ventes
+        </Bouton>
+      </div>
+
+      <section className="space-y-3">
+        <TitreSection>Commandes</TitreSection>
+        {visibles.length === 0 ? (
+          <Carte className="text-sm text-muted-foreground">{t("aucuneCommande")}</Carte>
         ) : (
-          <div className="space-y-2">
-            {factures.map((f) => (
-              <Carte key={f.id} className="space-y-1 text-sm">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-bold text-primary">Facture {f.id}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(f.date).toLocaleString("fr-FR")} · Vendeur : {f.vendeur}
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-semibold text-accent">Payée</span>
-                </div>
-                <ul className="text-xs text-muted-foreground">
-                  {f.lignes.map((l, i) => (
-                    <li key={i}>
-                      {l.libelle} × {l.quantite} — {formatPi(l.montant)}
-                    </li>
-                  ))}
-                </ul>
-                <div className="space-y-0.5 border-t border-border/60 pt-1 text-xs">
-                  <Ligne libelle="Montant brut payé par l'acheteur" valeur={formatPi(f.montantBrut)} />
-                  <Ligne
-                    libelle={`Commission WICO (${(f.tauxCommission * 100).toLocaleString("fr-FR")} %)`}
-                    valeur={`− ${formatPi(f.commission)}`}
-                  />
-                  <Ligne
-                    libelle="Montant net reçu par le vendeur"
-                    valeur={formatPi(f.montantNetVendeur)}
-                    fort
-                  />
-                </div>
-              </Carte>
-            ))}
-          </div>
+          visibles.map((c) => <CarteCommande key={c.id} c={c} onglet={onglet} />)
         )}
       </section>
 
-      <section>
-        <TitreSection>Historique des transactions</TitreSection>
-        <Carte className="divide-y divide-border/60 p-0">
-          {transactions.map((t, i) => (
-            <div key={i} className="flex items-center gap-3 p-3">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold">{t.type}</p>
-                <p className="truncate text-xs text-muted-foreground">{t.date} · {t.tiers}</p>
-              </div>
-              <div className="text-right">
-                <p className={t.montant > 0 ? "font-bold text-accent" : "font-bold text-foreground"}>
-                  {t.montant > 0 ? "+" : ""}{t.montant.toLocaleString("fr-FR")} Pi
-                </p>
-                <p className="text-xs text-muted-foreground">✅ {t.statut}</p>
-              </div>
-            </div>
-          ))}
-        </Carte>
-        <Bouton variante="fantome" className="mt-2 w-full" onClick={() => bientotDisponible("L'historique complet")}>
-          VOIR TOUT L'HISTORIQUE
-        </Bouton>
+      <section className="space-y-3">
+        <TitreSection>Actions</TitreSection>
+        <div className="space-y-3">
+          {visibles.map((c) => {
+            const paiement = c.payments[0];
+            const estAcheteur = c.acheteur_id === utilisateur?.id;
+            return (
+              <Carte key={`a-${c.id}`} className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="min-w-0 flex-1 truncate font-semibold">{c.titre}</span>
+                {estAcheteur && c.statut === "payee" && (
+                  <>
+                    <Bouton taille="sm" onClick={() => confirmer(c.id)}>
+                      <PackageCheck className="size-4" /> {t("confirmerReception")}
+                    </Bouton>
+                    <Bouton taille="sm" variante="danger" onClick={() => signalerProbleme(c)}>
+                      <TriangleAlert className="size-4" /> {t("signalerProbleme")}
+                    </Bouton>
+                  </>
+                )}
+                {!estAcheteur && admin && paiement && paiement.statut === "paid_held" && (
+                  <Bouton
+                    taille="sm"
+                    variante="pi"
+                    disabled={enCours === paiement.id}
+                    onClick={() => liberer(paiement.id)}
+                  >
+                    {t("liberer")} {formatPi(Number(paiement.montant))}
+                  </Bouton>
+                )}
+                {paiement?.txid && (
+                  <Bouton taille="sm" variante="contour" onClick={() => copierTxid(paiement.txid!)}>
+                    <Copy className="size-4" /> txid
+                  </Bouton>
+                )}
+              </Carte>
+            );
+          })}
+        </div>
       </section>
 
-      {modal && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" role="dialog" aria-modal="true">
-          <Carte className="w-full max-w-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">Envoyer des Pi</h2>
-              <button onClick={() => setModal(false)} aria-label="Fermer"><X className="size-5" /></button>
-            </div>
-            <Champ label="Destinataire" obligatoire>
-              <Saisie placeholder="Nom, adresse ou username Pi" maxLength={100} />
-            </Champ>
-            <Champ label="Montant (Pi)" obligatoire aide={`Max : ${formatPi(disponible)}`}>
-              <Saisie type="number" min={1} max={disponible} value={montant} onChange={(e) => setMontant(e.target.value)} />
-            </Champ>
-            <Champ label="Message / Raison">
-              <Zone maxLength={200} placeholder="Optionnel" />
-            </Champ>
-            <p className="text-xs text-muted-foreground">Frais estimés : 5 Pi</p>
-            <div className="flex gap-2">
-              <Bouton
-                className="flex-1"
-                onClick={() => {
-                  const n = Number(montant);
-                  if (!n || n <= 0 || n > disponible) {
-                    toast.error("Montant invalide.");
-                    return;
-                  }
-                  setModal(false);
-                  setMontant("");
-                  toast.success(`${formatPi(n)} envoyés avec succès !`);
-                }}
-              >
-                VÉRIFIER
-              </Bouton>
-              <Bouton variante="contour" onClick={() => setModal(false)}>ANNULER</Bouton>
-            </div>
-          </Carte>
-        </div>
-      )}
+      <LienBouton to="/market" variante="contour" className="w-full">
+        {t("voirTout")} · {t("market")}
+      </LienBouton>
     </div>
   );
 }
 
-function Ligne({ libelle, valeur, fort }: { libelle: string; valeur: string; fort?: boolean }) {
+function CarteCommande({ c, onglet }: { c: CommandeAvecPaiement; onglet: "achats" | "ventes" }) {
+  const paiement = c.payments[0];
   return (
-    <div className={`flex justify-between gap-2 ${fort ? "font-bold text-primary" : "text-muted-foreground"}`}>
-      <span>{libelle}</span>
-      <span>{valeur}</span>
-    </div>
+    <Carte className="space-y-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="font-bold">{c.titre}</p>
+        <Etiquette
+          ton={
+            c.statut === "recue" || c.statut === "payee"
+              ? "succes"
+              : c.statut === "litige"
+                ? "urgent"
+                : "neutre"
+          }
+        >
+          {libelleStatut(c.statut)}
+        </Etiquette>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        {onglet === "achats" ? "Acheté" : "Vendu"} le{" "}
+        {new Date(c.created_at).toLocaleDateString("fr-FR")} · {c.quantite} {c.unite} ×{" "}
+        {formatPi(Number(c.montant) / c.quantite)}
+      </p>
+      <p className="text-base font-extrabold text-primary">{formatPi(Number(c.montant))}</p>
+      {paiement && (
+        <p className="truncate text-xs text-muted-foreground">
+          Paiement : {libelleStatut(paiement.statut)}
+          {paiement.commission != null && ` · commission ${formatPi(Number(paiement.commission))}`}
+          {paiement.txid && ` · ${paiement.txid.slice(0, 10)}…`}
+        </p>
+      )}
+    </Carte>
+  );
+}
+
+function PortefeuilleProtege() {
+  const t = useT();
+  return (
+    <BesoinCompte
+      titre={t("mesCommandes")}
+      message="Connectez-vous avec Pi pour consulter vos commandes et paiements."
+    >
+      <Portefeuille />
+    </BesoinCompte>
   );
 }

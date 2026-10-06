@@ -1,9 +1,27 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Briefcase, ShoppingBag, MessageCircle, User, Bell, Wallet, Heart, Settings, LogIn, LogOut } from "lucide-react";
+import {
+  Home,
+  Briefcase,
+  ShoppingBag,
+  MessageCircle,
+  User,
+  Bell,
+  Wallet,
+  Heart,
+  Settings,
+  LogIn,
+  LogOut,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useStore } from "@/lib/store";
 import { useSession, seDeconnecter } from "@/lib/auth";
-import { useAlertesTempsReel, useNotifsLive, compterNonLues } from "@/lib/notifications";
+import { chargerEtatLocal } from "@/lib/store";
+import {
+  useAlertesTempsReel,
+  useNotifsLive,
+  compterNonLues,
+  chargerNotificationsBd,
+} from "@/lib/notifications";
+import { useEffect } from "react";
 import { useT, useLangue, definirLangue, langues, type Langue } from "@/lib/i18n";
 import { BoutonRetour } from "@/components/ui-kit";
 import { toast } from "sonner";
@@ -19,10 +37,18 @@ const onglets = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const chemin = useRouterState({ select: (s) => s.location.pathname });
-  const nonLuesDemo = useStore((s) => s.notificationsNonLues);
   const { utilisateur } = useSession();
   useAlertesTempsReel(!!utilisateur, utilisateur?.id);
-  const nonLues = nonLuesDemo + compterNonLues(useNotifsLive());
+  const notifs = useNotifsLive();
+  const nonLues = compterNonLues(notifs);
+
+  useEffect(() => {
+    if (utilisateur?.id) chargerNotificationsBd(utilisateur.id).catch(() => undefined);
+  }, [utilisateur?.id]);
+
+  useEffect(() => {
+    chargerEtatLocal();
+  }, []);
   const t = useT();
   const langue = useLangue();
 
@@ -47,7 +73,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               { to: "/jobs", label: t("jobs") },
               { to: "/market", label: t("market") },
               { to: "/messages", label: t("chat") },
-              { to: "/portefeuille", label: t("wallet") },
+              { to: "/portefeuille", label: t("mesCommandes") },
               { to: "/vendeurs", label: t("vendeurs") },
               { to: "/favoris", label: t("favoris") },
             ].map((l) => (
@@ -77,13 +103,25 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </option>
               ))}
             </select>
-            <Link to="/portefeuille" className="hidden rounded-lg p-2 text-primary hover:bg-muted sm:block" aria-label="Portefeuille Pi">
+            <Link
+              to="/portefeuille"
+              className="hidden rounded-lg p-2 text-primary hover:bg-muted sm:block"
+              aria-label="Portefeuille Pi"
+            >
               <Wallet className="size-5" />
             </Link>
-            <Link to="/favoris" className="hidden rounded-lg p-2 text-primary hover:bg-muted sm:block" aria-label="Favoris">
+            <Link
+              to="/favoris"
+              className="hidden rounded-lg p-2 text-primary hover:bg-muted sm:block"
+              aria-label="Favoris"
+            >
               <Heart className="size-5" />
             </Link>
-            <Link to="/notifications" className="relative rounded-lg p-2 text-primary hover:bg-muted" aria-label="Notifications">
+            <Link
+              to="/notifications"
+              className="relative rounded-lg p-2 text-primary hover:bg-muted"
+              aria-label="Notifications"
+            >
               <Bell className="size-5" />
               {nonLues > 0 && (
                 <span className="absolute right-0.5 top-0.5 grid size-4 place-items-center rounded-full bg-secondary text-[0.6rem] font-bold text-secondary-foreground">
@@ -91,7 +129,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </span>
               )}
             </Link>
-            <Link to="/parametres" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label="Paramètres">
+            <Link
+              to="/parametres"
+              className="rounded-lg p-2 text-primary hover:bg-muted"
+              aria-label="Paramètres"
+            >
               <Settings className="size-5" />
             </Link>
             {utilisateur ? (
@@ -106,7 +148,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <LogOut className="size-5" />
               </button>
             ) : (
-              <Link to="/connexion" className="rounded-lg p-2 text-primary hover:bg-muted" aria-label={t("seConnecter")}>
+              <Link
+                to="/connexion"
+                className="rounded-lg p-2 text-primary hover:bg-muted"
+                aria-label={t("seConnecter")}
+              >
                 <LogIn className="size-5" />
               </Link>
             )}
@@ -121,6 +167,21 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-4 lg:pb-10">{children}</main>
+
+      <footer className="mx-auto w-full max-w-6xl px-4 pb-28 pt-6 text-center text-xs text-muted-foreground lg:pb-8">
+        <div className="flex flex-wrap justify-center gap-4 font-semibold">
+          <Link to="/conditions" className="hover:text-primary">
+            {t("conditions")}
+          </Link>
+          <Link to="/confidentialite" className="hover:text-primary">
+            {t("confidentialite")}
+          </Link>
+          <Link to="/portefeuille" className="hover:text-primary">
+            {t("mesCommandes")}
+          </Link>
+        </div>
+        <p className="mt-2">WICO · WISDOM CONNECT — {t("sloganAccueil")}</p>
+      </footer>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card/95 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-md items-stretch">

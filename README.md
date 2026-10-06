@@ -1,4 +1,38 @@
-# PI BURUNDI CONNECT 
+# PI BURUNDI CONNECT
+
+## Mise en production (paiements Pi)
+
+L'application est prête côté code. Il ne reste que la configuration Pi :
+
+1. **Créer l'application** dans le [Pi Developer Portal](https://developers.minepi.com)
+   avec l'URL publique du site (domaine Lovable ou domaine personnalisé).
+2. **Ajouter la clé API** : placez `PI_API_KEY` dans les variables d'environnement
+   du serveur (secret, jamais dans le navigateur). Voir `.env.example`.
+3. **Coller la clé de validation du domaine** dans `public/validation-key.txt`
+   (le fichier doit rester accessible sur `https://<domaine>/validation-key.txt`).
+4. **Réseau** : `VITE_PI_SANDBOX=true` (Testnet) pendant les tests, puis
+   `VITE_PI_SANDBOX=false` pour passer en Mainnet.
+5. **Migrations** : appliquez tout ce qui se trouve dans `supabase/migrations/`
+   (notamment `20261006120000_wico_paiements_escrow.sql` et la contrainte
+   unique sur `payments.pi_payment_id`).
+
+Commandes utiles :
+
+```bash
+npm install        # ou bun install
+npm run dev        # développement (http://localhost:8080)
+npm run build      # build de production
+npm run lint       # ESLint + Prettier
+npx tsc --noEmit   # vérification des types
+```
+
+Flux de paiement : `payerAvecPi()` crée une commande, le serveur vérifie le
+montant et l'utilisateur, Pi approuve puis finalise (`piComplete`), les fonds
+sont retenus (`paid_held`) puis libérés par un admin (`piRelease`, commission
+2 %, TODO A2U). La page « Mes commandes et paiements » est sur `/portefeuille`.
+
+---
+
 
 Crée une application web React complète appelée "BURUNDI PI CONNECT" - une plateforme 
 peer-to-peer multiservices pour le Burundi avec les spécifications suivantes:

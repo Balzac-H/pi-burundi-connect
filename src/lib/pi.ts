@@ -8,11 +8,19 @@ type Callbacks = {
 };
 type PiSdk = {
   init: (o: { version: string; sandbox: boolean }) => void;
-  authenticate: (scopes: string[], onIncomplete: (p: PaymentDTO) => void) => Promise<{ accessToken: string; user: { uid: string; username: string } }>;
-  createPayment: (d: { amount: number; memo: string; metadata: Record<string, unknown> }, cb: Callbacks) => void;
+  authenticate: (
+    scopes: string[],
+    onIncomplete: (p: PaymentDTO) => void,
+  ) => Promise<{ accessToken: string; user: { uid: string; username: string } }>;
+  createPayment: (
+    d: { amount: number; memo: string; metadata: Record<string, unknown> },
+    cb: Callbacks,
+  ) => void;
 };
 declare global {
-  interface Window { Pi?: PiSdk }
+  interface Window {
+    Pi?: PiSdk;
+  }
 }
 
 export const PI_SANDBOX = String(import.meta.env["VITE_PI_SANDBOX"] ?? "true") !== "false";
@@ -33,6 +41,20 @@ export function initPi() {
   }
 }
 
+/**
+ * Le SDK est chargé avec `defer` : on attend qu'il apparaisse dans window.Pi
+ * puis on l'initialise. Hors Pi Browser, window.Pi reste absent (l'app reste
+ * navigable, seuls les paiements sont refusés).
+ */
+export function initPiAuDemarrage(essaisMax = 40) {
+  if (typeof window === "undefined" || initialise) return;
+  let essais = 0;
+  const minuteur = window.setInterval(() => {
+    initPi();
+    if (initialise || ++essais >= essaisMax) window.clearInterval(minuteur);
+  }, 250);
+}
+
 export const piPaiementAutorise = () => scopesPaiement;
 
 export async function authentifierPi(onIncomplete: (p: PaymentDTO) => void) {
@@ -43,7 +65,10 @@ export async function authentifierPi(onIncomplete: (p: PaymentDTO) => void) {
   return r;
 }
 
-export function creerPaiementPi(d: { amount: number; memo: string; metadata: Record<string, unknown> }, cb: Callbacks) {
+export function creerPaiementPi(
+  d: { amount: number; memo: string; metadata: Record<string, unknown> },
+  cb: Callbacks,
+) {
   if (!piDisponible()) throw new Error("PI_ABSENT");
   window.Pi!.createPayment(d, cb);
 }

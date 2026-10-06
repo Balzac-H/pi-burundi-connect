@@ -40,7 +40,9 @@ export function EtatReseau() {
     <div
       role="status"
       className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-semibold ${
-        horsLigne ? "bg-destructive text-destructive-foreground" : "bg-success text-success-foreground"
+        horsLigne
+          ? "bg-destructive text-destructive-foreground"
+          : "bg-success text-success-foreground"
       }`}
     >
       {horsLigne ? (
