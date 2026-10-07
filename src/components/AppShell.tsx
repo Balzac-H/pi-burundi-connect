@@ -184,12 +184,15 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link to="/confidentialite" className="hover:text-primary">
             {t("confidentialite")}
           </Link>
-          <Link to="/a-propos" hash="support" className="hover:text-primary">
+          <Link to="/support" className="hover:text-primary">
             {t("support")}
           </Link>
         </nav>
         <p className="mx-auto mt-4 max-w-3xl leading-relaxed">{t("nomCompletOng")}</p>
         <p className="mt-1">{t("sousTitre")}</p>
+        <p className="mx-auto mt-3 max-w-3xl text-xs text-muted-foreground">
+          {t("mentionIndependante")}
+        </p>
       </footer>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card lg:hidden">

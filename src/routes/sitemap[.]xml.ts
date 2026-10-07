@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-// TODO: renseigner l'URL publique du site (domaine Lovable ou personnalisé).
-const BASE_URL = "";
+import { BASE_URL } from "@/lib/env";
 
 interface SitemapEntry {
   path: string;

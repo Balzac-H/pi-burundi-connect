@@ -7,6 +7,7 @@ import {
   SEUIL_DOUBLE_VALIDATION,
   normaliserErreurServeur,
 } from "@/lib/admin.functions";
+import { DOMAINE_EMAIL_COMPTE } from "@/lib/env";
 
 const PI_API = "https://api.minepi.com/v2";
 /** Commission Arija : 2 %, calculés et enregistrés à la libération des fonds. */
@@ -121,7 +122,7 @@ export const piAuth = createServerFn({ method: "POST" })
 
     // Nouveau membre Pi : `generateLink` crée l'utilisateur s'il n'existe pas,
     // l'email factice est dérivée du pi_uid (jamais de mot de passe).
-    const email = `pi-${moi.uid}@pi.wico.app`;
+    const email = `pi-${moi.uid}@${DOMAINE_EMAIL_COMPTE}`;
     const { data: gen, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "magiclink",
       email,

@@ -87,6 +87,7 @@ function Connexion() {
           >
             {enCours ? t("paiementEnCours") : t("seConnecterPi")}
           </Bouton>
+          <p className="text-center text-xs text-muted-foreground">{t("connexionPiUniquement")}</p>
           {!piDisponible() && (
             <p className="text-center text-xs font-semibold text-destructive">
               {t("piBrowserRequis")}

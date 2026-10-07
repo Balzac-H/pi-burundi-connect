@@ -63,7 +63,7 @@ function Chat() {
           Connectez-vous avec Pi pour échanger des messages.
         </p>
         <LienBouton to="/connexion" taille="sm">
-          SE CONNECTER
+          Se connecter
         </LienBouton>
       </Carte>
     );
@@ -116,7 +116,7 @@ function Chat() {
             variante="contour"
             onClick={() => ouvrirWhatsApp(interlocuteur.whatsapp!, `Bonjour ${interlocuteur.nom}`)}
           >
-            WHATSAPP
+            WhatsApp
           </Bouton>
         )}
       </Carte>

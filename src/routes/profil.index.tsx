@@ -25,7 +25,7 @@ export const Route = createFileRoute("/profil/")({
       {
         name: "description",
         content:
-          "Gérez votre photo, vos informations, votre numéro WhatsApp et vos produits en vente sur Arija.",
+          "Gérez votre photo, vos informations de profil et vos produits en vente sur Arija.",
       },
       { property: "og:title", content: "Mon profil — Arija" },
       {
@@ -57,8 +57,8 @@ function MonProfil() {
       <Carte className="mx-auto max-w-md space-y-3 text-center">
         <h1 className="text-xl font-semibold text-primary">Mon profil</h1>
         <p className="text-sm text-muted-foreground">
-          Créez votre compte pour ajouter votre photo, publier vos produits et être contacté sur
-          WhatsApp.
+          Créez votre compte pour ajouter votre photo, publier vos produits et échanger avec les
+          autres membres via la messagerie.
         </p>
         <LienBouton to="/connexion">Se connecter</LienBouton>
       </Carte>
@@ -80,24 +80,14 @@ function MonProfil() {
           )}
           <div className="min-w-0 flex-1">
             <h1 className="text-xl font-semibold sm:text-2xl">{profil?.nom || "Mon compte"}</h1>
-            <p className="text-sm text-muted-foreground">{utilisateur.email}</p>
+            {profil?.pi_username ? (
+              <p className="text-sm text-muted-foreground">Compte Pi : @{profil.pi_username}</p>
+            ) : (
+              <p className="text-sm text-muted-foreground">{utilisateur.email}</p>
+            )}
             {profil?.ville && <p className="mt-1 text-sm text-muted-foreground">{profil.ville}</p>}
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {(profil?.competences ?? []).map((c) => (
-                <Etiquette key={c}>{c}</Etiquette>
-              ))}
-              {profil?.vendeur_actif && (
-                <Etiquette ton="succes">{t("espaceVendeurActif")}</Etiquette>
-              )}
-            </div>
           </div>
         </div>
-        {profil?.bio && <p className="text-sm italic text-muted-foreground">« {profil.bio} »</p>}
-        {profil?.prix_horaire ? (
-          <p className="text-sm font-semibold text-primary">
-            Prix horaire : {formatPi(Number(profil.prix_horaire))} / h
-          </p>
-        ) : null}
         {[profil?.whatsapp, profil?.telephone]
           .filter((n): n is string => !!n && numeroValide(n))
           .filter(
@@ -110,7 +100,7 @@ function MonProfil() {
               href={lienWhatsApp(n, "Bonjour")}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold text-success underline underline-offset-2"
+              className="flex min-h-11 items-center gap-2 text-sm font-semibold text-primary underline underline-offset-2"
             >
               +{normaliserNumero(n)} — Discuter sur WhatsApp
             </a>

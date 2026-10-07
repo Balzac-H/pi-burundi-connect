@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Carte } from "@/components/ui-kit";
-import { useLangue, type Langue } from "@/lib/i18n";
+import { Carte, LienBouton } from "@/components/ui-kit";
+import { useLangue, useT, type Langue } from "@/lib/i18n";
 
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/a-propos")({
 const NOM_ONG =
   "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples";
 
-const A_COMPLETER = "À compléter";
+const NON_RENSEIGNE = "Non renseigné";
 
 type Contenu = {
   titre: string;
@@ -226,6 +226,7 @@ const contenus: Record<Langue, Contenu> = {
 
 function APropos() {
   const langue = useLangue();
+  const t = useT();
   const c = contenus[langue];
 
   return (
@@ -280,16 +281,19 @@ function APropos() {
       <Carte id="support" className="space-y-3 text-sm leading-relaxed">
         <h2 className="section-label">{c.contactTitre}</h2>
         <p className="text-muted-foreground">{c.contact}</p>
+        <LienBouton to="/support" variante="contour">
+          {t("support")}
+        </LienBouton>
         <dl className="space-y-2">
           {[
-            { terme: "Numéro d'enregistrement de l'ONG", valeur: A_COMPLETER },
-            { terme: "Email de contact", valeur: A_COMPLETER },
-            { terme: "Adresse", valeur: A_COMPLETER },
-            { terme: "Téléphone", valeur: A_COMPLETER },
+            { terme: "Numéro d'enregistrement de l'ONG", valeur: NON_RENSEIGNE },
+            { terme: "Email de contact", valeur: NON_RENSEIGNE },
+            { terme: "Adresse", valeur: NON_RENSEIGNE },
+            { terme: "Téléphone", valeur: NON_RENSEIGNE },
           ].map((l) => (
             <div key={l.terme} className="flex flex-wrap items-baseline justify-between gap-2">
               <dt className="text-muted-foreground">{l.terme}</dt>
-              <dd className="font-semibold text-attente">{l.valeur}</dd>
+              <dd className="font-semibold text-muted-foreground">{l.valeur}</dd>
             </div>
           ))}
         </dl>

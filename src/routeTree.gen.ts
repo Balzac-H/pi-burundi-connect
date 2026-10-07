@@ -17,12 +17,15 @@ import { Route as ConditionsRouteImport } from './routes/conditions'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as FavorisRouteImport } from './routes/favoris'
+import { Route as ManifestDotwebmanifestRouteImport } from './routes/manifest[.]webmanifest'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PaiementRouteImport } from './routes/paiement'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ParametresRouteImport } from './routes/parametres'
 import { Route as PortefeuilleRouteImport } from './routes/portefeuille'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TransparenceRouteImport } from './routes/transparence'
 import { Route as VendeursRouteImport } from './routes/vendeurs'
 import { Route as JobsIndexRouteImport } from './routes/jobs.index'
@@ -79,6 +82,11 @@ const FavorisRoute = FavorisRouteImport.update({
   path: '/favoris',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ManifestDotwebmanifestRoute = ManifestDotwebmanifestRouteImport.update({
+  id: '/manifest.webmanifest',
+  path: '/manifest.webmanifest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
@@ -104,9 +112,19 @@ const PortefeuilleRoute = PortefeuilleRouteImport.update({
   path: '/portefeuille',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TransparenceRoute = TransparenceRouteImport.update({
@@ -194,12 +212,15 @@ export interface FileRoutesByFullPath {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
   '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
@@ -225,12 +246,15 @@ export interface FileRoutesByTo {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
   '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
@@ -257,12 +281,15 @@ export interface FileRoutesById {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
+  '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
   '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/support': typeof SupportRoute
   '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
@@ -290,12 +317,15 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/favoris'
+    | '/manifest.webmanifest'
     | '/notifications'
     | '/paiement'
     | '/panier'
     | '/parametres'
     | '/portefeuille'
+    | '/robots.txt'
     | '/sitemap.xml'
+    | '/support'
     | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
@@ -321,12 +351,15 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/favoris'
+    | '/manifest.webmanifest'
     | '/notifications'
     | '/paiement'
     | '/panier'
     | '/parametres'
     | '/portefeuille'
+    | '/robots.txt'
     | '/sitemap.xml'
+    | '/support'
     | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
@@ -352,12 +385,15 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/favoris'
+    | '/manifest.webmanifest'
     | '/notifications'
     | '/paiement'
     | '/panier'
     | '/parametres'
     | '/portefeuille'
+    | '/robots.txt'
     | '/sitemap.xml'
+    | '/support'
     | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
@@ -384,12 +420,15 @@ export interface RootRouteChildren {
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConnexionRoute: typeof ConnexionRoute
   FavorisRoute: typeof FavorisRoute
+  ManifestDotwebmanifestRoute: typeof ManifestDotwebmanifestRoute
   NotificationsRoute: typeof NotificationsRoute
   PaiementRoute: typeof PaiementRoute
   PanierRoute: typeof PanierRoute
   ParametresRoute: typeof ParametresRoute
   PortefeuilleRoute: typeof PortefeuilleRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SupportRoute: typeof SupportRoute
   TransparenceRoute: typeof TransparenceRoute
   VendeursRoute: typeof VendeursRoute
   JobsIdRoute: typeof JobsIdRoute
@@ -465,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavorisRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/manifest.webmanifest': {
+      id: '/manifest.webmanifest'
+      path: '/manifest.webmanifest'
+      fullPath: '/manifest.webmanifest'
+      preLoaderRoute: typeof ManifestDotwebmanifestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notifications': {
       id: '/notifications'
       path: '/notifications'
@@ -500,11 +546,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortefeuilleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/transparence': {
@@ -624,12 +684,15 @@ const rootRouteChildren: RootRouteChildren = {
   ConfidentialiteRoute: ConfidentialiteRoute,
   ConnexionRoute: ConnexionRoute,
   FavorisRoute: FavorisRoute,
+  ManifestDotwebmanifestRoute: ManifestDotwebmanifestRoute,
   NotificationsRoute: NotificationsRoute,
   PaiementRoute: PaiementRoute,
   PanierRoute: PanierRoute,
   ParametresRoute: ParametresRoute,
   PortefeuilleRoute: PortefeuilleRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SupportRoute: SupportRoute,
   TransparenceRoute: TransparenceRoute,
   VendeursRoute: VendeursRoute,
   JobsIdRoute: JobsIdRoute,

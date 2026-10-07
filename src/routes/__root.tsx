@@ -20,7 +20,9 @@ import { AssistantArija } from "../components/AssistantArija";
 import { EtatReseau } from "../components/EtatReseau";
 import { enregistrerServiceWorker } from "../lib/pwa";
 import { initTheme } from "../lib/theme";
-import { initPiAuDemarrage } from "../lib/pi";
+import { initPiAuDemarrage, PI_SANDBOX } from "../lib/pi";
+import { BASE_URL } from "../lib/env";
+import { useT } from "../lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -80,6 +82,15 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
+function BandeauModeTest() {
+  const t = useT();
+  return (
+    <div className="bg-attente-bg px-3 py-2 text-center text-xs font-medium text-attente">
+      {t("modeTest")}
+    </div>
+  );
+}
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -97,6 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "Arija" },
       { property: "og:type", content: "website" },
+      ...(BASE_URL ? [{ property: "og:url", content: BASE_URL }] : []),
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Arija — Marché et emplois solidaires au Burundi" },
       { name: "twitter:title", content: "Arija — Marché et emplois solidaires au Burundi" },
@@ -123,6 +135,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      ...(BASE_URL ? [{ rel: "canonical", href: BASE_URL }] : []),
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -171,6 +184,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {PI_SANDBOX && <BandeauModeTest />}
       <EtatReseau />
       {!sansShell && <AssistantArija />}
       <Toaster position="top-center" richColors />

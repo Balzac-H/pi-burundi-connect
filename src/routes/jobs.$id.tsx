@@ -74,7 +74,7 @@ function DetailJob() {
         onClick={() => navigate({ to: "/jobs" })}
         className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-muted-foreground"
       >
-        RETOUR
+        Retour
       </button>
 
       <Carte className="space-y-3">
@@ -99,7 +99,7 @@ function DetailJob() {
           />
           <Info label="Durée" valeur={job.duree ?? "—"} />
           <Info label="Lieu" valeur={job.localisation} />
-          <Info label="Urgence" valeur={job.urgent ? "OUI" : "Non"} />
+          <Info label="Urgence" valeur={job.urgent ? "Oui" : "Non"} />
           <Info
             label="Publiée le"
             valeur={new Date(job.created_at).toLocaleDateString("fr-FR", { dateStyle: "long" })}
@@ -129,7 +129,7 @@ function DetailJob() {
             variante="contour"
             taille="sm"
           >
-            VISITER PROFIL
+            Visiter profil
           </LienBouton>
           <BoutonSuivre id={job.employeur_id} />
           <LienBouton
@@ -138,7 +138,7 @@ function DetailJob() {
             variante="secondaire"
             taille="sm"
           >
-            CHAT
+            Chat
           </LienBouton>
         </div>
       </Carte>
@@ -154,7 +154,7 @@ function DetailJob() {
             toast.success("Postulation enregistrée !");
           }}
         >
-          {postule ? "POSTULATION ENVOYÉE" : "POSTULER MAINTENANT"}
+          {postule ? "Postulation envoyée" : "Postuler maintenant"}
         </Bouton>
         <Bouton
           variante="contour"
@@ -166,7 +166,7 @@ function DetailJob() {
             );
           }}
         >
-          PARTAGER
+          Partager
         </Bouton>
         <BoutonSignaler cibleType="job" cibleId={job.id} utilisateurId={job.employeur_id} />
       </div>

@@ -9,7 +9,7 @@ import {
   type Profil,
 } from "@/lib/comptes";
 import { Bouton, Carte, TitreSection, Etiquette, Avatar, LienBouton } from "@/components/ui-kit";
-import { listerJobs, type JobDb } from "@/lib/annonces";
+import { listerJobs, nomTypeCompte, type JobDb } from "@/lib/annonces";
 import { formatPi } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { useSession } from "@/lib/auth";
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Recherchez produits, services et emplois près de chez vous au Burundi. Paiements en Pi, contact WhatsApp direct.",
+          "Recherchez produits, services et emplois près de chez vous au Burundi. Paiements en Pi, messagerie intégrée.",
       },
       { property: "og:title", content: "Accueil — Arija" },
       {
@@ -246,29 +246,26 @@ function Accueil() {
                   >
                     {u.nom}
                   </Link>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {u.ville ?? u.bio ?? "—"}
+                  <p className="truncate text-xs text-muted-foreground">{u.ville ?? "—"}</p>
+                  <p className="truncate text-xs font-medium text-muted-foreground">
+                    {nomTypeCompte(u.type_compte)}
                   </p>
-                  {u.type_compte && (
-                    <p className="truncate text-xs font-medium text-muted-foreground">
-                      {u.type_compte}
-                    </p>
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-1.5">
+                  <LienBouton to="/messages/$id" params={{ id: u.id }} taille="sm">
+                    {t("chat")}
+                  </LienBouton>
+                  {u.whatsapp && (
+                    <a
+                      href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom}`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-9 items-center rounded-md border border-primary/40 px-3 text-xs font-semibold text-primary hover:bg-primary-soft"
+                    >
+                      WhatsApp
+                    </a>
                   )}
                 </div>
-                {u.whatsapp ? (
-                  <a
-                    href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom}`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
-                  >
-                    WhatsApp
-                  </a>
-                ) : (
-                  <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-                    —
-                  </span>
-                )}
               </Carte>
             ))}
           </div>

@@ -8,18 +8,57 @@ export type Profil = {
   id: string;
   nom: string;
   photo_url: string | null;
-  bio: string | null;
   ville: string | null;
-  competences: string[];
   whatsapp: string | null;
   telephone: string | null;
-  prix_horaire: number | null;
   statut: string;
   type_compte?: string;
   pi_uid?: string | null;
   pi_username?: string | null;
   vendeur_actif?: boolean;
+  bio?: string | null;
+  afficher_whatsapp?: boolean;
 };
+
+const JETON_WHATSAPP = "whatsapp";
+
+export function roleStatut(statut: unknown): string {
+  const s = typeof statut === "string" && statut ? statut : "prestataire";
+  return s.split("|")[0] || "prestataire";
+}
+
+export function whatsappAutorise(statut: unknown): boolean {
+  return typeof statut === "string" && statut.split("|").slice(1).includes(JETON_WHATSAPP);
+}
+
+export function statutAvecWhatsapp(role: string, afficher: boolean): string {
+  const base = role || "prestataire";
+  return afficher ? `${base}|${JETON_WHATSAPP}` : base;
+}
+
+const COLONNES_PROFIL =
+  "id, nom, photo_url, ville, whatsapp, telephone, statut, type_compte, pi_uid, pi_username, vendeur_actif";
+const COLONNES_PUBLIQUES = "id, nom, photo_url, ville, statut, type_compte";
+
+function versProfil(ligne: unknown, publique: boolean): Profil {
+  const l = (ligne ?? {}) as Record<string, unknown>;
+  const texte = (v: unknown) => (typeof v === "string" ? v : null);
+  const visible = !publique && whatsappAutorise(l.statut);
+  return {
+    id: texte(l.id) ?? "",
+    nom: texte(l.nom) ?? "",
+    photo_url: texte(l.photo_url),
+    ville: texte(l.ville),
+    statut: roleStatut(l.statut),
+    type_compte: texte(l.type_compte) ?? undefined,
+    pi_uid: texte(l.pi_uid),
+    pi_username: texte(l.pi_username),
+    vendeur_actif: publique ? undefined : l.vendeur_actif === true,
+    whatsapp: visible ? texte(l.whatsapp) : null,
+    telephone: visible ? texte(l.telephone) : null,
+    afficher_whatsapp: visible,
+  };
+}
 
 export type ProduitDb = {
   id: string;
@@ -56,31 +95,40 @@ export function oublierProfil(id: string) {
 }
 
 export async function chargerProfil(id: string): Promise<Profil | null> {
-  const { data } = await supabase.from("profils").select("*").eq("id", id).maybeSingle();
-  if (data) return data as Profil;
-  // Visiteur non connecté : lecture de la vue publique (sans numéros de téléphone).
-  const { data: pub } = await vuePublique().select("*").eq("id", id).maybeSingle();
-  return pub ? ({ ...(pub as Profil), whatsapp: null, telephone: null } as Profil) : null;
+  const { data } = await supabase
+    .from("profils")
+    .select(COLONNES_PROFIL)
+    .eq("id", id)
+    .maybeSingle();
+  if (data) return versProfil(data, false);
+  // Visiteur non connecté : lecture de la vue publique (sans coordonnées téléphoniques).
+  const { data: pub } = await vuePublique().select(COLONNES_PUBLIQUES).eq("id", id).maybeSingle();
+  return pub ? versProfil(pub, true) : null;
 }
 
 export async function chercherProfils(recherche: string): Promise<Profil[]> {
   const q = recherche.trim();
   const filtrer = <T extends { or: (f: string) => T }>(r: T) =>
-    q ? r.or(`nom.ilike.%${q}%,ville.ilike.%${q}%,bio.ilike.%${q}%`) : r;
+    q ? r.or(`nom.ilike.%${q}%,ville.ilike.%${q}%`) : r;
 
   const { data } = await filtrer(
-    supabase.from("profils").select("*").order("created_at", { ascending: false }).limit(60),
+    supabase
+      .from("profils")
+      .select(COLONNES_PROFIL)
+      .order("created_at", { ascending: false })
+      .limit(60),
   );
-  if (data && data.length) return data as Profil[];
+  if (data && data.length) return data.map((p) => versProfil(p, false));
 
   const { data: pub } = await filtrer(
-    vuePublique().select("*").order("created_at", { ascending: false }).limit(60),
+    vuePublique().select(COLONNES_PUBLIQUES).order("created_at", { ascending: false }).limit(60),
   );
-  return ((pub ?? []) as Profil[]).map((p) => ({ ...p, whatsapp: null, telephone: null }));
+  return (pub ?? []).map((p) => versProfil(p, true));
 }
 
 export async function enregistrerProfil(id: string, valeurs: Partial<Profil>) {
-  const { error } = await supabase.from("profils").upsert({ id, ...valeurs } as never);
+  const { afficher_whatsapp: _calcule, ...lignes } = valeurs;
+  const { error } = await supabase.from("profils").upsert({ id, ...lignes } as never);
   if (error) throw error;
 }
 

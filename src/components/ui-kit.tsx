@@ -268,10 +268,7 @@ export function Selection(props: React.SelectHTMLAttributes<HTMLSelectElement>) 
 
 export function BandeauPi({ texte = "Paiement sécurisé via Pi Network" }: { texte?: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground">
-      <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary-soft text-[11px] font-bold text-primary">
-        π
-      </span>
+    <div className="rounded-md border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground">
       {texte}
     </div>
   );

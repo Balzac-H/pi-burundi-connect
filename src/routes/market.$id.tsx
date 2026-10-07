@@ -175,7 +175,12 @@ function DetailProduit() {
           </Link>
         </div>
         <div className="flex flex-wrap gap-2">
-          {vendeur?.whatsapp ? (
+          {!monAnnonce && (
+            <LienBouton to="/messages/$id" params={{ id: produit.vendeur_id }}>
+              {t("chat")}
+            </LienBouton>
+          )}
+          {!monAnnonce && vendeur?.whatsapp && (
             <a
               href={lienWhatsApp(
                 vendeur.whatsapp,
@@ -183,12 +188,10 @@ function DetailProduit() {
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
+              className="inline-flex min-h-11 items-center rounded-md border border-primary/40 px-3 text-xs font-semibold text-primary hover:bg-primary-soft"
             >
               WhatsApp
             </a>
-          ) : (
-            <Etiquette>Numéro non vérifié</Etiquette>
           )}
           <BoutonSignaler
             cibleType="produit"

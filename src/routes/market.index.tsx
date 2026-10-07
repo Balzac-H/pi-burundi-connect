@@ -239,14 +239,22 @@ function CarteAnnonce({ p, favori }: { p: ProduitDb; favori: boolean }) {
           Panier
         </Bouton>
       </div>
+      <LienBouton
+        to="/messages/$id"
+        params={{ id: p.vendeur_id }}
+        taille="sm"
+        className="w-full justify-center"
+      >
+        {t("chat")}
+      </LienBouton>
       {v?.whatsapp && (
         <a
           href={lienWhatsApp(v.whatsapp, `Bonjour, je suis intéressé par « ${p.titre} »`)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-2 text-center text-xs font-semibold text-success"
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-md border border-primary/40 px-2 text-center text-xs font-semibold text-primary hover:bg-primary-soft"
         >
-          Contacter sur WhatsApp
+          {t("contactWhatsapp")}
         </a>
       )}
     </article>

@@ -5,7 +5,6 @@ import { useTheme, definirTheme, themes, type Theme } from "@/lib/theme";
 import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/components/ui-kit";
 import { useSession, seDeconnecter } from "@/lib/auth";
 import { chargerProfil, type Profil } from "@/lib/comptes";
-import { supabase } from "@/integrations/supabase/client";
 import { supprimerMonCompte } from "@/lib/pi.functions";
 import { toast } from "sonner";
 import { BoutonTheme } from "@/components/Confiance";
@@ -28,7 +27,6 @@ function Parametres() {
   const navigate = useNavigate();
   const { utilisateur, chargement } = useSession();
   const [profil, setProfil] = useState<Profil | null>(null);
-  const [emailEnvoye, setEmailEnvoye] = useState(false);
   const [enCours, setEnCours] = useState(false);
 
   useEffect(() => {
@@ -43,23 +41,10 @@ function Parametres() {
       <Carte className="mx-auto max-w-md space-y-3 text-center">
         <h1 className="text-xl font-semibold text-foreground">Paramètres</h1>
         <p className="text-sm text-muted-foreground">Connectez-vous pour gérer votre compte.</p>
-        <LienBouton to="/connexion">SE CONNECTER / S'INSCRIRE</LienBouton>
+        <LienBouton to="/connexion">Se connecter / S'inscrire</LienBouton>
       </Carte>
     );
   }
-
-  const reinitialiserMotDePasse = async () => {
-    if (!utilisateur.email) return;
-    const { error } = await supabase.auth.resetPasswordForEmail(utilisateur.email, {
-      redirectTo: `${window.location.origin}/profil/modifier`,
-    });
-    if (error) {
-      toast.error("Envoi impossible : " + error.message);
-      return;
-    }
-    setEmailEnvoye(true);
-    toast.success("Lien de réinitialisation envoyé à " + utilisateur.email);
-  };
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
@@ -111,22 +96,10 @@ function Parametres() {
       <Carte className="space-y-3">
         <h2 className="section-label">Sécurité</h2>
         <p className="text-sm text-muted-foreground">
-          L'identité est liée à votre session Pi (Pi Browser). Pour sécuriser l'accès par email,
-          utilisez le lien de réinitialisation ci-dessous.
+          Arija n'utilise ni mot de passe ni adresse email de connexion : l'accès au compte passe
+          uniquement par Pi (Pi Browser). En cas de perte d'accès, reconnectez-vous avec Pi pour
+          retrouver vos achats, ventes et messages.
         </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <Bouton
-            variante="contour"
-            taille="sm"
-            onClick={reinitialiserMotDePasse}
-            disabled={emailEnvoye}
-          >
-            {emailEnvoye ? "Lien envoyé" : "Recevoir un lien de mot de passe"}
-          </Bouton>
-        </div>
-        {utilisateur.email && (
-          <p className="text-xs text-muted-foreground">Envoi vers {utilisateur.email}</p>
-        )}
       </Carte>
 
       <Carte className="space-y-3">
@@ -152,14 +125,12 @@ function Parametres() {
             navigate({ to: "/connexion" });
           }}
         >
-          SE DÉCONNECTER
+          Se déconnecter
         </Bouton>
       </Carte>
 
       <Carte className="space-y-3 border border-destructive/40">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-destructive">
-          Zone dangereuse
-        </h2>
+        <h2 className="text-sm font-semibold text-destructive">Zone dangereuse</h2>
         <p className="text-sm text-muted-foreground">
           Supprime définitivement votre compte, vos annonces, messages, avis et profils. Les
           paiements déjà libérés restent enregistrés chez Pi. Cette action est irréversible.
@@ -190,7 +161,7 @@ function Parametres() {
             }
           }}
         >
-          SUPPRIMER MON COMPTE ET MES DONNÉES
+          Supprimer mon compte et mes données
         </Bouton>
       </Carte>
     </div>

@@ -1,17 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  Bouton,
-  Carte,
-  Champ,
-  Saisie,
-  Selection,
-  Zone,
-  Avatar,
-  LienBouton,
-} from "@/components/ui-kit";
+import { Bouton, Carte, Champ, Saisie, Selection, Avatar, LienBouton } from "@/components/ui-kit";
 import { toast } from "sonner";
 import { useSession } from "@/lib/auth";
+import { useT } from "@/lib/i18n";
 import {
   chargerProfil,
   enregistrerProfil,
@@ -19,6 +11,9 @@ import {
   composerNumero,
   separerNumero,
   indicatifs,
+  statutAvecWhatsapp,
+  roleStatut,
+  oublierProfil,
   type Profil,
 } from "@/lib/comptes";
 
@@ -29,7 +24,7 @@ export const Route = createFileRoute("/profil/modifier")({
       {
         name: "description",
         content:
-          "Mettez à jour votre photo, bio, compétences, numéro WhatsApp, localisation et prix horaire.",
+          "Mettez à jour votre photo, votre localisation, votre type de compte et vos coordonnées.",
       },
       { property: "og:title", content: "Modifier mon profil — Arija" },
       {
@@ -44,6 +39,7 @@ export const Route = createFileRoute("/profil/modifier")({
 function Modifier() {
   const { utilisateur, chargement } = useSession();
   const navigate = useNavigate();
+  const t = useT();
   const [profil, setProfil] = useState<Profil | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [envoi, setEnvoi] = useState(false);
@@ -57,8 +53,7 @@ function Modifier() {
     });
   }, [utilisateur]);
 
-  const tel = separerNumero(profil?.telephone);
-  const wa = separerNumero(profil?.whatsapp);
+  const tel = separerNumero(profil?.telephone ?? profil?.whatsapp);
 
   if (chargement)
     return <p className="py-10 text-center text-sm text-muted-foreground">Chargement…</p>;
@@ -82,41 +77,30 @@ function Modifier() {
     e.preventDefault();
     if (!utilisateur) return;
     const f = new FormData(e.currentTarget);
-    const telephone = composerNumero(
-      String(f.get("indicatif") ?? "257"),
-      String(f.get("telephone") ?? ""),
-    );
-    const brutWhatsapp = String(f.get("whatsapp") ?? "").trim();
-    const whatsapp = brutWhatsapp
-      ? composerNumero(String(f.get("indicatifWhatsapp") ?? "257"), brutWhatsapp)
-      : telephone;
+    const brut = String(f.get("telephone") ?? "").trim();
+    const numero = brut ? composerNumero(String(f.get("indicatif") ?? "257"), brut) : "";
+    const afficher = f.get("afficherWhatsapp") === "on";
 
-    const valide = (n: string) => /^\d{10,15}$/.test(n);
-    if (!valide(telephone)) {
-      toast.error("Numéro de téléphone invalide : uniquement des chiffres, ex. 79 000 000.");
+    if (afficher && !numero) {
+      toast.error("Saisissez un numéro de téléphone pour afficher votre WhatsApp.");
       return;
     }
-    if (!valide(whatsapp)) {
-      toast.error("Numéro WhatsApp invalide : uniquement des chiffres, ex. 79 000 000.");
+    if (numero && !/^\d{10,15}$/.test(numero)) {
+      toast.error("Numéro invalide : uniquement des chiffres, ex. 79 000 000.");
       return;
     }
 
     try {
       await enregistrerProfil(utilisateur.id, {
         nom: String(f.get("nom") ?? ""),
-        bio: String(f.get("bio") ?? ""),
-        ville: String(f.get("ville") ?? ""),
-        telephone: `+${telephone}`,
-        whatsapp: `+${whatsapp}`,
-        statut: String(f.get("statut") ?? "prestataire"),
+        ville: String(f.get("ville") ?? "").trim() || null,
+        telephone: afficher && numero ? `+${numero}` : null,
+        whatsapp: afficher && numero ? `+${numero}` : null,
+        statut: statutAvecWhatsapp(String(f.get("statut") ?? "prestataire"), afficher),
         type_compte: String(f.get("type_compte") ?? "chercheur"),
-        prix_horaire: f.get("prix") ? Number(f.get("prix")) : null,
-        competences: String(f.get("competences") ?? "")
-          .split(",")
-          .map((c) => c.trim())
-          .filter(Boolean),
         photo_url: photo,
       });
+      oublierProfil(utilisateur.id);
       toast.success("Profil mis à jour !");
       navigate({ to: "/profil" });
     } catch (err) {
@@ -162,26 +146,9 @@ function Modifier() {
             key={profil?.nom}
           />
         </Champ>
-        <Champ label="Bio / Description" aide="Max 300 caractères">
-          <Zone
-            name="bio"
-            defaultValue={profil?.bio ?? ""}
-            maxLength={300}
-            key={`b${profil?.id ?? ""}`}
-          />
-        </Champ>
-        <Champ label="Compétences / Tags" aide="Séparées par des virgules">
-          <Saisie
-            name="competences"
-            defaultValue={(profil?.competences ?? []).join(", ")}
-            maxLength={200}
-            key={`c${profil?.id ?? ""}`}
-          />
-        </Champ>
-        <Champ label="Localisation" obligatoire>
+        <Champ label="Localisation" aide="Facultatif">
           <Saisie
             name="ville"
-            required
             defaultValue={profil?.ville ?? ""}
             maxLength={120}
             key={`v${profil?.id ?? ""}`}
@@ -189,8 +156,7 @@ function Modifier() {
         </Champ>
         <Champ
           label="Numéro de téléphone"
-          aide="Chiffres uniquement, sans le zéro initial"
-          obligatoire
+          aide="Chiffres uniquement, sans le zéro initial. Facultatif."
         >
           <div className="flex gap-2">
             <Selection
@@ -207,7 +173,6 @@ function Modifier() {
             </Selection>
             <Saisie
               name="telephone"
-              required
               type="tel"
               inputMode="numeric"
               placeholder="79 000 000"
@@ -217,49 +182,27 @@ function Modifier() {
             />
           </div>
         </Champ>
-        <Champ
-          label="Numéro WhatsApp"
-          aide="Affiché avec un bouton de discussion directe. Laissez vide pour réutiliser le numéro de téléphone."
-          obligatoire
-        >
-          <div className="flex gap-2">
-            <Selection
-              name="indicatifWhatsapp"
-              className="max-w-44"
-              defaultValue={wa.indicatif}
-              key={`iw${profil?.id ?? ""}`}
-            >
-              {indicatifs.map((i) => (
-                <option key={i.code} value={i.code}>
-                  {i.pays}
-                </option>
-              ))}
-            </Selection>
-            <Saisie
-              name="whatsapp"
-              type="tel"
-              inputMode="numeric"
-              placeholder="79 000 000"
-              defaultValue={wa.local}
-              maxLength={15}
-              key={`w${profil?.id ?? ""}`}
+        <div className="space-y-1.5">
+          <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border px-3">
+            <input
+              type="checkbox"
+              name="afficherWhatsapp"
+              className="size-4 shrink-0 accent-[oklch(0.36_0.062_159)]"
+              defaultChecked={profil?.afficher_whatsapp ?? false}
+              key={`wa${profil?.id ?? ""}`}
             />
-          </div>
-        </Champ>
-        <Champ label="Prix horaire (Pi)">
-          <Saisie
-            name="prix"
-            type="number"
-            min={0}
-            defaultValue={profil?.prix_horaire ?? undefined}
-            key={`p${profil?.id ?? ""}`}
-          />
-        </Champ>
+            <span className="text-sm font-semibold">{t("afficherWhatsapp")}</span>
+          </label>
+          <p className="text-xs text-muted-foreground">
+            Votre numéro n'est enregistré et affiché aux autres membres que si cette case est
+            cochée.
+          </p>
+        </div>
         <Champ label="Type de compte" obligatoire>
           <Selection
             name="type_compte"
             defaultValue={profil?.type_compte ?? "chercheur"}
-            key={`t${profil?.id ?? ""}`}
+            key={`tc${profil?.id ?? ""}`}
           >
             <option value="vendeur">Vendeur</option>
             <option value="employeur">Employeur</option>
@@ -269,7 +212,7 @@ function Modifier() {
         <Champ label="Statut">
           <Selection
             name="statut"
-            defaultValue={profil?.statut ?? "prestataire"}
+            defaultValue={roleStatut(profil?.statut)}
             key={`s${profil?.id ?? ""}`}
           >
             <option value="prestataire">Prestataire de services</option>

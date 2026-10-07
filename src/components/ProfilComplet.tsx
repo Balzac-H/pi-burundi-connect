@@ -1,14 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  Avatar,
-  Bouton,
-  Carte,
-  Etiquette,
-  TitreSection,
-  BoutonSuivre,
-  LienBouton,
-} from "@/components/ui-kit";
+import { Avatar, Bouton, Carte, TitreSection, BoutonSuivre, LienBouton } from "@/components/ui-kit";
 import { BoutonSignaler } from "@/components/Confiance";
 import {
   chargerProfil,
@@ -89,20 +81,12 @@ export function ProfilComplet({ id }: { id: string }) {
           <div className="min-w-0 flex-1">
             <h1 className="text-xl font-semibold sm:text-2xl">{u.nom}</h1>
             <p className="text-sm text-muted-foreground">{nomTypeCompte(u.type_compte)}</p>
+            {u.pi_username && (
+              <p className="text-xs text-muted-foreground">Compte Pi : @{u.pi_username}</p>
+            )}
             <p className="mt-1 text-sm text-muted-foreground">{u.ville ?? "Burundi"}</p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {(u.competences ?? []).map((c) => (
-                <Etiquette key={c}>{c}</Etiquette>
-              ))}
-            </div>
           </div>
         </div>
-        {u.bio && <p className="text-sm italic text-muted-foreground">« {u.bio} »</p>}
-        {u.prix_horaire != null && (
-          <p className="text-sm font-semibold text-primary">
-            Prix horaire : {formatPi(Number(u.prix_horaire))} / h
-          </p>
-        )}
 
         <div className="flex flex-wrap gap-2">
           {monProfil ? (
@@ -116,21 +100,16 @@ export function ProfilComplet({ id }: { id: string }) {
             </>
           ) : (
             <>
-              <BoutonSuivre id={u.id} taille="md" />
-              <LienBouton
-                to="/messages/$id"
-                params={{ id: u.id }}
-                variante="secondaire"
-                taille="sm"
-              >
+              <LienBouton to="/messages/$id" params={{ id: u.id }}>
                 {t("chat")}
               </LienBouton>
+              <BoutonSuivre id={u.id} taille="md" />
               {u.whatsapp && (
                 <a
                   href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom}`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
+                  className="inline-flex min-h-11 items-center rounded-md border border-primary/40 px-3 text-xs font-semibold text-primary hover:bg-primary-soft"
                 >
                   {t("contactWhatsapp")}
                 </a>

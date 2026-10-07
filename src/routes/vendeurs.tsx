@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Avatar, Carte, Etiquette, Saisie, TitreSection } from "@/components/ui-kit";
+import { Avatar, Carte, LienBouton, Saisie, TitreSection } from "@/components/ui-kit";
 import { chercherProfils, lienWhatsApp, type Profil } from "@/lib/comptes";
-import { formatPi } from "@/lib/store";
+import { nomTypeCompte } from "@/lib/annonces";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/vendeurs")({
   head: () => ({
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/vendeurs")({
       {
         name: "description",
         content:
-          "Trouvez des vendeurs, artisans et prestataires près de chez vous : photo, compétences, ville et contact WhatsApp direct.",
+          "Trouvez des vendeurs, artisans et prestataires près de chez vous : photo, ville et messagerie intégrée.",
       },
       { property: "og:title", content: "Rechercher des vendeurs — Arija" },
       {
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/vendeurs")({
 });
 
 function Vendeurs() {
+  const t = useT();
   const [recherche, setRecherche] = useState("");
   const [liste, setListe] = useState<Profil[]>([]);
   const [chargement, setChargement] = useState(true);
@@ -84,30 +86,27 @@ function Vendeurs() {
               )}
               <div className="min-w-0">
                 <h2 className="truncate font-semibold">{v.nom || "Utilisateur"}</h2>
+                <p className="truncate text-xs text-muted-foreground">
+                  {nomTypeCompte(v.type_compte)}
+                </p>
                 {v.ville && <p className="truncate text-xs text-muted-foreground">{v.ville}</p>}
-                {v.prix_horaire ? (
-                  <p className="text-xs font-semibold text-primary">
-                    {formatPi(Number(v.prix_horaire))} / h
-                  </p>
-                ) : null}
               </div>
             </div>
-            {v.bio && <p className="line-clamp-2 text-xs text-muted-foreground">{v.bio}</p>}
-            <div className="flex flex-wrap gap-1.5">
-              {v.competences.slice(0, 4).map((c) => (
-                <Etiquette key={c}>{c}</Etiquette>
-              ))}
+            <div className="flex flex-wrap items-center gap-2">
+              <LienBouton to="/messages/$id" params={{ id: v.id }} taille="sm">
+                {t("chat")}
+              </LienBouton>
+              {(v.whatsapp || v.telephone) && (
+                <a
+                  href={lienWhatsApp((v.whatsapp || v.telephone) as string)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center rounded-md border border-primary/40 px-3 text-xs font-semibold text-primary hover:bg-primary-soft"
+                >
+                  {t("contactWhatsapp")}
+                </a>
+              )}
             </div>
-            {(v.whatsapp || v.telephone) && (
-              <a
-                href={lienWhatsApp((v.whatsapp || v.telephone) as string)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center gap-2 rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
-              >
-                WhatsApp
-              </a>
-            )}
           </Carte>
         ))}
       </div>

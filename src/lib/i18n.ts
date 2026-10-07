@@ -67,6 +67,12 @@ export type Cle =
   | "aValider"
   | "confirmerReception"
   | "signalerProbleme"
+  | "signalerAnnonce"
+  | "connexionPiUniquement"
+  | "afficherWhatsapp"
+  | "modeTest"
+  | "mentionIndependante"
+  | "delaiReponse"
   | "paiementEnCours"
   | "paiementConfirme"
   | "paiementAnnule"
@@ -230,6 +236,12 @@ const fr: Record<Cle, string> = {
   aValider: "Document à faire valider par un conseil juridique.",
   confirmerReception: "Confirmer la réception",
   signalerProbleme: "Signaler un problème",
+  signalerAnnonce: "Signaler cette annonce",
+  connexionPiUniquement: "Connectez-vous avec Pi pour récupérer votre compte.",
+  afficherWhatsapp: "Afficher mon WhatsApp",
+  modeTest: "Mode test",
+  mentionIndependante: "Application indépendante, non affiliée à Pi Network ni à la Pi Core Team.",
+  delaiReponse: "Délai de réponse : 48 heures ouvrées.",
   paiementEnCours: "Paiement en cours…",
   paiementConfirme: "Paiement confirmé",
   paiementAnnule: "Paiement annulé",
@@ -391,6 +403,12 @@ const rn: Record<Cle, string> = {
   aValider: "Uyu mwandiko rugenya kubw'umuyobozi w'amategeko.",
   confirmerReception: "Emeza kwakira",
   signalerProbleme: "Menyesha ikibazo",
+  signalerAnnonce: "Kwerekana iyi singano",
+  connexionPiUniquement: "Injira na Pi kugira ngo ubone konti yawo.",
+  afficherWhatsapp: "Eherekanza WhatsApp yanjye",
+  modeTest: "Uburyo bwo gerageza",
+  mentionIndependante: "Porogaramu idahujwe na Pi Network cyangwa na Pi Core Team.",
+  delaiReponse: "Igihe cyo gusubiza: amasaha 48 y'akazi.",
   paiementEnCours: "Ubishyurwa…",
   paiementConfirme: "Ubishyurwe neza",
   paiementAnnule: "Kwishyura kwahagaritswe",
@@ -551,6 +569,12 @@ const sw: Record<Cle, string> = {
   aValider: "Hati hii inahitajika kuthibitishwa na mwanasheria.",
   confirmerReception: "Thibitisha upokeaji",
   signalerProbleme: "Ripoti tatizo",
+  signalerAnnonce: "Ripoti tangazo hili",
+  connexionPiUniquement: "Ingia kwa Pi ili kupata akaunti yako.",
+  afficherWhatsapp: "Onyesha WhatsApp yangu",
+  modeTest: "Hali ya majaribio",
+  mentionIndependante: "Programu huru, haihusiani na Pi Network wala Pi Core Team.",
+  delaiReponse: "Muda wa kujibu: saa 48 za kazi.",
   paiementEnCours: "Malipo yanapoendelea…",
   paiementConfirme: "Malipo yamethibitishwa",
   paiementAnnule: "Malipo yameghairiwa",
@@ -711,6 +735,13 @@ const en: Record<Cle, string> = {
   aValider: "This document must be reviewed by a legal adviser.",
   confirmerReception: "Confirm receipt",
   signalerProbleme: "Report a problem",
+  signalerAnnonce: "Report this listing",
+  connexionPiUniquement: "Sign in with Pi to recover your account.",
+  afficherWhatsapp: "Show my WhatsApp",
+  modeTest: "Test mode",
+  mentionIndependante:
+    "Independent application, not affiliated with Pi Network or the Pi Core Team.",
+  delaiReponse: "Response time: 48 business hours.",
   paiementEnCours: "Payment in progress…",
   paiementConfirme: "Payment confirmed",
   paiementAnnule: "Payment cancelled",
