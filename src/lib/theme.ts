@@ -77,8 +77,8 @@ export function useTheme(): Theme {
   return useSyncExternalStore(abonner, () => courant, snapshotServeur);
 }
 
-export const themes: { code: Theme; nom: string; icone: string }[] = [
-  { code: "clair", nom: "Clair", icone: "☀️" },
-  { code: "sombre", nom: "Sombre", icone: "🌙" },
-  { code: "auto", nom: "Automatique (système)", icone: "🖥️" },
+export const themes: { code: Theme; nom: string }[] = [
+  { code: "clair", nom: "Clair" },
+  { code: "sombre", nom: "Sombre" },
+  { code: "auto", nom: "Automatique (système)" },
 ];

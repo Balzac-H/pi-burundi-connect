@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircleQuestion, X, Send, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { demanderAssistant } from "@/lib/assistant.functions";
 import { useLangue } from "@/lib/i18n";
@@ -9,40 +8,40 @@ type Message = { role: "user" | "assistant"; content: string };
 
 const textes = {
   fr: {
-    titre: "Assistant WICO",
+    titre: "Assistant Arija",
     accueil:
-      "Bonjour 👋 Je suis l'assistant WICO. Comment puis-je vous aider ? Vous cherchez un produit, un service ou un emploi ?",
+      "Bonjour, je suis l'assistant d'Arija. Comment puis-je vous aider ? Vous cherchez un produit, un service ou un emploi ?",
     placeholder: "Écrivez votre question…",
     ouvrir: "Ouvrir l'assistant",
     fermer: "Fermer l'assistant",
   },
   rn: {
-    titre: "Umufasha WICO",
+    titre: "Umufasha Arija",
     accueil:
-      "Bwakeye 👋 Ndi umufasha wa WICO. Nogufasha gute ? Urondera igicuruzwa, serivisi canke akazi ?",
+      "Bwakeye, ndi umufasha w'Arija. Nogufasha gute ? Urondera igicuruzwa, serivisi canke akazi ?",
     placeholder: "Andika ikibazo cawe…",
     ouvrir: "Fungura umufasha",
     fermer: "Ugara umufasha",
   },
   sw: {
-    titre: "Msaidizi WICO",
+    titre: "Msaidizi Arija",
     accueil:
-      "Habari 👋 Mimi ni msaidizi wa WICO. Nikusaidie vipi ? Unatafuta bidhaa, huduma au kazi ?",
+      "Habari, mimi ni msaidizi wa Arija. Nikusaidie vipi ? Unatafuta bidhaa, huduma au kazi ?",
     placeholder: "Andika swali lako…",
     ouvrir: "Fungua msaidizi",
     fermer: "Funga msaidizi",
   },
   en: {
-    titre: "WICO Assistant",
+    titre: "Arija Assistant",
     accueil:
-      "Hello 👋 I'm the WICO assistant. How can I help? Looking for a product, a service or a job?",
+      "Hello, I'm the Arija assistant. How can I help? Looking for a product, a service or a job?",
     placeholder: "Type your question…",
     ouvrir: "Open assistant",
     fermer: "Close assistant",
   },
 } as const;
 
-export function AssistantWico() {
+export function AssistantArija() {
   const langue = useLangue();
   const t = textes[langue] ?? textes.fr;
   const [ouvert, setOuvert] = useState(false);
@@ -84,22 +83,19 @@ export function AssistantWico() {
       <button
         onClick={() => setOuvert((o) => !o)}
         aria-label={ouvert ? t.fermer : t.ouvrir}
-        className="fixed bottom-20 right-4 z-40 grid size-14 place-items-center rounded-full gradient-primary text-primary-foreground shadow-lg transition hover:scale-105 lg:bottom-6"
+        className="fixed bottom-20 right-4 z-40 inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-lg transition-colors duration-150 hover:bg-primary/90 lg:bottom-6"
       >
-        {ouvert ? <X className="size-6" /> : <MessageCircleQuestion className="size-6" />}
+        {ouvert ? t.fermer : t.ouvrir}
       </button>
 
       {ouvert && (
         <div
           role="dialog"
           aria-label={t.titre}
-          className="fixed bottom-36 right-4 z-40 flex max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-xl lg:bottom-24"
+          className="fixed bottom-36 right-4 z-40 flex max-h-[70vh] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg lg:bottom-24"
         >
-          <div className="flex items-center gap-2 border-b border-border/60 gradient-primary px-3 py-2 text-primary-foreground">
-            <span className="grid size-7 place-items-center rounded-lg bg-black/15 text-sm font-bold">
-              W
-            </span>
-            <p className="text-sm font-bold">{t.titre}</p>
+          <div className="flex items-center gap-2 border-b border-border bg-card px-3 py-2">
+            <p className="text-sm font-semibold text-foreground">{t.titre}</p>
           </div>
 
           <div className="flex-1 space-y-2 overflow-y-auto p-3">
@@ -109,16 +105,12 @@ export function AssistantWico() {
                 {m.content}
               </Bulle>
             ))}
-            {enCours && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" /> …
-              </div>
-            )}
+            {enCours && <p className="text-xs text-muted-foreground">…</p>}
             <div ref={finRef} />
           </div>
 
           <form
-            className="flex items-center gap-2 border-t border-border/60 p-2"
+            className="flex items-center gap-2 border-t border-border p-2"
             onSubmit={(e) => {
               e.preventDefault();
               void envoyer();
@@ -130,15 +122,14 @@ export function AssistantWico() {
               maxLength={500}
               placeholder={t.placeholder}
               aria-label={t.placeholder}
-              className="min-h-10 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground"
+              className="min-h-11 flex-1 rounded-md border border-input bg-card px-3 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary"
             />
             <button
               type="submit"
               disabled={enCours || !saisie.trim()}
-              aria-label="Envoyer"
-              className="grid size-10 place-items-center rounded-lg bg-primary text-primary-foreground disabled:opacity-50"
+              className="min-h-11 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors duration-150 hover:bg-primary/90 disabled:opacity-50"
             >
-              <Send className="size-4" />
+              Envoyer
             </button>
           </form>
         </div>

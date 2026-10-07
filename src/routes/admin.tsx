@@ -31,13 +31,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Administration — WICO" },
+      { title: "Administration — Arija" },
       {
         name: "description",
-        content: "Espace administrateur WICO : signalements, litiges et fonds en escrow.",
+        content: "Espace administrateur Arija : signalements, litiges et fonds en escrow.",
       },
-      { property: "og:title", content: "Administration — WICO" },
-      { property: "og:description", content: "Modération de la communauté WICO." },
+      { property: "og:title", content: "Administration — Arija" },
+      { property: "og:description", content: "Modération de la communauté Arija." },
       { property: "og:type", content: "website" },
       { name: "robots", content: "noindex" },
     ],
@@ -115,7 +115,7 @@ function Admin() {
     return (
       <Carte>
         Connectez-vous.{" "}
-        <Link to="/connexion" className="font-semibold text-accent">
+        <Link to="/connexion" className="font-semibold text-primary">
           Se connecter
         </Link>
       </Carte>
@@ -184,7 +184,7 @@ function Admin() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">{t("espaceResponsable")}</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{t("espaceResponsable")}</h1>
       {role === "moderator" && (
         <Carte className="text-sm text-muted-foreground">{t("accesRestreint")}</Carte>
       )}
@@ -205,7 +205,7 @@ function Admin() {
       {onglet === "signalements" && (
         <>
           <Carte className="space-y-2">
-            <h2 className="font-bold">Membres les plus signalés</h2>
+            <h2 className="font-semibold">Membres les plus signalés</h2>
             {compteurs.length === 0 && (
               <p className="text-sm text-muted-foreground">Aucun signalement.</p>
             )}
@@ -221,7 +221,7 @@ function Admin() {
           {signalements.map((s) => (
             <Carte key={s.id} className="space-y-1 text-sm">
               <div className="flex items-center justify-between">
-                <span className="font-bold">
+                <span className="font-semibold">
                   {raisonsSignalement.find((r) => r.code === s.raison)?.nom ?? s.raison} ·{" "}
                   {s.cible_type}
                 </span>
@@ -250,8 +250,8 @@ function Admin() {
           {litiges.map((l) => (
             <Carte key={l.id} className="space-y-2 text-sm">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-bold">Commande {l.order_id.slice(0, 8)}…</span>
-                <Etiquette ton={l.statut === "ouvert" ? "urgent" : "succes"}>{l.statut}</Etiquette>
+                <span className="font-semibold">Commande {l.order_id.slice(0, 8)}…</span>
+                <Etiquette ton={l.statut === "ouvert" ? "attente" : "succes"}>{l.statut}</Etiquette>
               </div>
               <p className="text-muted-foreground">{l.description}</p>
               <p className="text-xs text-muted-foreground">
@@ -292,7 +292,7 @@ function Admin() {
         <>
           {enAttente.length > 0 && (
             <Carte className="space-y-2 text-sm">
-              <h2 className="font-bold">{t("enAttenteValidation")}</h2>
+              <h2 className="font-semibold">{t("enAttenteValidation")}</h2>
               {enAttente.map((a) => (
                 <div key={a.id} className="flex items-center justify-between">
                   <span className="font-mono text-xs">{a.payment_id.slice(0, 8)}…</span>
@@ -311,8 +311,8 @@ function Admin() {
               .map((p) => (
                 <Carte key={p.id} className="space-y-2 text-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-bold">{c.titre}</span>
-                    <span className="font-extrabold text-primary">
+                    <span className="font-semibold">{c.titre}</span>
+                    <span className="font-semibold text-primary">
                       {formatPi(Number(p.montant))}
                     </span>
                   </div>
@@ -338,7 +338,7 @@ function Admin() {
       {onglet === "reglages" && estAdminRole && (
         <>
           <Carte className="space-y-3 text-sm">
-            <h2 className="font-bold">{t("seuilDoubleValidation")}</h2>
+            <h2 className="font-semibold">{t("seuilDoubleValidation")}</h2>
             <Champ label={t("seuilDoubleValidation")}>
               <Saisie
                 type="number"
@@ -366,7 +366,7 @@ function Admin() {
           </Carte>
 
           <Carte className="space-y-3 text-sm">
-            <h2 className="font-bold">{t("roles")}</h2>
+            <h2 className="font-semibold">{t("roles")}</h2>
             <div className="flex flex-wrap gap-2">
               <Selection value={cibleRole} onChange={(e) => setCibleRole(e.target.value)}>
                 <option value="">—</option>
@@ -448,7 +448,7 @@ function Admin() {
                             }
                           }}
                         >
-                          ✕ {r}
+                          Retirer {r}
                         </Bouton>
                       ))}
                   </div>
@@ -457,13 +457,13 @@ function Admin() {
           </Carte>
 
           <Carte className="space-y-2 text-sm">
-            <h2 className="font-bold">{t("journalAudit")}</h2>
+            <h2 className="font-semibold">{t("journalAudit")}</h2>
             {audit.length === 0 && <p className="text-muted-foreground">—</p>}
             {audit.map((a) => (
               <div key={a.id} className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-mono text-xs">{a.action}</span>
                 <span className="text-xs text-muted-foreground">
-                  {a.acteur?.slice(0, 8)}… → {a.cible?.slice(0, 8)}… ·{" "}
+                  {a.acteur?.slice(0, 8)}… · {a.cible?.slice(0, 8)}… ·{" "}
                   {new Date(a.date).toLocaleString("fr-FR")}
                 </span>
               </div>
@@ -477,8 +477,8 @@ function Admin() {
 
 function LienVersCommande({ id: _id }: { id: string }) {
   return (
-    <Link to="/portefeuille" className="self-center text-xs font-semibold text-accent">
-      Voir la commande →
+    <Link to="/portefeuille" className="self-center text-xs font-semibold text-primary">
+      Voir la commande
     </Link>
   );
 }

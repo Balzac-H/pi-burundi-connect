@@ -15,7 +15,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/AppShell";
-import { AssistantWico } from "../components/AssistantWico";
+import { AssistantArija } from "../components/AssistantArija";
 
 import { EtatReseau } from "../components/EtatReseau";
 import { enregistrerServiceWorker } from "../lib/pwa";
@@ -26,8 +26,8 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h1 className="text-6xl font-semibold text-foreground">404</h1>
+        <h2 className="mt-4 text-lg font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -54,9 +54,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
+        <h1 className="text-xl font-semibold text-foreground">This page didn't load</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
@@ -87,21 +85,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Accueil — WICO" },
+      { title: "Arija — Marché et emplois solidaires au Burundi" },
       {
         name: "description",
         content:
           "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi.",
       },
-      { name: "author", content: "WICO" },
+      { name: "author", content: "Arija" },
       { name: "theme-color", content: "#1F4E3D" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "WICO" },
+      { name: "apple-mobile-web-app-title", content: "Arija" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "Accueil — WICO" },
-      { name: "twitter:title", content: "Accueil — WICO" },
+      { property: "og:title", content: "Arija — Marché et emplois solidaires au Burundi" },
+      { name: "twitter:title", content: "Arija — Marché et emplois solidaires au Burundi" },
       {
         property: "og:description",
         content:
@@ -129,7 +127,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/icon-192.png" },
@@ -174,7 +172,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <EtatReseau />
-      {!sansShell && <AssistantWico />}
+      {!sansShell && <AssistantArija />}
       <Toaster position="top-center" richColors />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       {sansShell ? (

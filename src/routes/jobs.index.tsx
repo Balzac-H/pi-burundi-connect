@@ -20,13 +20,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/jobs/")({
   head: () => ({
     meta: [
-      { title: "Offres d'emploi payées en Pi — WICO" },
+      { title: "Offres d'emploi payées en Pi — Arija" },
       {
         name: "description",
         content:
           "Parcourez les offres d'emploi au Burundi : menuiserie, électricité, construction, nettoyage. Salaires payés en Pi.",
       },
-      { property: "og:title", content: "Offres d'emploi — WICO" },
+      { property: "og:title", content: "Offres d'emploi — Arija" },
       {
         property: "og:description",
         content: "Trouvez un job près de chez vous et soyez payé en Pi.",
@@ -76,7 +76,7 @@ function ListeJobs() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-extrabold text-primary">JOBS 💼</h1>
+        <h1 className="text-2xl font-semibold text-foreground">JOBS</h1>
         <div className="flex gap-2">
           <LienBouton to="/jobs/postulations" variante="contour" taille="sm">
             Mes postulations
@@ -110,7 +110,7 @@ function ListeJobs() {
         />
       </Carte>
 
-      <h2 className="text-lg font-bold">{t("jobs")}</h2>
+      <h2 className="text-lg font-semibold text-foreground">{t("jobs")}</h2>
       <div className="grid gap-3 lg:grid-cols-2">
         {resultats.map((j) => (
           <CarteJob
@@ -139,21 +139,21 @@ function CarteJob({ j, verifie, postule }: { j: JobDb; verifie: boolean; postule
   return (
     <Carte className="space-y-3">
       <div className="flex items-center gap-2">
-        <Avatar emoji={emp?.photo_url ?? "👤"} taille="sm" />
+        <Avatar emoji={emp?.photo_url ?? undefined} nom={emp?.nom ?? undefined} taille="sm" />
         <Link to="/profil/$id" params={{ id: j.employeur_id }} className="text-sm font-semibold">
           {emp?.nom ?? "…"}
         </Link>
         <BadgeVerifie verifie={verifie} />
       </div>
       <div>
-        <p className="text-xs font-semibold text-accent">{j.categorie}</p>
-        <h2 className="font-bold leading-snug">{j.titre}</h2>
+        <p className="text-xs font-semibold text-primary">{j.categorie}</p>
+        <h2 className="font-semibold leading-snug text-foreground">{j.titre}</h2>
       </div>
       <div className="flex flex-wrap gap-2">
         {j.salaire != null && <Etiquette ton="pi">{formatPi(Number(j.salaire))}</Etiquette>}
-        {j.duree && <Etiquette>⏱️ {j.duree}</Etiquette>}
-        <Etiquette>📍 {j.localisation}</Etiquette>
-        {j.urgent && <Etiquette ton="urgent">⚡ Urgent</Etiquette>}
+        {j.duree && <Etiquette>{j.duree}</Etiquette>}
+        <Etiquette>{j.localisation}</Etiquette>
+        {j.urgent && <Etiquette ton="urgent">Urgent</Etiquette>}
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <LienBouton to="/jobs/$id" params={{ id: j.id }} variante="contour" taille="sm">
@@ -167,7 +167,7 @@ function CarteJob({ j, verifie, postule }: { j: JobDb; verifie: boolean; postule
             toast.success("Postulation enregistrée !");
           }}
         >
-          {postule ? "POSTULÉ ✓" : "POSTULER"}
+          {postule ? "POSTULÉ" : "POSTULER"}
         </Bouton>
         <BoutonSignaler cibleType="job" cibleId={j.id} utilisateurId={j.employeur_id} />
       </div>

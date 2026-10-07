@@ -12,13 +12,13 @@ import { BesoinCompte } from "@/components/BesoinCompte";
 export const Route = createFileRoute("/jobs/creer")({
   head: () => ({
     meta: [
-      { title: "Publier une offre d'emploi — WICO" },
+      { title: "Publier une offre d'emploi — Arija" },
       {
         name: "description",
         content:
           "Publiez gratuitement une offre d'emploi payée en Pi et recrutez des travailleurs près de chez vous.",
       },
-      { property: "og:title", content: "Publier une offre d'emploi — WICO" },
+      { property: "og:title", content: "Publier une offre d'emploi — Arija" },
       { property: "og:description", content: "Recrutez rapidement au Burundi, paiement en Pi." },
     ],
   }),
@@ -77,7 +77,7 @@ function CreerOffre() {
         }
       }}
     >
-      <h1 className="text-2xl font-extrabold text-primary">Créer une offre d'emploi</h1>
+      <h1 className="text-2xl font-semibold text-foreground">Créer une offre d'emploi</h1>
 
       <Carte className="space-y-4">
         <Champ label="Titre du poste" obligatoire>
@@ -129,8 +129,8 @@ function CreerOffre() {
             placeholder="Quartier Rohero, Bujumbura"
           />
         </Champ>
-        <label className="flex items-center gap-2 text-sm font-semibold">
-          <input name="urgent" type="checkbox" className="size-4" /> ⚡ Offre urgente
+        <label className="flex min-h-11 items-center gap-2 text-sm font-semibold">
+          <input name="urgent" type="checkbox" className="size-4" /> Offre urgente
         </label>
       </Carte>
 

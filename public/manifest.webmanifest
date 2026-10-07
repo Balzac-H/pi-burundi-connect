@@ -1,11 +1,11 @@
 {
-  "name": "WICO — Wisdom Connect",
-  "short_name": "WICO",
-  "description": "Emplois, marché et paiements en Pi au Burundi.",
+  "name": "Arija — Marché et emplois solidaires au Burundi",
+  "short_name": "Arija",
+  "description": "Marché et emplois solidaires au Burundi, payés en Pi.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#FBFAF7",
   "theme_color": "#1F4E3D",
   "lang": "fr",
   "icons": [

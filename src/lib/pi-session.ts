@@ -13,7 +13,7 @@ async function traiterIncomplet(p: PaymentDTO) {
 }
 
 /**
- * Connexion Pi complète : SDK → vérification serveur → session WICO.
+ * Connexion Pi complète : SDK → vérification serveur → session Arija.
  * - `tokenHash` renseigné : session ouverte via lien magique (nouveau membre ou
  *   membre existant sans session).
  * - `tokenHash` null : un compte était déjà connecté, l'identité Pi vient

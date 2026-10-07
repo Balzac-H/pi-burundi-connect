@@ -22,7 +22,6 @@ import { listerJobs, nomTypeCompte, type JobDb } from "@/lib/annonces";
 import { useSession } from "@/lib/auth";
 import { useT } from "@/lib/i18n";
 import { formatPi } from "@/lib/store";
-import { MessageCircle, Pencil, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 export function ProfilComplet({ id }: { id: string }) {
@@ -79,17 +78,21 @@ export function ProfilComplet({ id }: { id: string }) {
       <Carte className="space-y-4">
         <div className="flex gap-4">
           {u.photo_url ? (
-            <img src={u.photo_url} alt="" className="size-20 shrink-0 rounded-full object-cover" />
+            <img
+              src={u.photo_url}
+              alt={"Photo de " + u.nom}
+              className="size-20 shrink-0 rounded-full object-cover"
+            />
           ) : (
-            <Avatar emoji="👤" taille="lg" />
+            <Avatar nom={u.nom} taille="lg" />
           )}
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-extrabold sm:text-2xl">{u.nom}</h1>
+            <h1 className="text-xl font-semibold sm:text-2xl">{u.nom}</h1>
             <p className="text-sm text-muted-foreground">{nomTypeCompte(u.type_compte)}</p>
-            <p className="mt-1 text-sm text-muted-foreground">📍 {u.ville ?? "Burundi"}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{u.ville ?? "Burundi"}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {(u.competences ?? []).map((c) => (
-                <Etiquette key={c}>🏷️ {c}</Etiquette>
+                <Etiquette key={c}>{c}</Etiquette>
               ))}
             </div>
           </div>
@@ -105,10 +108,10 @@ export function ProfilComplet({ id }: { id: string }) {
           {monProfil ? (
             <>
               <LienBouton to="/profil/modifier" taille="sm">
-                <Pencil className="size-4" /> MODIFIER
+                Modifier
               </LienBouton>
               <LienBouton to="/portefeuille" variante="pi" taille="sm">
-                🧾 {t("mesCommandes")}
+                {t("mesCommandes")}
               </LienBouton>
             </>
           ) : (
@@ -120,16 +123,16 @@ export function ProfilComplet({ id }: { id: string }) {
                 variante="secondaire"
                 taille="sm"
               >
-                <MessageCircle className="size-4" /> {t("chat")}
+                {t("chat")}
               </LienBouton>
               {u.whatsapp && (
                 <a
-                  href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom} 👋`)}
+                  href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom}`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
                 >
-                  💬 {t("contactWhatsapp")}
+                  {t("contactWhatsapp")}
                 </a>
               )}
             </>
@@ -144,7 +147,7 @@ export function ProfilComplet({ id }: { id: string }) {
               );
             }}
           >
-            <Share2 className="size-4" /> PARTAGER
+            Partager
           </Bouton>
           {!monProfil && <BoutonSignaler cibleType="profil" cibleId={u.id} utilisateurId={u.id} />}
         </div>
@@ -153,18 +156,14 @@ export function ProfilComplet({ id }: { id: string }) {
       <section>
         <TitreSection>{t("statistiques")}</TitreSection>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Stat
-            icone="👥"
-            valeur={(stats?.followers ?? 0).toLocaleString("fr-FR")}
-            label={t("abonnes")}
-          />
-          <Stat icone="🔁" valeur={String(stats?.following ?? 0)} label={t("abonnementsCourt")} />
-          <Stat icone="💼" valeur={String(stats?.offres ?? 0)} label={t("offresPubliees")} />
-          <Stat icone="🛍️" valeur={String(stats?.ventes ?? 0)} label={t("ventesConfirmees")} />
+          <Stat valeur={(stats?.followers ?? 0).toLocaleString("fr-FR")} label={t("abonnes")} />
+          <Stat valeur={String(stats?.following ?? 0)} label={t("abonnementsCourt")} />
+          <Stat valeur={String(stats?.offres ?? 0)} label={t("offresPubliees")} />
+          <Stat valeur={String(stats?.ventes ?? 0)} label={t("ventesConfirmees")} />
         </div>
         <Carte className="mt-3 flex items-center justify-between">
-          <span className="text-sm font-semibold">✅ {t("avis")}</span>
-          <span className="text-lg font-extrabold text-accent">
+          <span className="text-sm font-semibold">{t("avis")}</span>
+          <span className="text-lg font-semibold text-primary">
             {stats?.note ? `${stats.note.toFixed(1)} / 5` : "—"} ({stats?.nbAvis ?? 0})
           </span>
         </Carte>
@@ -174,12 +173,15 @@ export function ProfilComplet({ id }: { id: string }) {
         <section>
           <TitreSection
             action={
-              <Link to="/market" className="text-xs font-semibold text-accent">
+              <Link
+                to="/market"
+                className="inline-flex min-h-11 items-center text-xs font-semibold text-primary"
+              >
                 {t("voirTout")}
               </Link>
             }
           >
-            🛍️ {t("market")}
+            {t("market")}
           </TitreSection>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {annonces.slice(0, 6).map((p) => (
@@ -187,22 +189,22 @@ export function ProfilComplet({ id }: { id: string }) {
                 key={p.id}
                 to="/market/$id"
                 params={{ id: p.id }}
-                className="space-y-1 rounded-xl border border-border/60 bg-card p-2"
+                className="space-y-1 rounded-xl border border-border bg-card p-2"
               >
                 {p.photo_url ? (
                   <img
                     src={p.photo_url}
                     alt={p.titre}
                     loading="lazy"
-                    className="h-24 w-full rounded-lg object-cover"
+                    className="h-24 w-full rounded-md object-cover"
                   />
                 ) : (
-                  <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-3xl">
-                    🛍️
+                  <div className="grid h-24 place-items-center rounded-md bg-primary-soft text-xs text-muted-foreground">
+                    Pas de photo
                   </div>
                 )}
                 <p className="line-clamp-1 text-xs font-semibold">{p.titre}</p>
-                <p className="text-sm font-extrabold text-primary">{formatPi(Number(p.prix))}</p>
+                <p className="text-sm font-semibold text-primary">{formatPi(Number(p.prix))}</p>
               </Link>
             ))}
           </div>
@@ -213,12 +215,15 @@ export function ProfilComplet({ id }: { id: string }) {
         <section>
           <TitreSection
             action={
-              <Link to="/jobs" className="text-xs font-semibold text-accent">
+              <Link
+                to="/jobs"
+                className="inline-flex min-h-11 items-center text-xs font-semibold text-primary"
+              >
                 {t("voirTout")}
               </Link>
             }
           >
-            💼 {t("jobs")}
+            {t("jobs")}
           </TitreSection>
           <div className="space-y-2">
             {emplois.slice(0, 5).map((j) => (
@@ -230,7 +235,7 @@ export function ProfilComplet({ id }: { id: string }) {
                   </p>
                 </div>
                 <LienBouton to="/jobs/$id" params={{ id: j.id }} variante="contour" taille="sm">
-                  VOIR
+                  Voir
                 </LienBouton>
               </Carte>
             ))}
@@ -246,7 +251,9 @@ export function ProfilComplet({ id }: { id: string }) {
           {avis.map((a) => (
             <Carte key={a.id} className="space-y-1">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="font-semibold">{"⭐".repeat(a.note)}</h3>
+                <h3 className="font-semibold" aria-label={`Note : ${a.note} sur 5`}>
+                  {a.note} / 5
+                </h3>
                 <span className="text-xs text-muted-foreground">
                   {new Date(a.created_at).toLocaleDateString("fr-FR")}
                 </span>
@@ -268,7 +275,10 @@ export function ProfilComplet({ id }: { id: string }) {
             <LienBouton to="/market/boutique" variante="contour" taille="sm">
               {t("maBoutique")}
             </LienBouton>
-            <Link to="/parametres" className="self-center text-xs font-semibold text-accent">
+            <Link
+              to="/parametres"
+              className="inline-flex min-h-11 items-center text-xs font-semibold text-primary"
+            >
               {t("parametres")}
             </Link>
           </div>
@@ -278,11 +288,10 @@ export function ProfilComplet({ id }: { id: string }) {
   );
 }
 
-function Stat({ icone, valeur, label }: { icone: string; valeur: string; label: string }) {
+function Stat({ valeur, label }: { valeur: string; label: string }) {
   return (
     <Carte className="text-center">
-      <p className="text-lg">{icone}</p>
-      <p className="text-lg font-extrabold text-primary">{valeur}</p>
+      <p className="text-lg font-semibold text-primary">{valeur}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </Carte>
   );

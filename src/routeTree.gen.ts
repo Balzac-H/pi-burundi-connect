@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as ActiviteRouteImport } from './routes/activite'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ConditionsRouteImport } from './routes/conditions'
@@ -22,6 +23,7 @@ import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ParametresRouteImport } from './routes/parametres'
 import { Route as PortefeuilleRouteImport } from './routes/portefeuille'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TransparenceRouteImport } from './routes/transparence'
 import { Route as VendeursRouteImport } from './routes/vendeurs'
 import { Route as JobsIndexRouteImport } from './routes/jobs.index'
 import { Route as JobsIdRouteImport } from './routes/jobs.$id'
@@ -40,6 +42,11 @@ import { Route as ProfilModifierRouteImport } from './routes/profil.modifier'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActiviteRoute = ActiviteRouteImport.update({
@@ -100,6 +107,11 @@ const PortefeuilleRoute = PortefeuilleRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransparenceRoute = TransparenceRouteImport.update({
+  id: '/transparence',
+  path: '/transparence',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VendeursRoute = VendeursRouteImport.update({
@@ -175,6 +187,7 @@ const ProfilModifierRoute = ProfilModifierRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
@@ -187,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
@@ -204,6 +218,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
@@ -216,6 +231,7 @@ export interface FileRoutesByTo {
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
@@ -234,6 +250,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
@@ -246,6 +263,7 @@ export interface FileRoutesById {
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
@@ -265,6 +283,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-propos'
     | '/activite'
     | '/admin'
     | '/conditions'
@@ -277,6 +296,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
+    | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
@@ -294,6 +314,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a-propos'
     | '/activite'
     | '/admin'
     | '/conditions'
@@ -306,6 +327,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
+    | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
@@ -323,6 +345,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/a-propos'
     | '/activite'
     | '/admin'
     | '/conditions'
@@ -335,6 +358,7 @@ export interface FileRouteTypes {
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
+    | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
@@ -353,6 +377,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AProposRoute: typeof AProposRoute
   ActiviteRoute: typeof ActiviteRoute
   AdminRoute: typeof AdminRoute
   ConditionsRoute: typeof ConditionsRoute
@@ -365,6 +390,7 @@ export interface RootRouteChildren {
   ParametresRoute: typeof ParametresRoute
   PortefeuilleRoute: typeof PortefeuilleRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TransparenceRoute: typeof TransparenceRoute
   VendeursRoute: typeof VendeursRoute
   JobsIdRoute: typeof JobsIdRoute
   JobsCreerRoute: typeof JobsCreerRoute
@@ -388,6 +414,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/activite': {
@@ -472,6 +505,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transparence': {
+      id: '/transparence'
+      path: '/transparence'
+      fullPath: '/transparence'
+      preLoaderRoute: typeof TransparenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vendeurs': {
@@ -577,6 +617,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AProposRoute: AProposRoute,
   ActiviteRoute: ActiviteRoute,
   AdminRoute: AdminRoute,
   ConditionsRoute: ConditionsRoute,
@@ -589,6 +630,7 @@ const rootRouteChildren: RootRouteChildren = {
   ParametresRoute: ParametresRoute,
   PortefeuilleRoute: PortefeuilleRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TransparenceRoute: TransparenceRoute,
   VendeursRoute: VendeursRoute,
   JobsIdRoute: JobsIdRoute,
   JobsCreerRoute: JobsCreerRoute,

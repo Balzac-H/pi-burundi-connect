@@ -4,15 +4,15 @@ import { ProfilComplet } from "@/components/ProfilComplet";
 export const Route = createFileRoute("/profil/$id")({
   head: () => ({
     meta: [
-      { title: "Profil — WICO" },
+      { title: "Profil — Arija" },
       {
         name: "description",
-        content: "Profil d'un membre WICO : avis, offres et ventes vérifiées.",
+        content: "Profil d'un membre Arija : avis, offres et ventes vérifiées.",
       },
-      { property: "og:title", content: "Profil — WICO" },
+      { property: "og:title", content: "Profil — Arija" },
       {
         property: "og:description",
-        content: "Vérifiez la réputation d'un vendeur ou employeur sur WICO.",
+        content: "Vérifiez la réputation d'un vendeur ou employeur sur Arija.",
       },
     ],
   }),

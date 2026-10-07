@@ -12,18 +12,17 @@ import {
 import { useT } from "@/lib/i18n";
 import { formatPi } from "@/lib/store";
 import { toast } from "sonner";
-import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
 
 export const Route = createFileRoute("/market/boutique")({
   head: () => ({
     meta: [
-      { title: "Ma boutique — WICO" },
+      { title: "Ma boutique — Arija" },
       {
         name: "description",
         content: "Gérez vos annonces, vos photos de produits et votre stock sur le Market en Pi.",
       },
-      { property: "og:title", content: "Ma boutique — WICO" },
-      { property: "og:description", content: "Vos produits en vente sur WICO." },
+      { property: "og:title", content: "Ma boutique — Arija" },
+      { property: "og:description", content: "Vos produits en vente sur Arija." },
     ],
   }),
   component: Boutique,
@@ -46,9 +45,9 @@ function Boutique() {
   if (!utilisateur) {
     return (
       <Carte className="mx-auto max-w-md space-y-3 text-center">
-        <h1 className="text-xl font-extrabold text-primary">Ma boutique</h1>
+        <h1 className="text-xl font-semibold text-foreground">Ma boutique</h1>
         <p className="text-sm text-muted-foreground">Connectez-vous pour gérer vos produits.</p>
-        <LienBouton to="/connexion">SE CONNECTER</LienBouton>
+        <LienBouton to="/connexion">Se connecter</LienBouton>
       </Carte>
     );
   }
@@ -62,22 +61,22 @@ function Boutique() {
           </LienBouton>
         }
       >
-        Ma boutique 🏪
+        Ma boutique
       </TitreSection>
 
       <Carte className="grid grid-cols-2 gap-3 text-center sm:grid-cols-3">
         <div>
-          <p className="text-lg font-extrabold text-primary">{produits.length}</p>
+          <p className="text-lg font-semibold text-primary">{produits.length}</p>
           <p className="text-xs text-muted-foreground">Annonces</p>
         </div>
         <div>
-          <p className="text-lg font-extrabold text-primary">
+          <p className="text-lg font-semibold text-primary">
             {produits.reduce((s, p) => s + p.stock, 0)}
           </p>
           <p className="text-xs text-muted-foreground">Articles en stock</p>
         </div>
         <div>
-          <p className="text-lg font-extrabold text-accent">
+          <p className="text-lg font-semibold text-primary">
             {formatPi(produits.reduce((s, p) => s + Number(p.prix) * p.stock, 0))}
           </p>
           <p className="text-xs text-muted-foreground">Valeur du stock</p>
@@ -99,16 +98,16 @@ function Boutique() {
                   className="h-32 w-full rounded-lg object-cover"
                 />
               ) : (
-                <div className="grid h-32 place-items-center rounded-lg bg-primary-soft text-5xl">
-                  🛍️
+                <div className="grid h-32 place-items-center rounded-lg bg-primary-soft text-xs font-semibold text-primary">
+                  Aucune photo
                 </div>
               )}
-              <h2 className="font-bold leading-snug">{p.titre}</h2>
+              <h2 className="font-semibold leading-snug">{p.titre}</h2>
               <div className="flex flex-wrap gap-2">
                 <Etiquette ton="pi">{formatPi(Number(p.prix))}</Etiquette>
                 <Etiquette ton="succes">Stock : {p.stock}</Etiquette>
                 <Etiquette>{p.categorie}</Etiquette>
-                <Etiquette ton={p.publie ? "succes" : "pi"}>
+                <Etiquette ton={p.publie ? "succes" : "neutre"}>
                   {p.publie ? "Visible" : "Masquée"}
                 </Etiquette>
               </div>
@@ -119,7 +118,7 @@ function Boutique() {
                   variante="contour"
                   taille="sm"
                 >
-                  <Pencil className="size-4" /> MODIFIER
+                  Modifier
                 </LienBouton>
                 <Bouton
                   variante="secondaire"
@@ -147,15 +146,7 @@ function Boutique() {
                     }
                   }}
                 >
-                  {p.publie ? (
-                    <>
-                      <EyeOff className="size-4" /> MASQUER
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="size-4" /> PUBLIER
-                    </>
-                  )}
+                  {p.publie ? "Masquer" : "Publier"}
                 </Bouton>
               </div>
               <Bouton
@@ -172,7 +163,7 @@ function Boutique() {
                   }
                 }}
               >
-                <Trash2 className="size-4" /> SUPPRIMER
+                Supprimer
               </Bouton>
             </Carte>
           ))}

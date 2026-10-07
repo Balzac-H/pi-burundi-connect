@@ -7,14 +7,13 @@ import {
   type ProduitDb,
   type Profil,
 } from "@/lib/comptes";
-import { Bouton, Carte, Saisie, Selection, LienBouton } from "@/components/ui-kit";
+import { Bouton, Carte, Saisie, Selection, LienBouton, TitreSection } from "@/components/ui-kit";
 import { categoriesMarket } from "@/lib/data";
 import { useT } from "@/lib/i18n";
 import { chargerSuivis } from "@/lib/social";
 import { store, useStore, formatPi } from "@/lib/store";
 import { imageProduit } from "@/lib/produits-visuels";
 import { toast } from "sonner";
-import { Heart, Search, ShoppingCart, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/market/")({
@@ -26,7 +25,7 @@ export const Route = createFileRoute("/market/")({
         content:
           "Produits frais, vêtements, électronique et services près de chez vous. Achetez et vendez en Pi.",
       },
-      { property: "og:title", content: "Market — WICO" },
+      { property: "og:title", content: "Market — Arija" },
       {
         property: "og:description",
         content: "Le marché peer-to-peer du Burundi, paiements en Pi.",
@@ -92,18 +91,12 @@ function Market() {
     <div className="space-y-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:justify-between">
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-extrabold text-primary">Market WICO</h1>
+          <h1 className="truncate text-2xl font-semibold text-foreground">Market Arija</h1>
           <p className="text-sm text-muted-foreground">Achetez près de chez vous, payez en Pi.</p>
         </div>
         <div className="flex shrink-0 gap-2">
-          <LienBouton
-            to="/market/boutique"
-            variante="contour"
-            taille="sm"
-            aria-label={t("maBoutique")}
-          >
-            <Store className="size-4" />
-            <span className="hidden sm:inline">{t("maBoutique")}</span>
+          <LienBouton to="/market/boutique" variante="contour" taille="sm">
+            {t("maBoutique")}
           </LienBouton>
           <LienBouton to="/market/vendre" variante="secondaire" taille="sm">
             {t("vendre")}
@@ -113,13 +106,12 @@ function Market() {
 
       <label className="relative block">
         <span className="sr-only">{t("rechercher")}</span>
-        <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
         <Saisie
           placeholder={t("rechercherPlaceholder")}
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
           maxLength={80}
-          className="min-h-13 rounded-xl bg-card pl-12 pr-4 text-base shadow-[var(--shadow-card)]"
+          className="min-h-13 rounded-md bg-card px-4 text-base"
         />
       </label>
 
@@ -155,12 +147,12 @@ function Market() {
           onClick={() => setSuivisSeulement((v) => !v)}
           className="whitespace-nowrap"
         >
-          {suivisSeulement ? "Suivis ✓" : t("abonnements")}
+          {suivisSeulement ? "Suivis" : t("abonnements")}
         </Bouton>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-primary">{t("produitsCommunaute")}</h2>
+        <TitreSection>{t("produitsCommunaute")}</TitreSection>
         {liste.length === 0 ? (
           <Carte className="text-sm text-muted-foreground">{t("aucuneAnnonce")}</Carte>
         ) : (
@@ -192,17 +184,12 @@ function CarteAnnonce({ p, favori }: { p: ProduitDb; favori: boolean }) {
         className="group relative block aspect-square overflow-hidden rounded-lg bg-muted"
       >
         {p.photo_url ? (
-          <img
-            src={p.photo_url}
-            alt={p.titre}
-            className="size-full object-cover transition duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
+          <img src={p.photo_url} alt={p.titre} className="size-full object-cover" loading="lazy" />
         ) : (
           <img
             src={imageProduit(p.id, p.categorie)}
             alt={p.titre}
-            className="size-full object-cover transition duration-300 group-hover:scale-105"
+            className="size-full object-cover"
             loading="lazy"
           />
         )}
@@ -214,22 +201,21 @@ function CarteAnnonce({ p, favori }: { p: ProduitDb; favori: boolean }) {
       >
         {p.titre}
       </Link>
-      <p className="text-xl font-extrabold text-foreground">{formatPi(Number(p.prix))}</p>
+      <p className="text-xl font-semibold text-primary">{formatPi(Number(p.prix))}</p>
       {v && (
         <p className="truncate text-xs text-muted-foreground">
           {v.nom}
           {v.ville ? ` · ${v.ville}` : ""}
         </p>
       )}
-      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         <button
           onClick={() => store.basculerFavori(p.id)}
-          className="inline-flex items-center gap-1"
-          aria-label="Favori"
+          className="inline-flex min-h-11 items-center gap-1 font-semibold text-primary"
         >
-          <Heart className={favori ? "size-4 fill-destructive text-destructive" : "size-4"} />
+          {favori ? "Retirer des favoris" : "Ajouter aux favoris"}
         </button>
-        <span>✔ {p.stock}</span>
+        <span>Stock : {p.stock}</span>
       </div>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
         <LienBouton
@@ -245,13 +231,12 @@ function CarteAnnonce({ p, favori }: { p: ProduitDb; favori: boolean }) {
           variante="secondaire"
           taille="sm"
           aria-label={`Ajouter ${p.titre} au panier`}
-          className="w-9 px-0"
           onClick={() => {
             store.ajouterAuPanier(p.id, 1, p.titre);
             toast.success(t("ajouteAuPanier"));
           }}
         >
-          <ShoppingCart className="size-4" />
+          Panier
         </Bouton>
       </div>
       {v?.whatsapp && (
@@ -259,9 +244,9 @@ function CarteAnnonce({ p, favori }: { p: ProduitDb; favori: boolean }) {
           href={lienWhatsApp(v.whatsapp, `Bonjour, je suis intéressé par « ${p.titre} »`)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-2 text-center text-xs font-semibold text-success"
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-2 text-center text-xs font-semibold text-success"
         >
-          💬 CONTACTER SUR WHATSAPP
+          Contacter sur WhatsApp
         </a>
       )}
     </article>

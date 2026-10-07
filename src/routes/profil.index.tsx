@@ -13,7 +13,7 @@ import {
 } from "@/lib/comptes";
 import { formatPi } from "@/lib/store";
 import { toast } from "sonner";
-import { LogOut, Pencil, Share2, MessageCircle } from "lucide-react";
+
 import { BoutonTheme } from "@/components/Confiance";
 import { useT } from "@/lib/i18n";
 import { activerEspaceVendeur } from "@/lib/activite";
@@ -21,13 +21,13 @@ import { activerEspaceVendeur } from "@/lib/activite";
 export const Route = createFileRoute("/profil/")({
   head: () => ({
     meta: [
-      { title: "Mon profil — WICO" },
+      { title: "Mon profil — Arija" },
       {
         name: "description",
         content:
-          "Gérez votre photo, vos informations, votre numéro WhatsApp et vos produits en vente sur WICO.",
+          "Gérez votre photo, vos informations, votre numéro WhatsApp et vos produits en vente sur Arija.",
       },
-      { property: "og:title", content: "Mon profil — WICO" },
+      { property: "og:title", content: "Mon profil — Arija" },
       {
         property: "og:description",
         content: "Votre compte, vos produits et vos contacts sur la plateforme.",
@@ -55,12 +55,12 @@ function MonProfil() {
   if (!utilisateur) {
     return (
       <Carte className="mx-auto max-w-md space-y-3 text-center">
-        <h1 className="text-xl font-extrabold text-primary">Mon profil</h1>
+        <h1 className="text-xl font-semibold text-primary">Mon profil</h1>
         <p className="text-sm text-muted-foreground">
           Créez votre compte pour ajouter votre photo, publier vos produits et être contacté sur
           WhatsApp.
         </p>
-        <LienBouton to="/connexion">SE CONNECTER / S'INSCRIRE</LienBouton>
+        <LienBouton to="/connexion">Se connecter</LienBouton>
       </Carte>
     );
   }
@@ -76,20 +76,18 @@ function MonProfil() {
               className="size-20 shrink-0 rounded-full object-cover"
             />
           ) : (
-            <Avatar emoji="🧑🏿" taille="lg" />
+            <Avatar nom={profil?.nom} taille="lg" />
           )}
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-extrabold sm:text-2xl">{profil?.nom || "Mon compte"}</h1>
+            <h1 className="text-xl font-semibold sm:text-2xl">{profil?.nom || "Mon compte"}</h1>
             <p className="text-sm text-muted-foreground">{utilisateur.email}</p>
-            {profil?.ville && (
-              <p className="mt-1 text-sm text-muted-foreground">📍 {profil.ville}</p>
-            )}
+            {profil?.ville && <p className="mt-1 text-sm text-muted-foreground">{profil.ville}</p>}
             <div className="mt-2 flex flex-wrap gap-1.5">
               {(profil?.competences ?? []).map((c) => (
-                <Etiquette key={c}>🏷️ {c}</Etiquette>
+                <Etiquette key={c}>{c}</Etiquette>
               ))}
               {profil?.vendeur_actif && (
-                <Etiquette ton="succes">🛍️ {t("espaceVendeurActif")}</Etiquette>
+                <Etiquette ton="succes">{t("espaceVendeurActif")}</Etiquette>
               )}
             </div>
           </div>
@@ -109,27 +107,27 @@ function MonProfil() {
           .map((n) => (
             <a
               key={n}
-              href={lienWhatsApp(n, "Bonjour 👋")}
+              href={lienWhatsApp(n, "Bonjour")}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm font-semibold text-success underline underline-offset-2"
             >
-              <MessageCircle className="size-4" /> +{normaliserNumero(n)} — Discuter sur WhatsApp
+              +{normaliserNumero(n)} — Discuter sur WhatsApp
             </a>
           ))}
 
         <div className="flex flex-wrap gap-2">
           <LienBouton to="/profil/modifier" taille="sm">
-            <Pencil className="size-4" /> MODIFIER
+            Modifier
           </LienBouton>
           <LienBouton to="/portefeuille" variante="pi" taille="sm">
-            π MON WALLET
+            Mon portefeuille
           </LienBouton>
           <LienBouton to="/activite" variante="secondaire" taille="sm">
             {t("monActivite")}
           </LienBouton>
           {profil?.vendeur_actif ? (
-            <Etiquette ton="succes">🛍️ {t("espaceVendeurActif")}</Etiquette>
+            <Etiquette ton="succes">{t("espaceVendeurActif")}</Etiquette>
           ) : (
             <Bouton
               variante="secondaire"
@@ -164,7 +162,7 @@ function MonProfil() {
               )
             }
           >
-            <Share2 className="size-4" /> PARTAGER
+            Partager
           </Bouton>
           <Bouton
             variante="danger"
@@ -174,7 +172,7 @@ function MonProfil() {
               toast.success("Vous êtes déconnecté.");
             }}
           >
-            <LogOut className="size-4" /> SE DÉCONNECTER
+            Se déconnecter
           </Bouton>
         </div>
       </Carte>
@@ -201,15 +199,15 @@ function MonProfil() {
                   <img
                     src={p.photo_url}
                     alt={p.titre}
-                    className="h-32 w-full rounded-lg object-cover"
+                    className="h-32 w-full rounded-md object-cover"
                   />
                 ) : (
-                  <div className="grid h-32 place-items-center rounded-lg bg-primary-soft text-5xl">
-                    🛍️
+                  <div className="grid h-32 place-items-center rounded-md bg-primary-soft text-base text-muted-foreground">
+                    Pas de photo
                   </div>
                 )}
-                <h3 className="font-bold leading-snug">{p.titre}</h3>
-                <p className="text-sm font-extrabold text-primary">{formatPi(Number(p.prix))}</p>
+                <h3 className="font-semibold leading-snug">{p.titre}</h3>
+                <p className="text-sm font-semibold text-primary">{formatPi(Number(p.prix))}</p>
               </Carte>
             ))}
           </div>

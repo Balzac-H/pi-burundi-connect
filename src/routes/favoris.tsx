@@ -6,17 +6,16 @@ import { chargerSuivis } from "@/lib/social";
 import { store, useStore, formatPi } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart } from "lucide-react";
 
 export const Route = createFileRoute("/favoris")({
   head: () => ({
     meta: [
-      { title: "Mes favoris — WICO" },
+      { title: "Mes favoris — Arija" },
       {
         name: "description",
-        content: "Retrouvez les produits sauvegardés et les vendeurs que vous suivez sur WICO.",
+        content: "Retrouvez les produits sauvegardés et les vendeurs que vous suivez sur Arija.",
       },
-      { property: "og:title", content: "Mes favoris — WICO" },
+      { property: "og:title", content: "Mes favoris — Arija" },
       { property: "og:description", content: "Produits sauvegardés et profils suivis." },
     ],
   }),
@@ -53,10 +52,10 @@ function Favoris() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-5">
-      <h1 className="text-2xl font-extrabold text-primary">❤️ {t("favoris")}</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{t("favoris")}</h1>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">
+        <h2 className="section-label">
           {t("produitsSauvegardes")} ({annonces.length})
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -67,11 +66,11 @@ function Favoris() {
                   src={p.photo_url}
                   alt={p.titre}
                   loading="lazy"
-                  className="h-24 w-full rounded-lg object-cover"
+                  className="h-24 w-full rounded-md object-cover"
                 />
               ) : (
-                <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-5xl">
-                  🛍️
+                <div className="grid h-24 place-items-center rounded-md bg-primary-soft text-sm text-primary">
+                  Sans photo
                 </div>
               )}
               <h3 className="font-semibold leading-snug">{p.titre}</h3>
@@ -81,7 +80,7 @@ function Favoris() {
                   VOIR
                 </LienBouton>
                 <Bouton variante="contour" taille="sm" onClick={() => store.basculerFavori(p.id)}>
-                  <Heart className="size-4 fill-destructive text-destructive" />
+                  Retirer
                 </Bouton>
               </div>
             </Carte>
@@ -93,13 +92,13 @@ function Favoris() {
       </section>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">
+        <h2 className="section-label">
           {t("profilsSuivis")} ({profils.length})
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {profils.map((u) => (
             <Carte key={u.id} className="flex items-center gap-3">
-              <Avatar emoji={u.photo_url ?? "👤"} />
+              <Avatar emoji={u.photo_url ?? undefined} nom={u.nom} />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">{u.nom}</p>
                 <p className="truncate text-xs text-muted-foreground">{u.ville ?? u.bio ?? "—"}</p>

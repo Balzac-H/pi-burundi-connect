@@ -31,13 +31,13 @@ export const Route = createFileRoute("/market/vendre")({
   }),
   head: () => ({
     meta: [
-      { title: "Vendre un produit — WICO" },
+      { title: "Vendre un produit — Arija" },
       {
         name: "description",
         content:
           "Publiez votre annonce avec photos en quelques minutes et vendez vos produits en Pi partout au Burundi.",
       },
-      { property: "og:title", content: "Vendre un produit — WICO" },
+      { property: "og:title", content: "Vendre un produit — Arija" },
       {
         property: "og:description",
         content: "Publiez une annonce avec photo et recevez vos paiements en Pi.",
@@ -89,11 +89,11 @@ function Vendre() {
   if (!utilisateur) {
     return (
       <Carte className="mx-auto max-w-md space-y-3 text-center">
-        <h1 className="text-xl font-extrabold text-primary">Vendre un produit</h1>
+        <h1 className="text-xl font-semibold text-foreground">Vendre un produit</h1>
         <p className="text-sm text-muted-foreground">
           Connectez-vous pour publier vos produits avec photos.
         </p>
-        <LienBouton to="/connexion">SE CONNECTER</LienBouton>
+        <LienBouton to="/connexion">Se connecter</LienBouton>
       </Carte>
     );
   }
@@ -151,7 +151,7 @@ function Vendre() {
     };
     setEnregistrement(true);
     try {
-      // Publication = nouvel enregistrement ou transition false → true.
+      // Publication = nouvel enregistrement ou transition false -> true.
       if (valeurs.publie && (!existant || !existant.publie)) {
         const profil = await chargerProfil(utilisateur.id);
         if (!profil?.pi_uid) {
@@ -180,8 +180,8 @@ function Vendre() {
 
   return (
     <form className="mx-auto max-w-2xl space-y-4" onSubmit={soumettre}>
-      <h1 className="text-2xl font-extrabold text-primary">
-        {existant ? "Modifier l'annonce 🛠️" : "Vendre un produit 🛍️"}
+      <h1 className="text-2xl font-semibold text-foreground">
+        {existant ? "Modifier l'annonce" : "Vendre un produit"}
       </h1>
 
       <Carte className="space-y-4">
@@ -194,8 +194,8 @@ function Vendre() {
                 className="size-20 rounded-lg object-cover"
               />
             ) : (
-              <span className="grid size-20 place-items-center rounded-lg bg-primary-soft text-3xl">
-                📷
+              <span className="grid size-20 place-items-center rounded-lg bg-primary-soft text-xs font-semibold text-primary">
+                Photo
               </span>
             )}
             <input
@@ -324,14 +324,14 @@ function Vendre() {
 
       <div className="flex gap-2">
         <Bouton type="submit" disabled={enregistrement}>
-          {enregistrement ? "Enregistrement…" : existant ? "ENREGISTRER" : "PUBLIER L'ANNONCE"}
+          {enregistrement ? "Enregistrement…" : existant ? "Enregistrer" : "Publier l'annonce"}
         </Bouton>
         <Bouton
           type="button"
           variante="contour"
           onClick={() => navigate({ to: "/market/boutique" })}
         >
-          ANNULER
+          Annuler
         </Bouton>
       </div>
     </form>

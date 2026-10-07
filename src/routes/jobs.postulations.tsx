@@ -9,9 +9,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/jobs/postulations")({
   head: () => ({
     meta: [
-      { title: "Mes postulations — WICO" },
+      { title: "Mes postulations — Arija" },
       { name: "description", content: "Suivez vos candidatures et annulez-les en un clic." },
-      { property: "og:title", content: "Mes postulations — WICO" },
+      { property: "og:title", content: "Mes postulations — Arija" },
       {
         property: "og:description",
         content: "Gérez toutes vos candidatures d'emploi en un endroit.",
@@ -50,12 +50,10 @@ function Postulations() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">Mes postulations</h1>
+      <h1 className="text-2xl font-semibold text-foreground">Mes postulations</h1>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">
-          En attente ({triees.length})
-        </h2>
+        <h2 className="section-label">En attente ({triees.length})</h2>
         {triees.map((j) => (
           <Carte key={j.id} className="flex flex-wrap items-center gap-3">
             <div className="min-w-0 flex-1">
@@ -68,7 +66,7 @@ function Postulations() {
                 Postulé le {new Date(j.created_at).toLocaleDateString("fr-FR")}
               </p>
             </div>
-            <Etiquette>⏳ En attente</Etiquette>
+            <Etiquette ton="attente">En attente</Etiquette>
             <div className="flex gap-2">
               <LienBouton to="/jobs/$id" params={{ id: j.id }} variante="contour" taille="sm">
                 VOIR

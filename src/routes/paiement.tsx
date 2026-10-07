@@ -31,12 +31,12 @@ export const Route = createFileRoute("/paiement")({
   }),
   head: () => ({
     meta: [
-      { title: "Confirmer l'achat — WICO" },
+      { title: "Confirmer l'achat — Arija" },
       {
         name: "description",
         content: "Récapitulatif de commande et paiement sécurisé en Pi via Pi Network.",
       },
-      { property: "og:title", content: "Confirmer l'achat — WICO" },
+      { property: "og:title", content: "Confirmer l'achat — Arija" },
       { property: "og:description", content: "Paiement sécurisé en Pi, livraison au Burundi." },
     ],
   }),
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/paiement")({
 });
 
 const MESSAGES: Record<CodeAchat, string> = {
-  PI_ABSENT: "Ouvrez WICO dans le Pi Browser pour payer en Pi.",
+  PI_ABSENT: "Ouvrez Arija dans le Pi Browser pour payer en Pi.",
   NON_CONNECTE: "Connexion Pi requise.",
   ANNULE: "Paiement annulé.",
   ERREUR: "Le paiement a échoué.",
@@ -211,8 +211,7 @@ function Paiement() {
   if (etat === "ok") {
     return (
       <Carte className="mx-auto max-w-lg space-y-3 text-center">
-        <p className="text-4xl">✅</p>
-        <h1 className="text-2xl font-extrabold text-accent">{t("paiementConfirme")}</h1>
+        <h1 className="text-2xl font-semibold text-success">{t("paiementConfirme")}</h1>
         <p className="text-sm text-muted-foreground">
           {payes.length} commande{payes.length > 1 ? "s" : ""} payée{payes.length > 1 ? "s" : ""} ·{" "}
           {formatPi7(totalBase)}
@@ -233,11 +232,11 @@ function Paiement() {
     const nbPaiements = creees.length;
     return (
       <div className="mx-auto max-w-lg space-y-4">
-        <h1 className="text-2xl font-extrabold text-primary">{t("acheterMaintenant")}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{t("acheterMaintenant")}</h1>
 
         <Carte className="space-y-2">
-          <p className="text-xs font-semibold uppercase text-accent">{t("commandeConfirmee")}</p>
-          <h2 className="text-sm font-bold uppercase text-muted-foreground">{t("panier")}</h2>
+          <p className="section-label">{t("commandeConfirmee")}</p>
+          <h2 className="section-label">{t("panier")}</h2>
           {creees.map((c) => (
             <div key={c.orderId} className="flex items-center justify-between gap-2 text-sm">
               <span className="min-w-0 truncate">
@@ -252,19 +251,21 @@ function Paiement() {
               <span className="font-semibold">{formatPi7(c.montant)}</span>
             </div>
           ))}
-          <div className="flex justify-between border-t border-border pt-2 text-base font-extrabold text-primary">
+          <div className="flex justify-between border-t border-border pt-2 text-base font-semibold text-primary">
             <span>{t("total")}</span>
             <span>{formatPi7(totalBase)}</span>
           </div>
         </Carte>
 
         {nbPaiements > 1 && (
-          <p className="text-xs font-semibold text-accent">
+          <p className="text-xs font-semibold text-primary">
             {t("nbPaiements").replace("{n}", String(nbPaiements))}
           </p>
         )}
 
-        {!pi && <Carte className="text-sm font-semibold text-accent">{t("piBrowserRequis")}</Carte>}
+        {!pi && (
+          <Carte className="text-sm font-semibold text-primary">{t("piBrowserRequis")}</Carte>
+        )}
 
         <BandeauPi />
 
@@ -283,7 +284,7 @@ function Paiement() {
             {t("retourAuPanier")}
           </Bouton>
         </div>
-        <p className="text-center text-xs text-muted-foreground">🔒 {t("piBrowserRequis")}</p>
+        <p className="text-center text-xs text-muted-foreground">{t("piBrowserRequis")}</p>
       </div>
     );
   }
@@ -305,12 +306,12 @@ function Paiement() {
 
   return (
     <div className="mx-auto max-w-lg space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">{t("acheterMaintenant")}</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{t("acheterMaintenant")}</h1>
 
       {groupes.map((groupe) => (
         <Carte key={groupe.vendeurId} className="space-y-2">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="truncate text-sm font-bold uppercase text-muted-foreground">
+            <h2 className="section-label">
               {t("vendeur")} · {vendeurs[groupe.vendeurId]?.nom ?? "…"}
             </h2>
             <span className="text-xs text-muted-foreground">{t("sousTotal")}</span>
@@ -323,25 +324,25 @@ function Paiement() {
               <span className="font-semibold">{formatPi7(l.sousTotal)}</span>
             </div>
           ))}
-          <div className="flex justify-between border-t border-border pt-2 text-sm font-bold text-primary">
+          <div className="flex justify-between border-t border-border pt-2 text-sm font-semibold text-primary">
             <span>{t("sousTotal")}</span>
             <span>{formatPi7(groupe.sousTotal)}</span>
           </div>
         </Carte>
       ))}
 
-      <Carte className="flex items-center justify-between text-base font-extrabold text-primary">
+      <Carte className="flex items-center justify-between text-base font-semibold text-primary">
         <span>{t("total")}</span>
         <span>{formatPi7(etatPanier.total)}</span>
       </Carte>
 
       {groupes.length > 1 && (
-        <p className="text-xs font-semibold text-accent">
+        <p className="text-xs font-semibold text-primary">
           {t("nbPaiements").replace("{n}", String(groupes.length))}
         </p>
       )}
 
-      {!pi && <Carte className="text-sm font-semibold text-accent">{t("piBrowserRequis")}</Carte>}
+      {!pi && <Carte className="text-sm font-semibold text-primary">{t("piBrowserRequis")}</Carte>}
 
       <BandeauPi />
 
@@ -353,7 +354,7 @@ function Paiement() {
           {t("retourAuPanier")}
         </LienBouton>
       </div>
-      <p className="text-center text-xs text-muted-foreground">🔒 {t("piBrowserRequis")}</p>
+      <p className="text-center text-xs text-muted-foreground">{t("piBrowserRequis")}</p>
     </div>
   );
 }

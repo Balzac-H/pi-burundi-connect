@@ -14,14 +14,13 @@ import { chargerProfilCache, type Profil } from "@/lib/comptes";
 import { BadgeVerifie, BoutonSignaler } from "@/components/Confiance";
 import { store, useStore, formatPi } from "@/lib/store";
 import { toast } from "sonner";
-import { ArrowLeft, Share2 } from "lucide-react";
 
 export const Route = createFileRoute("/jobs/$id")({
   head: () => ({
     meta: [
-      { title: "Offre d'emploi — WICO" },
+      { title: "Offre d'emploi — Arija" },
       { name: "description", content: "Détail d'une offre d'emploi au Burundi, payée en Pi." },
-      { property: "og:title", content: "Offre d'emploi — WICO" },
+      { property: "og:title", content: "Offre d'emploi — Arija" },
       { property: "og:description", content: "Postulez en un clic et soyez payé en Pi." },
     ],
   }),
@@ -73,15 +72,15 @@ function DetailJob() {
     <div className="mx-auto max-w-3xl space-y-4">
       <button
         onClick={() => navigate({ to: "/jobs" })}
-        className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
+        className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-muted-foreground"
       >
-        <ArrowLeft className="size-4" /> RETOUR
+        RETOUR
       </button>
 
       <Carte className="space-y-3">
-        <h1 className="text-2xl font-extrabold text-primary">{job.titre}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{job.titre}</h1>
         <div className="flex flex-wrap items-center gap-2">
-          <Avatar emoji={emp?.photo_url ?? "👤"} taille="sm" />
+          <Avatar emoji={emp?.photo_url ?? undefined} nom={emp?.nom ?? undefined} taille="sm" />
           <Link
             to="/profil/$id"
             params={{ id: job.employeur_id }}
@@ -93,34 +92,34 @@ function DetailJob() {
         </div>
 
         <dl className="grid gap-2 text-sm sm:grid-cols-2">
-          <Info label="💼 Catégorie" valeur={job.categorie} />
+          <Info label="Catégorie" valeur={job.categorie} />
           <Info
-            label="💰 Salaire"
+            label="Salaire"
             valeur={job.salaire != null ? formatPi(Number(job.salaire)) : "À convenir"}
           />
-          <Info label="⏱️ Durée" valeur={job.duree ?? "—"} />
-          <Info label="📍 Lieu" valeur={job.localisation} />
-          <Info label="⚡ Urgence" valeur={job.urgent ? "OUI" : "Non"} />
+          <Info label="Durée" valeur={job.duree ?? "—"} />
+          <Info label="Lieu" valeur={job.localisation} />
+          <Info label="Urgence" valeur={job.urgent ? "OUI" : "Non"} />
           <Info
-            label="📅 Publiée le"
+            label="Publiée le"
             valeur={new Date(job.created_at).toLocaleDateString("fr-FR", { dateStyle: "long" })}
           />
         </dl>
 
         <div>
-          <h2 className="text-sm font-bold uppercase text-muted-foreground">Description</h2>
+          <h2 className="section-label">Description</h2>
           <p className="mt-1 whitespace-pre-line text-sm">{job.description}</p>
         </div>
       </Carte>
 
       <Carte className="space-y-3">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">Profil employeur</h2>
+        <h2 className="section-label">Profil employeur</h2>
         <div className="flex items-center gap-3">
-          <Avatar emoji={emp?.photo_url ?? "🏢"} />
+          <Avatar emoji={emp?.photo_url ?? undefined} nom={emp?.nom ?? undefined} />
           <div className="min-w-0 flex-1">
             <p className="font-semibold">{emp?.nom ?? "…"}</p>
             {emp?.bio && <p className="text-xs italic text-muted-foreground">« {emp.bio} »</p>}
-            {emp?.ville && <p className="text-xs text-muted-foreground">📍 {emp.ville}</p>}
+            {emp?.ville && <p className="text-xs text-muted-foreground">{emp.ville}</p>}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -155,7 +154,7 @@ function DetailJob() {
             toast.success("Postulation enregistrée !");
           }}
         >
-          {postule ? "POSTULATION ENVOYÉE ✓" : "POSTULER MAINTENANT"}
+          {postule ? "POSTULATION ENVOYÉE" : "POSTULER MAINTENANT"}
         </Bouton>
         <Bouton
           variante="contour"
@@ -167,7 +166,7 @@ function DetailJob() {
             );
           }}
         >
-          <Share2 className="size-4" /> PARTAGER
+          PARTAGER
         </Bouton>
         <BoutonSignaler cibleType="job" cibleId={job.id} utilisateurId={job.employeur_id} />
       </div>
@@ -179,7 +178,7 @@ function DetailJob() {
 
 function Info({ label, valeur }: { label: string; valeur: string }) {
   return (
-    <div className="rounded-lg bg-muted px-3 py-2">
+    <div className="rounded-md bg-muted px-3 py-2">
       <dt className="text-xs text-muted-foreground">{label}</dt>
       <dd className="font-semibold">{valeur}</dd>
     </div>

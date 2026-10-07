@@ -21,17 +21,16 @@ import {
 } from "@/lib/activite";
 import { BesoinCompte } from "@/components/BesoinCompte";
 import { toast } from "sonner";
-import { PackageCheck } from "lucide-react";
 
 export const Route = createFileRoute("/activite")({
   head: () => ({
     meta: [
-      { title: "Mon activité — WICO" },
+      { title: "Mon activité — Arija" },
       {
         name: "description",
-        content: "Annonces, commandes reçues, clients et gains de votre espace vendeur WICO.",
+        content: "Annonces, commandes reçues, clients et gains de votre espace vendeur Arija.",
       },
-      { property: "og:title", content: "Mon activité — WICO" },
+      { property: "og:title", content: "Mon activité — Arija" },
       { property: "og:description", content: "Votre espace vendeur en un coup d'œil." },
     ],
   }),
@@ -116,7 +115,7 @@ function Activite() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">{t("monActivite")}</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{t("monActivite")}</h1>
 
       <div className="flex flex-wrap gap-2">
         {onglets.map(([code, libelle]) => (
@@ -146,20 +145,20 @@ function Activite() {
                     <img
                       src={p.photo_url}
                       alt={p.titre}
-                      className="h-28 w-full rounded-lg object-cover"
+                      className="h-28 w-full rounded-md object-cover"
                     />
                   ) : (
-                    <div className="grid h-28 place-items-center rounded-lg bg-primary-soft text-4xl">
-                      🛍️
+                    <div className="grid h-28 place-items-center rounded-md bg-primary-soft text-sm text-primary">
+                      Sans photo
                     </div>
                   )}
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="min-w-0 truncate font-bold">{p.titre}</h3>
+                    <h3 className="min-w-0 truncate font-semibold">{p.titre}</h3>
                     <Etiquette ton={p.publie ? "succes" : "neutre"}>
-                      {p.publie ? "✓" : "—"}
+                      {p.publie ? "Publié" : "Non publié"}
                     </Etiquette>
                   </div>
-                  <p className="text-sm font-extrabold text-primary">
+                  <p className="text-sm font-semibold text-primary">
                     {formatPi(Number(p.prix))} / {p.unite}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -192,14 +191,16 @@ function Activite() {
             vendeur.map((c) => (
               <Carte key={c.id} className="space-y-2 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="min-w-0 truncate font-bold">{c.titre}</p>
+                  <p className="min-w-0 truncate font-semibold">{c.titre}</p>
                   <Etiquette
                     ton={
                       c.statut === "recue" || c.statut === "payee"
                         ? "succes"
                         : c.statut === "litige"
                           ? "urgent"
-                          : "neutre"
+                          : c.statut === "en_attente_paiement"
+                            ? "attente"
+                            : "neutre"
                     }
                   >
                     {libelleStatut(c.statut)}
@@ -207,16 +208,16 @@ function Activite() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {c.quantite} {c.unite} · {new Date(c.created_at).toLocaleDateString("fr-FR")} ·{" "}
-                  <Link to="/profil/$id" params={{ id: c.acheteur_id }} className="text-accent">
+                  <Link to="/profil/$id" params={{ id: c.acheteur_id }} className="text-primary">
                     {c.acheteur_id.slice(0, 8)}…
                   </Link>
                 </p>
-                <p className="text-base font-extrabold text-primary">
+                <p className="text-base font-semibold text-primary">
                   {formatPi(Number(c.montant))}
                 </p>
                 {c.statut === "payee" && !c.livre_declare_at && (
                   <Bouton taille="sm" variante="contour" onClick={() => marquerLivree(c)}>
-                    <PackageCheck className="size-4" /> {t("marquerLivre")}
+                    {t("marquerLivre")}
                   </Bouton>
                 )}
               </Carte>
@@ -243,7 +244,7 @@ function Activite() {
                 <span className="text-muted-foreground">
                   {c.nb_commandes} {t("commandes")}
                 </span>
-                <span className="font-extrabold text-primary">{formatPi(Number(c.total))}</span>
+                <span className="font-semibold text-primary">{formatPi(Number(c.total))}</span>
                 <span className="text-xs text-muted-foreground">
                   {t("derniereCommande")} :{" "}
                   {new Date(c.derniere_commande).toLocaleDateString("fr-FR")}
@@ -258,20 +259,26 @@ function Activite() {
         <>
           <div className="grid grid-cols-3 gap-2 text-center">
             <Carte>
-              <p className="text-[0.7rem] uppercase text-muted-foreground">{t("retenuEscrow")}</p>
-              <p className="text-lg font-extrabold text-secondary">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("retenuEscrow")}
+              </p>
+              <p className="text-lg font-semibold text-muted-foreground">
                 {formatPi(Number(totaux?.en_escrow ?? 0))}
               </p>
             </Carte>
             <Carte>
-              <p className="text-[0.7rem] uppercase text-muted-foreground">{t("libereNet")}</p>
-              <p className="text-lg font-extrabold text-accent">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("libereNet")}
+              </p>
+              <p className="text-lg font-semibold text-primary">
                 {formatPi(Number(totaux?.libere_net ?? 0))}
               </p>
             </Carte>
             <Carte>
-              <p className="text-[0.7rem] uppercase text-muted-foreground">{t("commissionWico")}</p>
-              <p className="text-lg font-extrabold text-primary">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("commissionArija")}
+              </p>
+              <p className="text-lg font-semibold text-primary">
                 {formatPi(Number(totaux?.commission_payee ?? 0))}
               </p>
             </Carte>
@@ -283,7 +290,7 @@ function Activite() {
             gains.map((g) => (
               <Carte key={g.order_id} className="space-y-1 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="min-w-0 truncate font-bold">{g.titre}</span>
+                  <span className="min-w-0 truncate font-semibold">{g.titre}</span>
                   <Etiquette ton={g.paiement_statut === "released" ? "succes" : "neutre"}>
                     {g.paiement_statut ?? "—"}
                   </Etiquette>
@@ -297,7 +304,7 @@ function Activite() {
                     <b className="text-primary">{formatPi(Number(g.montant))}</b>
                   </span>
                   <span>
-                    {t("net")} : <b className="text-accent">{formatPi(Number(g.libere_net))}</b>
+                    {t("net")} : <b className="text-primary">{formatPi(Number(g.libere_net))}</b>
                   </span>
                 </div>
               </Carte>

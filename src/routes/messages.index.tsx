@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Carte, Saisie, Avatar, Bouton } from "@/components/ui-kit";
+import { Carte, Saisie, Avatar } from "@/components/ui-kit";
 import { chargerProfilCache, type Profil } from "@/lib/comptes";
 import { listerConversations, type Conversation } from "@/lib/messagerie";
 import { useSession } from "@/lib/auth";
@@ -10,13 +10,13 @@ import { BesoinCompte } from "@/components/BesoinCompte";
 export const Route = createFileRoute("/messages/")({
   head: () => ({
     meta: [
-      { title: "Messages — WICO" },
+      { title: "Messages — Arija" },
       {
         name: "description",
         content:
           "Discutez avec les employeurs, vendeurs et clients directement dans l'application.",
       },
-      { property: "og:title", content: "Messages — WICO" },
+      { property: "og:title", content: "Messages — Arija" },
       {
         property: "og:description",
         content: "Toutes vos conversations jobs et market au même endroit.",
@@ -66,7 +66,7 @@ function ListeMessages() {
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-2xl font-extrabold text-primary">💬 {t("chat")}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{t("chat")}</h1>
       </div>
 
       <Saisie
@@ -82,7 +82,7 @@ function ListeMessages() {
           return (
             <Link key={c.utilisateurId} to="/messages/$id" params={{ id: c.utilisateurId }}>
               <Carte className="flex items-center gap-3">
-                <Avatar emoji={u?.photo_url ?? "👤"} />
+                <Avatar emoji={u?.photo_url ?? undefined} nom={u?.nom ?? undefined} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <p className="truncate font-semibold">{u?.nom ?? "…"}</p>

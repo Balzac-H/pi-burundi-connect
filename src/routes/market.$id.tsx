@@ -23,7 +23,6 @@ import { piDisponible } from "@/lib/pi";
 import { lienConnexion } from "@/lib/retour";
 import { useSession } from "@/lib/auth";
 import { toast } from "sonner";
-import { ArrowLeft, Heart } from "lucide-react";
 import { BoutonSignaler } from "@/components/Confiance";
 import { useT } from "@/lib/i18n";
 
@@ -32,9 +31,9 @@ type Produit = ProduitDb & { quantite_min: number };
 export const Route = createFileRoute("/market/$id")({
   head: () => ({
     meta: [
-      { title: "Annonce — Market WICO" },
-      { name: "description", content: "Détail d'une annonce du Market WICO, payable en Pi." },
-      { property: "og:title", content: "Annonce — Market WICO" },
+      { title: "Annonce — Market Arija" },
+      { name: "description", content: "Détail d'une annonce du Market Arija, payable en Pi." },
+      { property: "og:title", content: "Annonce — Market Arija" },
       { property: "og:description", content: "Achetez près de chez vous, payez en Pi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -128,13 +127,12 @@ function DetailProduit() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate({ to: "/market" })}
-          className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
+          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-muted-foreground"
         >
-          <ArrowLeft className="size-4" /> Retour
+          Retour
         </button>
         <Bouton variante="contour" taille="sm" onClick={() => store.basculerFavori(produit.id)}>
-          <Heart className={favori ? "size-4 fill-destructive text-destructive" : "size-4"} />{" "}
-          Favoris
+          {favori ? "Retirer des favoris" : "Ajouter aux favoris"}
         </Bouton>
       </div>
 
@@ -144,8 +142,8 @@ function DetailProduit() {
           alt={produit.titre}
           className="aspect-square max-h-[34rem] w-full rounded-t-lg bg-muted object-cover"
         />
-        <h1 className="px-4 text-2xl font-extrabold text-foreground">{produit.titre}</h1>
-        <p className="px-4 text-3xl font-extrabold text-primary">
+        <h1 className="px-4 text-2xl font-semibold text-foreground">{produit.titre}</h1>
+        <p className="px-4 text-2xl font-semibold text-primary">
           {formatPi(produit.prix)}{" "}
           <span className="text-sm font-normal text-muted-foreground">/ {produit.unite}</span>
         </p>
@@ -158,19 +156,19 @@ function DetailProduit() {
               Minimum : {min} {produit.unite}
             </Etiquette>
           )}
-          {produit.lieu && <Etiquette>📍 {produit.lieu}</Etiquette>}
-          {produit.livraison && <Etiquette>🚚 {produit.livraison}</Etiquette>}
+          {produit.lieu && <Etiquette>{produit.lieu}</Etiquette>}
+          {produit.livraison && <Etiquette>{produit.livraison}</Etiquette>}
         </div>
         {produit.description && <p className="px-4 text-sm">{produit.description}</p>}
       </Carte>
 
       <Carte className="space-y-3">
-        <h2 className="text-sm font-bold text-muted-foreground">Vendeur</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">Vendeur</h2>
         <div className="flex items-center gap-3">
           {vendeur?.photo_url ? (
             <img src={vendeur.photo_url} alt="" className="size-12 rounded-full object-cover" />
           ) : (
-            <Avatar emoji="👤" />
+            <Avatar nom={vendeur?.nom} />
           )}
           <Link to="/profil/$id" params={{ id: produit.vendeur_id }} className="font-semibold">
             {vendeur?.nom || "Membre"}
@@ -185,12 +183,12 @@ function DetailProduit() {
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
             >
-              💬 WhatsApp
+              WhatsApp
             </a>
           ) : (
-            <Etiquette>📵 Numéro non vérifié</Etiquette>
+            <Etiquette>Numéro non vérifié</Etiquette>
           )}
           <BoutonSignaler
             cibleType="produit"
@@ -200,9 +198,9 @@ function DetailProduit() {
         </div>
       </Carte>
 
-      {!pi && <Carte className="text-sm font-semibold text-accent">{t("piBrowserRequis")}</Carte>}
+      {!pi && <Carte className="text-sm font-semibold text-primary">{t("piBrowserRequis")}</Carte>}
       {monAnnonce && (
-        <Carte className="text-sm font-semibold text-accent">{t("votreAnnonce")}</Carte>
+        <Carte className="text-sm font-semibold text-primary">{t("votreAnnonce")}</Carte>
       )}
       <BandeauPi />
 
@@ -220,7 +218,7 @@ function DetailProduit() {
             value={quantite}
             onChange={(e) => setQuantite(Math.floor(Number(e.target.value) || 0))}
           />
-          <span className="ml-auto font-bold text-primary">
+          <span className="ml-auto font-semibold text-primary">
             {formatPi(produit.prix * quantite)}
           </span>
         </div>

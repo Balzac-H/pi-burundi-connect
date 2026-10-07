@@ -10,26 +10,20 @@ import {
 } from "@/lib/comptes";
 import { Bouton, Carte, TitreSection, Etiquette, Avatar, LienBouton } from "@/components/ui-kit";
 import { listerJobs, type JobDb } from "@/lib/annonces";
-import { categoriesMarket } from "@/lib/data";
-import { store, useStore, formatPi } from "@/lib/store";
+import { formatPi } from "@/lib/store";
 import { useT } from "@/lib/i18n";
 import { useSession } from "@/lib/auth";
-import { Heart, Search } from "lucide-react";
-import catMode from "@/assets/cat-mode.jpg";
-import catLegumes from "@/assets/cat-legumes.jpg";
-import catElectronique from "@/assets/cat-electronique.jpg";
-import catServices from "@/assets/cat-services.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Accueil — WICO" },
+      { title: "Accueil — Arija" },
       {
         name: "description",
         content:
           "Recherchez produits, services et emplois près de chez vous au Burundi. Paiements en Pi, contact WhatsApp direct.",
       },
-      { property: "og:title", content: "Accueil — WICO" },
+      { property: "og:title", content: "Accueil — Arija" },
       {
         property: "og:description",
         content:
@@ -42,16 +36,8 @@ export const Route = createFileRoute("/")({
   component: Accueil,
 });
 
-const vitrines = [
-  { image: catMode, titre: "Mode", categorie: "Vêtements" },
-  { image: catLegumes, titre: "Alimentation", categorie: "Alimentation" },
-  { image: catElectronique, titre: "Électronique", categorie: "Électronique" },
-  { image: catServices, titre: "Services", categorie: "Services" },
-];
-
 function Accueil() {
   const t = useT();
-  const favoris = useStore((s) => s.favoris);
   const { utilisateur } = useSession();
   const navigate = useNavigate();
   const [recherche, setRecherche] = useState("");
@@ -69,7 +55,7 @@ function Accueil() {
       .catch(() => undefined);
     listerJobs()
       .then((j) => {
-        if (vivant) setEmplois(j.slice(0, 2));
+        if (vivant) setEmplois(j.slice(0, 4));
       })
       .catch(() => undefined);
     chercherProfils("")
@@ -92,29 +78,30 @@ function Accueil() {
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-2xl gradient-primary p-5 text-primary-foreground shadow-[var(--shadow-float)]">
-        <p className="text-sm opacity-90">
+      <section className="card-surface p-5">
+        <p className="text-sm text-muted-foreground">
           {t("bonjour")},{" "}
-          <span className="font-bold">{utilisateur?.email?.split("@")[0] ?? t("invite")}</span> 👋
+          <span className="font-semibold text-foreground">
+            {utilisateur?.email?.split("@")[0] ?? t("invite")}
+          </span>
         </p>
-        <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">WICO</h1>
-        <p className="mt-1 max-w-xl text-sm opacity-90">{t("sloganAccueil")}</p>
+        <h1 className="mt-1 text-2xl font-semibold text-foreground sm:text-3xl">Arija</h1>
+        <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("sousTitre")}</p>
 
         <form
-          className="mt-4 flex items-center gap-2 rounded-xl bg-card p-2 shadow-[var(--shadow-card)]"
+          className="mt-4 flex items-center gap-2 rounded-md border border-border bg-background p-2"
           onSubmit={(e) => {
             e.preventDefault();
             if (!recherche.trim()) navigate({ to: "/market" });
           }}
         >
-          <Search className="ml-1 size-4 shrink-0 text-muted-foreground" />
           <input
             value={recherche}
             onChange={(e) => setRecherche(e.target.value)}
             maxLength={80}
             placeholder={t("rechercherPlaceholder")}
             aria-label={t("rechercher")}
-            className="min-h-9 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            className="min-h-9 w-full bg-transparent px-1 text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
           <Bouton type="submit" taille="sm">
             {t("rechercher")}
@@ -137,7 +124,7 @@ function Accueil() {
       {recherche.trim() && (
         <section>
           <TitreSection>
-            🔎 {t("rechercher")} : « {recherche} »
+            {t("rechercher")} : « {recherche} »
           </TitreSection>
           {resultats.length === 0 ? (
             <Carte className="text-sm text-muted-foreground">{t("aucunResultat")}</Carte>
@@ -150,15 +137,15 @@ function Accueil() {
                       src={p.photo_url}
                       alt={p.titre}
                       loading="lazy"
-                      className="h-24 w-full rounded-lg object-cover"
+                      className="h-24 w-full rounded-md object-cover"
                     />
                   ) : (
-                    <div className="grid h-24 place-items-center rounded-lg bg-primary-soft text-4xl">
-                      🛍️
+                    <div className="grid h-24 place-items-center rounded-md bg-muted text-xs text-muted-foreground">
+                      Pas de photo
                     </div>
                   )}
                   <h3 className="font-semibold leading-snug">{p.titre}</h3>
-                  <p className="text-sm font-bold text-primary">{formatPi(Number(p.prix))}</p>
+                  <p className="text-sm font-semibold text-primary">{formatPi(Number(p.prix))}</p>
                   <LienBouton to="/market/$id" params={{ id: p.id }} taille="sm" className="w-full">
                     {t("acheter")}
                   </LienBouton>
@@ -169,112 +156,88 @@ function Accueil() {
         </section>
       )}
 
-      <section>
-        <TitreSection
-          action={
-            <Link to="/market" className="text-xs font-semibold text-accent">
-              {t("voirTout")}
-            </Link>
-          }
-        >
-          ✨ {t("selectionRecommandee")}
-        </TitreSection>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {vitrines.map((v) => (
-            <Link
-              key={v.titre}
-              to="/market"
-              className="group relative overflow-hidden rounded-2xl shadow-[var(--shadow-card)]"
-            >
-              <img
-                src={v.image}
-                alt={`Catégorie ${v.titre}`}
-                width={800}
-                height={800}
-                loading="lazy"
-                className="h-36 w-full object-cover transition duration-300 group-hover:scale-105 sm:h-44"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/85 to-transparent" />
-              <span className="absolute bottom-2 left-3 text-sm font-extrabold text-primary-foreground">
-                {v.titre}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <TitreSection
-          action={
-            <Link to="/market" className="text-xs font-semibold text-accent">
-              {t("voirTout")}
-            </Link>
-          }
-        >
-          🆕 {t("nouvellesAnnonces")}
-        </TitreSection>
-        {annonces.length === 0 ? (
-          <Carte className="text-sm text-muted-foreground">{t("aucuneAnnonce")}</Carte>
-        ) : (
-          <div className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2">
-            {annonces.map((p) => (
-              <Link
-                key={p.id}
-                to="/market/$id"
-                params={{ id: p.id }}
-                className="w-40 shrink-0 snap-start space-y-1.5 rounded-xl border border-border/60 bg-card p-2"
-              >
-                {p.photo_url ? (
-                  <img
-                    src={p.photo_url}
-                    alt={p.titre}
-                    loading="lazy"
-                    className="h-28 w-full rounded-lg object-cover"
-                  />
-                ) : (
-                  <div className="grid h-28 place-items-center rounded-lg bg-primary-soft text-5xl">
-                    🛍️
-                  </div>
-                )}
-                <p className="line-clamp-2 text-xs font-semibold leading-snug">{p.titre}</p>
-                <p className="truncate text-[0.65rem] text-muted-foreground">
-                  📍 {p.lieu ?? "Burundi"}
-                </p>
-                <p className="text-sm font-extrabold text-primary">{formatPi(Number(p.prix))}</p>
+      {!recherche.trim() && (
+        <section>
+          <TitreSection
+            action={
+              <Link to="/market" className="text-xs font-semibold text-primary">
+                {t("voirTout")}
               </Link>
-            ))}
-          </div>
-        )}
-      </section>
+            }
+          >
+            {t("nouvellesAnnonces")}
+          </TitreSection>
+          {annonces.length === 0 ? (
+            <Carte className="text-sm text-muted-foreground">{t("aucuneAnnonce")}</Carte>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {annonces.slice(0, 6).map((p) => (
+                <Link
+                  key={p.id}
+                  to="/market/$id"
+                  params={{ id: p.id }}
+                  className="card-surface space-y-1.5 p-2"
+                >
+                  {p.photo_url ? (
+                    <img
+                      src={p.photo_url}
+                      alt={p.titre}
+                      loading="lazy"
+                      className="h-28 w-full rounded-md object-cover"
+                    />
+                  ) : (
+                    <div className="grid h-28 place-items-center rounded-md bg-muted text-xs text-muted-foreground">
+                      Pas de photo
+                    </div>
+                  )}
+                  <p className="line-clamp-2 text-xs font-semibold leading-snug">{p.titre}</p>
+                  <p className="truncate text-xs text-muted-foreground">{p.lieu ?? "Burundi"}</p>
+                  <p className="text-sm font-semibold text-primary">{formatPi(Number(p.prix))}</p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
-      <section>
-        <TitreSection>🏷️ {t("categories")}</TitreSection>
-        <div className="flex flex-wrap gap-2">
-          {categoriesMarket.map((c) => (
-            <LienBouton key={c} to="/market" variante="contour" taille="sm">
-              {c}
-            </LienBouton>
-          ))}
-        </div>
-      </section>
+      {!recherche.trim() && (
+        <section>
+          <TitreSection
+            action={
+              <Link to="/jobs" className="text-xs font-semibold text-primary">
+                {t("voirTout")}
+              </Link>
+            }
+          >
+            {t("jobs")}
+          </TitreSection>
+          {emplois.length === 0 ? (
+            <Carte className="text-sm text-muted-foreground">{t("aucuneOffre")}</Carte>
+          ) : (
+            <div className="grid gap-3 lg:grid-cols-2">
+              {emplois.map((j) => (
+                <CarteJob key={j.id} job={j} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
-      <section>
-        <TitreSection
-          action={
-            <Link to="/vendeurs" className="text-xs font-semibold text-accent">
-              {t("voirTout")}
-            </Link>
-          }
-        >
-          👥 {t("vendeurs")}
-        </TitreSection>
-        {vendeurs.length === 0 ? (
-          <Carte className="text-sm text-muted-foreground">{t("aucunResultat")}</Carte>
-        ) : (
+      {!recherche.trim() && vendeurs.length > 0 && (
+        <section>
+          <TitreSection
+            action={
+              <Link to="/vendeurs" className="text-xs font-semibold text-primary">
+                {t("voirTout")}
+              </Link>
+            }
+          >
+            {t("vendeurs")}
+          </TitreSection>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {vendeurs.map((u) => (
               <Carte key={u.id} className="flex items-center gap-3">
-                <Avatar emoji={u.photo_url ?? "👤"} />
+                <Avatar emoji={u.photo_url ?? undefined} nom={u.nom} />
                 <div className="min-w-0 flex-1">
                   <Link
                     to="/profil/$id"
@@ -287,111 +250,30 @@ function Accueil() {
                     {u.ville ?? u.bio ?? "—"}
                   </p>
                   {u.type_compte && (
-                    <p className="truncate text-[0.65rem] uppercase text-muted-foreground">
+                    <p className="truncate text-xs font-medium text-muted-foreground">
                       {u.type_compte}
                     </p>
                   )}
                 </div>
                 {u.whatsapp ? (
                   <a
-                    href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom} 👋`)}
+                    href={lienWhatsApp(u.whatsapp, `Bonjour ${u.nom}`)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg bg-success/15 px-2 py-1 text-xs font-semibold text-success"
+                    className="inline-flex min-h-11 items-center rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
                   >
-                    💬
+                    WhatsApp
                   </a>
                 ) : (
-                  <span className="rounded-lg bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                  <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
                     —
                   </span>
                 )}
               </Carte>
             ))}
           </div>
-        )}
-      </section>
-
-      <section>
-        <TitreSection
-          action={
-            <Link to="/jobs" className="text-xs font-semibold text-accent">
-              {t("voirTout")}
-            </Link>
-          }
-        >
-          💼 {t("jobs")}
-        </TitreSection>
-        {emplois.length === 0 ? (
-          <Carte className="text-sm text-muted-foreground">{t("aucuneOffre")}</Carte>
-        ) : (
-          <div className="grid gap-3 lg:grid-cols-2">
-            {emplois.map((j) => (
-              <CarteJob key={j.id} job={j} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section>
-        <TitreSection
-          action={
-            <Link to="/market" className="text-xs font-semibold text-accent">
-              {t("voirTout")}
-            </Link>
-          }
-        >
-          🔥 {t("tendances")}
-        </TitreSection>
-        {annonces.length === 0 ? (
-          <Carte className="text-sm text-muted-foreground">{t("aucuneAnnonce")}</Carte>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {annonces.slice(0, 3).map((p) => (
-              <Carte key={p.id} className="space-y-2">
-                {p.photo_url ? (
-                  <img
-                    src={p.photo_url}
-                    alt={p.titre}
-                    loading="lazy"
-                    className="h-28 w-full rounded-lg object-cover"
-                  />
-                ) : (
-                  <div className="grid h-28 place-items-center rounded-lg bg-primary-soft text-5xl">
-                    🛍️
-                  </div>
-                )}
-                <h3 className="font-semibold leading-snug">{p.titre}</h3>
-                <p className="text-sm font-bold text-primary">{formatPi(Number(p.prix))}</p>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <button
-                    onClick={() => store.basculerFavori(p.id)}
-                    className="inline-flex items-center gap-1"
-                    aria-label="Ajouter aux favoris"
-                  >
-                    <Heart
-                      className={
-                        favoris.includes(p.id)
-                          ? "size-4 fill-destructive text-destructive"
-                          : "size-4"
-                      }
-                    />
-                    {favoris.includes(p.id) ? 1 : 0}
-                  </button>
-                  {p.stock > 0 && (
-                    <span>
-                      ✔ {t("stock")} : {p.stock}
-                    </span>
-                  )}
-                </div>
-                <LienBouton to="/market/$id" params={{ id: p.id }} taille="sm" className="w-full">
-                  {t("acheter")}
-                </LienBouton>
-              </Carte>
-            ))}
-          </div>
-        )}
-      </section>
+        </section>
+      )}
     </div>
   );
 }
@@ -408,17 +290,17 @@ function CarteJob({ job }: { job: JobDb }) {
   return (
     <Carte className="space-y-2">
       <p className="text-xs text-muted-foreground">
-        {emp?.photo_url ?? "🏢"}{" "}
         <span className="font-semibold text-foreground">{emp?.nom ?? "…"}</span>
       </p>
-      <h3 className="font-bold">{job.titre}</h3>
+      <h3 className="font-semibold">{job.titre}</h3>
       <div className="flex flex-wrap items-center gap-2">
-        <Etiquette ton="pi">{job.salaire ? formatPi(job.salaire) : (job.duree ?? "—")}</Etiquette>
-        {job.urgent && <Etiquette ton="urgent">⚡ {job.localisation}</Etiquette>}
-        {!job.urgent && <Etiquette>{job.localisation}</Etiquette>}
+        {job.salaire && <Etiquette ton="pi">{formatPi(job.salaire)}</Etiquette>}
+        {job.urgent && <Etiquette ton="urgent">Urgent</Etiquette>}
+        <Etiquette>{job.localisation}</Etiquette>
+        {job.duree && <Etiquette>{job.duree}</Etiquette>}
       </div>
       <LienBouton to="/jobs/$id" params={{ id: job.id }} taille="sm">
-        VOIR
+        Voir
       </LienBouton>
       <span className="sr-only">{t("jobs")}</span>
     </Carte>

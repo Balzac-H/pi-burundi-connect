@@ -6,14 +6,13 @@ import { chargerProfilCache, ouvrirWhatsApp, type Profil } from "@/lib/comptes";
 import { envoyerMessage, marquerLus, messagesAvec, type MessageDb } from "@/lib/messagerie";
 import { useSession } from "@/lib/auth";
 import { toast } from "sonner";
-import { ArrowLeft, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/messages/$id")({
   head: () => ({
     meta: [
-      { title: "Chat — WICO" },
+      { title: "Chat — Arija" },
       { name: "description", content: "Conversation directe entre membres de la plateforme." },
-      { property: "og:title", content: "Chat — WICO" },
+      { property: "og:title", content: "Chat — Arija" },
       { property: "og:description", content: "Messagerie directe entre membres de la plateforme." },
     ],
   }),
@@ -91,10 +90,18 @@ function Chat() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-3">
       <Carte className="flex items-center gap-3">
-        <button onClick={() => navigate({ to: "/messages" })} aria-label="Retour">
-          <ArrowLeft className="size-5" />
+        <button
+          onClick={() => navigate({ to: "/messages" })}
+          aria-label="Retour"
+          className="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-semibold text-muted-foreground"
+        >
+          Retour
         </button>
-        <Avatar emoji={interlocuteur?.photo_url ?? "👤"} taille="sm" />
+        <Avatar
+          emoji={interlocuteur?.photo_url ?? undefined}
+          nom={interlocuteur?.nom ?? undefined}
+          taille="sm"
+        />
         <div className="min-w-0 flex-1">
           <Link to="/profil/$id" params={{ id: autreId }} className="block truncate font-semibold">
             {interlocuteur?.nom ?? "…"}
@@ -107,11 +114,9 @@ function Chat() {
           <Bouton
             taille="sm"
             variante="contour"
-            onClick={() =>
-              ouvrirWhatsApp(interlocuteur.whatsapp!, `Bonjour ${interlocuteur.nom} 👋`)
-            }
+            onClick={() => ouvrirWhatsApp(interlocuteur.whatsapp!, `Bonjour ${interlocuteur.nom}`)}
           >
-            <MessageCircle className="size-4" /> WHATSAPP
+            WHATSAPP
           </Bouton>
         )}
       </Carte>
@@ -124,18 +129,12 @@ function Chat() {
               <div
                 className={
                   moi
-                    ? "max-w-[80%] rounded-2xl rounded-br-sm gradient-primary px-3 py-2 text-sm text-primary-foreground"
-                    : "max-w-[80%] rounded-2xl rounded-bl-sm bg-card px-3 py-2 text-sm shadow-[var(--shadow-card)]"
+                    ? "max-w-[80%] rounded-xl rounded-bl-md border border-border bg-muted px-3 py-2 text-sm text-foreground"
+                    : "max-w-[80%] rounded-xl rounded-bl-md border border-border bg-card px-3 py-2 text-sm text-foreground"
                 }
               >
                 <p>{m.contenu}</p>
-                <p
-                  className={
-                    moi
-                      ? "mt-1 text-[0.65rem] opacity-80"
-                      : "mt-1 text-[0.65rem] text-muted-foreground"
-                  }
-                >
+                <p className="mt-1 text-[0.65rem] text-muted-foreground">
                   {new Date(m.created_at).toLocaleString("fr-FR", {
                     dateStyle: "short",
                     timeStyle: "short",
@@ -147,13 +146,13 @@ function Chat() {
         })}
         {messages.length === 0 && (
           <Carte className="text-center text-sm text-muted-foreground">
-            Aucun message. Dites bonjour 👋
+            Aucun message. Dites bonjour
           </Carte>
         )}
       </div>
 
       <form
-        className="sticky bottom-20 flex gap-2 rounded-xl bg-card p-2 shadow-[var(--shadow-card)] lg:bottom-4"
+        className="sticky bottom-20 flex gap-2 rounded-xl border border-border bg-card p-2 lg:bottom-4"
         onSubmit={envoyer}
       >
         <Saisie

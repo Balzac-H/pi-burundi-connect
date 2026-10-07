@@ -5,18 +5,22 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * WICO — Design system
- * Vert Burundi (#1F4E3D), Orange énergie (#FF9800), Vert Pi (#4CAF50),
- * accents Pi Network (doré / bleu).
+ * ARIJA — Système graphique sobre et institutionnel
+ *
+ * Une seule famille sans-serif (Inter), aucun dégradé, aucun emoji, aucune ombre lourde.
+ * Cartes blanches séparées par un filet de 1 px, jamais par une ombre.
+ * Un seul accent : le vert profond #1F4E3D. L'ocre ne sert plus qu'à l'état « En attente ».
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
+  /* Coins : 6 px (badges), 8 px (boutons/champs), 12 px maximum (cartes) */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -36,71 +40,92 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
-  --color-pi-gold: var(--pi-gold);
-  --color-pi-blue: var(--pi-blue);
+  --color-attente: var(--attente);
+  --color-attente-bg: var(--attente-bg);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Fraunces", "DM Sans", Georgia, serif;
-  --shadow-card: 0 1px 2px oklch(0.35 0.06 158 / 0.06), 0 8px 24px -12px oklch(0.35 0.06 158 / 0.18);
-  --shadow-float: 0 12px 32px -12px oklch(0.35 0.06 158 / 0.35);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-sans);
+
+  /* Échelle typographique : 15 px corps, 13 px secondaire, titres 22 / 18 / 16 en 600 */
+  --text-xs: 12px;
+  --text-xs--line-height: 1.5;
+  --text-sm: 13px;
+  --text-sm--line-height: 1.55;
+  --text-base: 15px;
+  --text-base--line-height: 1.55;
+  --text-lg: 16px;
+  --text-lg--line-height: 1.5;
+  --text-xl: 18px;
+  --text-xl--line-height: 1.4;
+  --text-2xl: 22px;
+  --text-2xl--line-height: 1.3;
+  --text-3xl: 26px;
+  --text-3xl--line-height: 1.25;
+  --text-4xl: 30px;
+  --text-4xl--line-height: 1.2;
+  --text-5xl: 36px;
+  --text-5xl--line-height: 1.15;
+  --text-6xl: 44px;
+  --text-6xl--line-height: 1.1;
+  --text-7xl: 56px;
+  --text-7xl--line-height: 1.05;
 }
 
-/* Palette : vert forêt (structure) + ocre (action) sur ivoire doux, texte anthracite. */
 :root {
-  --radius: 0.875rem;
-  --background: #f7f4ec;
-  --foreground: #1c1c1a;
-  --card: #fffdf8;
-  --card-foreground: #1c1c1a;
-  --popover: #fffdf8;
-  --popover-foreground: #1c1c1a;
+  --background: #fbfaf7;
+  --foreground: #22251f;
+  --card: #ffffff;
+  --card-foreground: #22251f;
+  --popover: #ffffff;
+  --popover-foreground: #22251f;
   --primary: #1f4e3d;
-  --primary-foreground: #f7f4ec;
-  --primary-soft: #e3ebe5;
-  --secondary: #d9a441;
-  --secondary-foreground: #1c1c1a;
-  --muted: #efebe0;
-  --muted-foreground: #6b6a61;
-  --accent: #b8832c;
-  --accent-foreground: #fffdf8;
+  --primary-foreground: #ffffff;
+  --primary-soft: #edf2ef;
+  --secondary: #f1f1ec;
+  --secondary-foreground: #22251f;
+  --muted: #f3f2ec;
+  --muted-foreground: #5e625a;
+  --accent: #2e6b52;
+  --accent-foreground: #ffffff;
   --success: #2f7d54;
-  --success-foreground: #fffdf8;
-  --destructive: #b3261e;
-  --destructive-foreground: #fffdf8;
-  --pi-gold: #d9a441;
-  --pi-blue: #2f5d8a;
-  --border: #e2dccb;
-  --input: #ded7c4;
+  --success-foreground: #ffffff;
+  --destructive: #a63a2e;
+  --destructive-foreground: #ffffff;
+  --attente: #8a6a2f;
+  --attente-bg: #f6efdd;
+  --border: #e8e5dc;
+  --input: #dcd8cc;
   --ring: #1f4e3d;
 }
 
 .dark {
-  --background: #14201b;
-  --foreground: #f0ede4;
-  --card: #1b2a23;
-  --card-foreground: #f0ede4;
-  --popover: #1b2a23;
-  --popover-foreground: #f0ede4;
-  --primary: #4f9c76;
-  --primary-foreground: #0f1c16;
-  --primary-soft: #23382d;
-  --secondary: #d9a441;
-  --secondary-foreground: #14201b;
-  --muted: #223229;
-  --muted-foreground: #a9b3ac;
-  --accent: #e0b25c;
-  --accent-foreground: #14201b;
-  --success: #57b37e;
-  --success-foreground: #14201b;
-  --destructive: #f0857c;
-  --destructive-foreground: #14201b;
-  --pi-gold: #e0b25c;
-  --pi-blue: #7fa9d4;
-  --border: #2e4238;
-  --input: #354c40;
-  --ring: #57b37e;
+  --background: #1a1c19;
+  --foreground: #e7e9e2;
+  --card: #22241f;
+  --card-foreground: #e7e9e2;
+  --popover: #22241f;
+  --popover-foreground: #e7e9e2;
+  --primary: #7fb79a;
+  --primary-foreground: #0f1f19;
+  --primary-soft: #2a322c;
+  --secondary: #2a2d28;
+  --secondary-foreground: #e7e9e2;
+  --muted: #262924;
+  --muted-foreground: #a7aba1;
+  --accent: #8cc3a6;
+  --accent-foreground: #0f1f19;
+  --success: #6fbe93;
+  --success-foreground: #0f1f19;
+  --destructive: #e4938a;
+  --destructive-foreground: #2a1512;
+  --attente: #d9b878;
+  --attente-bg: #332e20;
+  --border: #34372f;
+  --input: #3d4038;
+  --ring: #7fb79a;
 }
 
 @layer base {
@@ -108,52 +133,72 @@
     border-color: var(--color-border);
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: 0;
     -webkit-font-smoothing: antialiased;
   }
 
   h1,
   h2,
-  h3 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: -0.015em;
+  h3,
+  h4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: 0;
   }
 
   h1 {
-    font-size: 1.75rem;
-    line-height: 1.15;
+    font-size: 22px;
+    line-height: 1.3;
   }
 
   h2 {
-    font-size: 1.25rem;
-    line-height: 1.2;
+    font-size: 18px;
+    line-height: 1.35;
   }
 
   h3 {
-    font-size: 1.0625rem;
-    line-height: 1.3;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  h4 {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 22%, transparent);
   }
 }
 
-@utility gradient-primary {
-  background-image: linear-gradient(
-    135deg,
-    var(--color-primary),
-    color-mix(in oklab, var(--color-accent) 70%, var(--color-primary))
-  );
-}
-
-@utility gradient-pi {
-  background-image: linear-gradient(135deg, var(--color-pi-blue), var(--color-pi-gold));
-}
-
+/* Carte : fond blanc, filet 1 px, 12 px de rayon — jamais d'ombre. */
 @utility card-surface {
   background-color: var(--color-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+/* Étiquette de section : 13 px, 600, capitales légèrement espacées. */
+@utility section-label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted-foreground);
 }

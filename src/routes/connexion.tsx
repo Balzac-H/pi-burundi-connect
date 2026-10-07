@@ -15,9 +15,9 @@ export const Route = createFileRoute("/connexion")({
   }),
   head: () => ({
     meta: [
-      { title: "Connexion — WICO" },
-      { name: "description", content: "Connectez-vous à WICO avec votre compte Pi Network." },
-      { property: "og:title", content: "Connexion — WICO" },
+      { title: "Connexion — Arija" },
+      { name: "description", content: "Connectez-vous à Arija avec votre compte Pi Network." },
+      { property: "og:title", content: "Connexion — Arija" },
       { property: "og:description", content: "Accédez à la plateforme peer-to-peer du Burundi." },
     ],
   }),
@@ -27,6 +27,7 @@ export const Route = createFileRoute("/connexion")({
 function Connexion() {
   const t = useT();
   const [enCours, setEnCours] = useState(false);
+  const [logoAbsent, setLogoAbsent] = useState(false);
   const navigate = useNavigate();
   const router = useRouter();
   const { retour } = Route.useSearch();
@@ -58,15 +59,21 @@ function Connexion() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <span className="mx-auto grid size-16 place-items-center rounded-2xl gradient-primary text-3xl font-bold text-primary-foreground">
-            π
-          </span>
-          <h1 className="mt-3 text-2xl font-extrabold text-primary">WICO</h1>
-          <p className="text-sm text-muted-foreground">{t("sloganAccueil")}</p>
+          {logoAbsent ? (
+            <h1 className="text-3xl font-bold text-primary">Arija</h1>
+          ) : (
+            <img
+              src="/logo-arija.svg"
+              alt="Arija"
+              className="mx-auto h-12 w-auto"
+              onError={() => setLogoAbsent(true)}
+            />
+          )}
+          <p className="mt-3 text-sm text-muted-foreground">{t("sousTitre")}</p>
         </div>
 
         <div className="card-surface space-y-3 p-5">
-          <h2 className="text-lg font-bold">{t("connexionRequise")}</h2>
+          <h2 className="text-lg font-semibold">{t("connexionRequise")}</h2>
           <p className="text-xs text-muted-foreground">
             Un seul compte, créé avec Pi Network. Vos achats, ventes et paiements sont liés à votre
             identité Pi.
@@ -78,7 +85,7 @@ function Connexion() {
             onClick={seConnecterAvecPi}
             disabled={enCours}
           >
-            {enCours ? t("paiementEnCours") : `π ${t("seConnecterPi")}`}
+            {enCours ? t("paiementEnCours") : t("seConnecterPi")}
           </Bouton>
           {!piDisponible() && (
             <p className="text-center text-xs font-semibold text-destructive">
@@ -87,7 +94,7 @@ function Connexion() {
           )}
           <button
             type="button"
-            className="w-full text-center text-xs font-semibold text-muted-foreground"
+            className="flex min-h-11 w-full items-center justify-center text-center text-xs font-semibold text-muted-foreground"
             onClick={() => navigate({ to: "/" })}
           >
             {t("explorerSansCompte")}
@@ -98,7 +105,7 @@ function Connexion() {
           En continuant, vous acceptez nos{" "}
           <button
             type="button"
-            className="font-semibold text-accent underline"
+            className="font-semibold text-primary underline"
             onClick={() => navigate({ to: "/conditions" })}
           >
             {t("conditions")}
@@ -106,7 +113,7 @@ function Connexion() {
           et notre{" "}
           <button
             type="button"
-            className="font-semibold text-accent underline"
+            className="font-semibold text-primary underline"
             onClick={() => navigate({ to: "/confidentialite" })}
           >
             {t("confidentialite")}

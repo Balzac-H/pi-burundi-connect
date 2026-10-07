@@ -7,17 +7,16 @@ import { chargerProduitsParIds, construireEtatPanier, type LignePanier } from "@
 import { useT } from "@/lib/i18n";
 import { useSession } from "@/lib/auth";
 import { lienConnexion } from "@/lib/retour";
-import { Minus, Plus, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/panier")({
   head: () => ({
     meta: [
-      { title: "Panier — Market WICO" },
+      { title: "Panier — Market Arija" },
       {
         name: "description",
-        content: "Votre panier WICO, réglé vendeur par vendeur, un paiement Pi par vendeur.",
+        content: "Votre panier Arija, réglé vendeur par vendeur, un paiement Pi par vendeur.",
       },
-      { property: "og:title", content: "Panier — WICO" },
+      { property: "og:title", content: "Panier — Arija" },
     ],
   }),
   component: PanierPage,
@@ -121,7 +120,7 @@ function PanierPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-5">
-      <h1 className="text-2xl font-extrabold text-primary">🛒 {t("panier")}</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{t("panier")}</h1>
 
       {vide && (
         <Carte className="space-y-3 text-center">
@@ -145,9 +144,9 @@ function PanierPage() {
             return (
               <Carte key={groupe.vendeurId} className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Avatar emoji={vendeur?.photo_url ?? "🏪"} />
+                  <Avatar emoji={vendeur?.photo_url ?? undefined} nom={vendeur?.nom} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-bold">{vendeur?.nom ?? t("vendeur")}</p>
+                    <p className="truncate font-semibold">{vendeur?.nom ?? t("vendeur")}</p>
                     <p className="truncate text-xs text-muted-foreground">
                       {groupe.nbLignes} {t("lignes")}
                     </p>
@@ -164,7 +163,7 @@ function PanierPage() {
                         <p className="text-xs text-muted-foreground">
                           {formatPi7(l.prixUnitaire)} / {l.unite}
                         </p>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <Bouton
                             variante="contour"
                             taille="sm"
@@ -173,9 +172,11 @@ function PanierPage() {
                               store.definirQuantite(l.produitId, Math.max(1, l.quantite - 1))
                             }
                           >
-                            <Minus className="size-3" />
+                            −
                           </Bouton>
-                          <span className="w-6 text-center text-sm font-bold">{l.quantite}</span>
+                          <span className="w-6 text-center text-sm font-semibold">
+                            {l.quantite}
+                          </span>
                           <Bouton
                             variante="contour"
                             taille="sm"
@@ -183,7 +184,7 @@ function PanierPage() {
                             disabled={!!l.produit && l.quantite >= l.produit.stock}
                             onClick={() => store.definirQuantite(l.produitId, l.quantite + 1)}
                           >
-                            <Plus className="size-3" />
+                            +
                           </Bouton>
                           <Bouton
                             variante="danger"
@@ -191,11 +192,11 @@ function PanierPage() {
                             aria-label={t("retirerArticle")}
                             onClick={() => store.retirerDuPanier(l.produitId)}
                           >
-                            <Trash2 className="size-3" />
+                            Retirer
                           </Bouton>
                         </div>
                       </div>
-                      <p className="shrink-0 text-sm font-bold text-primary">
+                      <p className="shrink-0 text-sm font-semibold text-primary">
                         {formatPi7(l.sousTotal)}
                       </p>
                     </li>
@@ -204,7 +205,7 @@ function PanierPage() {
 
                 <div className="flex items-center justify-between border-t border-border pt-2 text-sm">
                   <span className="text-muted-foreground">{t("sousTotal")}</span>
-                  <span className="font-bold">{formatPi7(groupe.sousTotal)}</span>
+                  <span className="font-semibold">{formatPi7(groupe.sousTotal)}</span>
                 </div>
               </Carte>
             );
@@ -220,7 +221,7 @@ function PanierPage() {
                       <LinkImage photo={l.photo} titre={l.titre} />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold">{l.titre}</p>
-                        <p className="text-xs font-semibold text-accent">{messageLigne(l)}</p>
+                        <p className="text-xs font-semibold text-primary">{messageLigne(l)}</p>
                       </div>
                       <Bouton
                         variante="contour"
@@ -239,7 +240,7 @@ function PanierPage() {
           <Carte className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">{t("total")}</span>
-              <span className="text-xl font-extrabold text-primary">{formatPi7(etat.total)}</span>
+              <span className="text-xl font-semibold text-primary">{formatPi7(etat.total)}</span>
             </div>
             {etat.groupes.length > 1 && (
               <p className="text-xs text-muted-foreground">
@@ -271,8 +272,8 @@ function LinkImage({ photo, titre }: { photo: string | null; titre: string }) {
     );
   }
   return (
-    <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-primary-soft text-2xl">
-      🛍️
+    <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-primary-soft text-xs font-semibold text-primary">
+      Photo
     </div>
   );
 }

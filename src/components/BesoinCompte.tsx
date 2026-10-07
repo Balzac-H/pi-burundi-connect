@@ -30,10 +30,10 @@ export function BesoinCompte({
   if (!utilisateur) {
     return (
       <Carte className="mx-auto max-w-md space-y-3 text-center">
-        <h1 className="text-xl font-extrabold text-primary">{titre}</h1>
+        <h1 className="text-xl font-semibold text-foreground">{titre}</h1>
         <p className="text-sm text-muted-foreground">{message}</p>
         <Bouton onClick={() => router.history.push(lienConnexion(retour))}>
-          SE CONNECTER AVEC PI
+          Se connecter avec Pi
         </Bouton>
       </Carte>
     );

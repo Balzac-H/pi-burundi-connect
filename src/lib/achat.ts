@@ -64,7 +64,7 @@ function payerUneCommande(
       creerPaiementPi(
         {
           amount: l.montant,
-          memo: `WICO : ${l.titre} × ${l.quantite}`.slice(0, 100),
+          memo: `Arija : ${l.titre} × ${l.quantite}`.slice(0, 100),
           metadata: { orderId: l.orderId },
         },
         {

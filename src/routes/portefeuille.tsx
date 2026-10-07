@@ -21,17 +21,16 @@ import { estAdmin } from "@/lib/annonces";
 import { piRelease } from "@/lib/pi.functions";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
-import { Copy, FileText, PackageCheck, RotateCcw, TriangleAlert } from "lucide-react";
 
 export const Route = createFileRoute("/portefeuille")({
   head: () => ({
     meta: [
-      { title: "Mes commandes — WICO" },
+      { title: "Mes commandes — Arija" },
       {
         name: "description",
-        content: "Suivez vos commandes, vos paiements en Pi et la libération des fonds sur WICO.",
+        content: "Suivez vos commandes, vos paiements en Pi et la libération des fonds sur Arija.",
       },
-      { property: "og:title", content: "Mes commandes — WICO" },
+      { property: "og:title", content: "Mes commandes — Arija" },
       {
         property: "og:description",
         content: "Commandes, paiements Pi et escrow en un coup d'œil.",
@@ -207,7 +206,7 @@ function Portefeuille() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">🧾 {t("mesCommandes")}</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{t("mesCommandes")}</h1>
 
       <BandeauPi texte="Paiements confirmés par Pi Network, fonds retenus jusqu'à réception" />
 
@@ -328,14 +327,16 @@ function CarteCommande({
   return (
     <Carte className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="min-w-0 flex-1 truncate font-bold">{c.titre}</p>
+        <p className="min-w-0 flex-1 truncate font-semibold">{c.titre}</p>
         <Etiquette
           ton={
             c.statut === "recue" || c.statut === "payee"
               ? "succes"
               : c.statut === "litige"
                 ? "urgent"
-                : "neutre"
+                : c.statut === "en_attente_paiement"
+                  ? "attente"
+                  : "neutre"
           }
         >
           {libelleStatut(c.statut)}
@@ -361,7 +362,7 @@ function CarteCommande({
 
       <div className="flex items-center justify-between border-t border-border pt-2">
         <span className="text-sm text-muted-foreground">{t("total")}</span>
-        <span className="text-base font-extrabold text-primary">{formatPi(Number(c.montant))}</span>
+        <span className="text-base font-semibold text-primary">{formatPi(Number(c.montant))}</span>
       </div>
 
       <div className="space-y-1 text-xs text-muted-foreground">
@@ -375,22 +376,22 @@ function CarteCommande({
       <div className="flex flex-wrap gap-2">
         {peutReprendre && (
           <Bouton taille="sm" variante="pi" onClick={onReprendre}>
-            <RotateCcw className="size-4" /> {t("reprendrePaiement")}
+            {t("reprendrePaiement")}
           </Bouton>
         )}
         {estAcheteur && c.statut === "payee" && (
           <>
             <Bouton taille="sm" onClick={onConfirmer}>
-              <PackageCheck className="size-4" /> {t("confirmerReception")}
+              {t("confirmerReception")}
             </Bouton>
             <Bouton taille="sm" variante="danger" onClick={onSignaler}>
-              <TriangleAlert className="size-4" /> {t("signalerProbleme")}
+              {t("signalerProbleme")}
             </Bouton>
           </>
         )}
         {!estAcheteur && c.statut === "payee" && !c.livre_declare_at && (
           <Bouton taille="sm" variante="contour" onClick={onLivrer}>
-            <PackageCheck className="size-4" /> {t("marquerLivre")}
+            {t("marquerLivre")}
           </Bouton>
         )}
         {estAcheteur && c.statut === "recue" && (
@@ -410,11 +411,11 @@ function CarteCommande({
         )}
         {paiement?.txid && (
           <Bouton taille="sm" variante="contour" onClick={() => onCopierTxid(paiement.txid!)}>
-            <Copy className="size-4" /> {t("copierTxid")}
+            {t("copierTxid")}
           </Bouton>
         )}
         <Bouton taille="sm" variante="contour" onClick={onCopierFacture}>
-          <FileText className="size-4" /> {t("facture")}
+          {t("facture")}
         </Bouton>
       </div>
     </Carte>
@@ -442,7 +443,7 @@ function texteFacture(c: CommandeAvecPaiement): string {
           unite: l.unite,
           montant: Number(l.montant),
         }));
-  const numero = f?.numero ?? `WICO-${c.id.slice(0, 8).toUpperCase()}`;
+  const numero = f?.numero ?? `ARIJA-${c.id.slice(0, 8).toUpperCase()}`;
   return [
     `Facture ${numero}`,
     `Date : ${f?.date ?? c.created_at}`,

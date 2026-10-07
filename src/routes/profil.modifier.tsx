@@ -25,13 +25,13 @@ import {
 export const Route = createFileRoute("/profil/modifier")({
   head: () => ({
     meta: [
-      { title: "Modifier mon profil — WICO" },
+      { title: "Modifier mon profil — Arija" },
       {
         name: "description",
         content:
           "Mettez à jour votre photo, bio, compétences, numéro WhatsApp, localisation et prix horaire.",
       },
-      { property: "og:title", content: "Modifier mon profil — WICO" },
+      { property: "og:title", content: "Modifier mon profil — Arija" },
       {
         property: "og:description",
         content: "Gérez vos informations publiques sur la plateforme.",
@@ -126,14 +126,14 @@ function Modifier() {
 
   return (
     <form className="mx-auto max-w-2xl space-y-4" onSubmit={soumettre}>
-      <h1 className="text-2xl font-extrabold text-primary">Modifier mon profil</h1>
+      <h1 className="text-2xl font-semibold text-primary">Modifier mon profil</h1>
 
       <Carte className="space-y-4">
         <div className="flex items-center gap-4">
           {photo ? (
             <img src={photo} alt="Photo de profil" className="size-20 rounded-full object-cover" />
           ) : (
-            <Avatar emoji="🧑🏿" taille="lg" />
+            <Avatar nom={profil?.nom} taille="lg" />
           )}
           <input
             ref={fichierRef}
@@ -280,9 +280,9 @@ function Modifier() {
       </Carte>
 
       <div className="flex gap-2">
-        <Bouton type="submit">ENREGISTRER</Bouton>
+        <Bouton type="submit">Enregistrer</Bouton>
         <Bouton type="button" variante="contour" onClick={() => navigate({ to: "/profil" })}>
-          ANNULER
+          Annuler
         </Bouton>
       </div>
     </form>
@@ -295,7 +295,7 @@ function NonConnecte() {
       <p className="text-sm text-muted-foreground">
         Connectez-vous pour personnaliser votre profil.
       </p>
-      <LienBouton to="/connexion">SE CONNECTER</LienBouton>
+      <LienBouton to="/connexion">Se connecter</LienBouton>
     </Carte>
   );
 }

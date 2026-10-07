@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type NotifLive = {
   id: string;
-  icone: string;
   titre: string;
   texte: string;
   date: string;
@@ -99,7 +98,6 @@ export async function chargerNotificationsBd(userId: string) {
   notifsLive.charger(
     lignes.map((n) => ({
       id: `bd-${n.id}`,
-      icone: "🔔",
       titre: n.titre,
       texte: n.contenu ?? "",
       date: n.created_at,
@@ -135,12 +133,11 @@ export function useAlertesTempsReel(actif: boolean, monId?: string) {
           if (p.vendeur_id === monId) return;
           notifsLive.ajouter({
             id: `produit-${p.id}`,
-            icone: "🆕",
             titre: "Nouvelle annonce",
             texte: `${p.titre} — ${Number(p.prix)} π`,
             lien: `/market/${p.id}`,
           });
-          toast("🆕 Nouvelle annonce", { description: p.titre });
+          toast("Nouvelle annonce", { description: p.titre });
         },
       )
       .subscribe();

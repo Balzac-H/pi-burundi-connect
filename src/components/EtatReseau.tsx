@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { WifiOff, RefreshCw } from "lucide-react";
 
 /**
  * Bandeau d'état réseau : informe quand la connexion est faible/absente et
@@ -39,21 +38,13 @@ export function EtatReseau() {
   return (
     <div
       role="status"
-      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-semibold ${
-        horsLigne
-          ? "bg-destructive text-destructive-foreground"
-          : "bg-success text-success-foreground"
+      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center gap-2 border-b border-border bg-card px-3 py-1.5 text-xs font-semibold ${
+        horsLigne ? "text-destructive" : "text-success"
       }`}
     >
-      {horsLigne ? (
-        <>
-          <WifiOff className="size-3.5" /> Mode hors ligne — contenu enregistré affiché
-        </>
-      ) : (
-        <>
-          <RefreshCw className="size-3.5 animate-spin" /> Connexion rétablie — mise à jour…
-        </>
-      )}
+      {horsLigne
+        ? "Mode hors ligne — contenu enregistré affiché"
+        : "Connexion rétablie — mise à jour…"}
     </div>
   );
 }

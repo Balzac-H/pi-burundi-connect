@@ -7,13 +7,13 @@ import { useT } from "@/lib/i18n";
 export const Route = createFileRoute("/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — WICO" },
+      { title: "Notifications — Arija" },
       {
         name: "description",
         content:
           "Candidatures, messages, paiements Pi et nouvelles annonces : suivez toute votre activité en direct.",
       },
-      { property: "og:title", content: "Notifications — WICO" },
+      { property: "og:title", content: "Notifications — Arija" },
       { property: "og:description", content: "Centre de notifications de la plateforme." },
     ],
   }),
@@ -29,7 +29,7 @@ function PageNotifications() {
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-2xl font-extrabold text-primary">🔔 {t("notifications")}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{t("notifications")}</h1>
         <Bouton
           taille="sm"
           variante="contour"
@@ -53,7 +53,6 @@ function PageNotifications() {
       <div className="space-y-2">
         {live.map((n) => (
           <Carte key={n.id} className="flex gap-3">
-            <span className="text-xl">{n.icone}</span>
             <div className="min-w-0 flex-1">
               <p className="font-semibold">{n.titre}</p>
               <p className="text-sm text-muted-foreground">{n.texte}</p>

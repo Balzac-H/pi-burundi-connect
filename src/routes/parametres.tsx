@@ -13,9 +13,9 @@ import { BoutonTheme } from "@/components/Confiance";
 export const Route = createFileRoute("/parametres")({
   head: () => ({
     meta: [
-      { title: "Paramètres — WICO" },
-      { name: "description", content: "Langue, thème, sécurité et session de votre compte WICO." },
-      { property: "og:title", content: "Paramètres — WICO" },
+      { title: "Paramètres — Arija" },
+      { name: "description", content: "Langue, thème, sécurité et session de votre compte Arija." },
+      { property: "og:title", content: "Paramètres — Arija" },
       { property: "og:description", content: "Compte, langue, thème et sécurité." },
     ],
   }),
@@ -41,7 +41,7 @@ function Parametres() {
   if (!utilisateur) {
     return (
       <Carte className="mx-auto max-w-md space-y-3 text-center">
-        <h1 className="text-xl font-extrabold text-primary">Paramètres</h1>
+        <h1 className="text-xl font-semibold text-foreground">Paramètres</h1>
         <p className="text-sm text-muted-foreground">Connectez-vous pour gérer votre compte.</p>
         <LienBouton to="/connexion">SE CONNECTER / S'INSCRIRE</LienBouton>
       </Carte>
@@ -63,10 +63,10 @@ function Parametres() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">Paramètres ⚙️</h1>
+      <h1 className="text-2xl font-semibold text-foreground">Paramètres</h1>
 
       <Carte className="space-y-3">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">Compte</h2>
+        <h2 className="section-label">Compte</h2>
         <div className="text-sm">
           <p className="text-xs text-muted-foreground">Nom</p>
           <p className="font-semibold">{profil?.nom ?? "—"}</p>
@@ -83,7 +83,7 @@ function Parametres() {
           <Selection value={langue} onChange={(e) => definirLangue(e.target.value as Langue)}>
             {langues.map((l) => (
               <option key={l.code} value={l.code}>
-                {l.drapeau} {l.nom}
+                {l.nom}
               </option>
             ))}
           </Selection>
@@ -92,7 +92,7 @@ function Parametres() {
           <Selection value={theme} onChange={(e) => definirTheme(e.target.value as Theme)}>
             {themes.map((t) => (
               <option key={t.code} value={t.code}>
-                {t.icone} {t.nom}
+                {t.nom}
               </option>
             ))}
           </Selection>
@@ -109,7 +109,7 @@ function Parametres() {
       </Carte>
 
       <Carte className="space-y-3">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">Sécurité</h2>
+        <h2 className="section-label">Sécurité</h2>
         <p className="text-sm text-muted-foreground">
           L'identité est liée à votre session Pi (Pi Browser). Pour sécuriser l'accès par email,
           utilisez le lien de réinitialisation ci-dessous.
@@ -121,7 +121,7 @@ function Parametres() {
             onClick={reinitialiserMotDePasse}
             disabled={emailEnvoye}
           >
-            {emailEnvoye ? "Lien envoyé ✓" : "Recevoir un lien de mot de passe"}
+            {emailEnvoye ? "Lien envoyé" : "Recevoir un lien de mot de passe"}
           </Bouton>
         </div>
         {utilisateur.email && (
@@ -130,7 +130,7 @@ function Parametres() {
       </Carte>
 
       <Carte className="space-y-3">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">Conformité</h2>
+        <h2 className="section-label">Conformité</h2>
         <div className="flex flex-wrap gap-2">
           <LienBouton to="/conditions" variante="contour" taille="sm">
             Conditions d'utilisation
@@ -142,7 +142,7 @@ function Parametres() {
       </Carte>
 
       <Carte className="space-y-3">
-        <h2 className="text-sm font-bold uppercase text-muted-foreground">Session</h2>
+        <h2 className="section-label">Session</h2>
         <Bouton
           variante="danger"
           className="w-full"
@@ -157,7 +157,9 @@ function Parametres() {
       </Carte>
 
       <Carte className="space-y-3 border border-destructive/40">
-        <h2 className="text-sm font-bold uppercase text-destructive">Zone dangereuse</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-destructive">
+          Zone dangereuse
+        </h2>
         <p className="text-sm text-muted-foreground">
           Supprime définitivement votre compte, vos annonces, messages, avis et profils. Les
           paiements déjà libérés restent enregistrés chez Pi. Cette action est irréversible.

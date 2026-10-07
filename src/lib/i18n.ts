@@ -2,11 +2,11 @@ import { useCallback, useSyncExternalStore } from "react";
 
 export type Langue = "fr" | "rn" | "sw" | "en";
 
-export const langues: { code: Langue; nom: string; drapeau: string }[] = [
-  { code: "fr", nom: "Français", drapeau: "🇫🇷" },
-  { code: "rn", nom: "Kirundi", drapeau: "🇧🇮" },
-  { code: "sw", nom: "Kiswahili", drapeau: "🇹🇿" },
-  { code: "en", nom: "English", drapeau: "🇬🇧" },
+export const langues: { code: Langue; nom: string }[] = [
+  { code: "fr", nom: "Français" },
+  { code: "rn", nom: "Kirundi" },
+  { code: "sw", nom: "Kiswahili" },
+  { code: "en", nom: "English" },
 ];
 
 export type Cle =
@@ -49,7 +49,6 @@ export type Cle =
   | "stock"
   | "categories"
   | "trouverVendeur"
-  | "sloganAccueil"
   | "seConnecterPi"
   | "piBrowserRequis"
   | "explorerSansCompte"
@@ -113,7 +112,7 @@ export type Cle =
   | "litige"
   | "retenuEscrow"
   | "libereNet"
-  | "commissionWico"
+  | "commissionArija"
   | "montantBrut"
   | "net"
   | "aucunClient"
@@ -159,9 +158,21 @@ export type Cle =
   | "vendeur"
   | "quantite"
   | "lignes"
-  | "ajouteAuPanier";
+  | "ajouteAuPanier"
+  | "sousTitre"
+  | "nomCompletOng"
+  | "aPropos"
+  | "transparence"
+  | "support";
 
 const fr: Record<Cle, string> = {
+  sousTitre: "Marché et emplois solidaires au Burundi",
+  nomCompletOng:
+    "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
+  aPropos: "À propos",
+  transparence: "Transparence",
+  support: "Support",
+
   accueil: "Accueil",
   jobs: "Emplois",
   market: "Market",
@@ -193,7 +204,7 @@ const fr: Record<Cle, string> = {
   creerCompte: "Créer un compte",
   langue: "Langue",
   inscriptionRequise: "Inscription requise",
-  inscriptionRequiseTexte: "Créez un compte gratuit pour utiliser WICO.",
+  inscriptionRequiseTexte: "Créez un compte gratuit pour utiliser Arija.",
   tout: "Tout",
   aucunResultat: "Aucun résultat",
   produitsCommunaute: "Produits de la communauté",
@@ -201,9 +212,8 @@ const fr: Record<Cle, string> = {
   stock: "Stock",
   categories: "Catégories",
   trouverVendeur: "Trouver un vendeur",
-  sloganAccueil: "Emplois, marché et paiements en Pi",
   seConnecterPi: "Se connecter avec Pi",
-  piBrowserRequis: "Ouvrez WICO dans le Pi Browser pour payer en Pi.",
+  piBrowserRequis: "Ouvrez Arija dans le Pi Browser pour payer en Pi.",
   explorerSansCompte: "Explorer sans compte",
   mesCommandes: "Mes commandes",
   aucuneAnnonce: "Aucune annonce pour le moment.",
@@ -267,7 +277,7 @@ const fr: Record<Cle, string> = {
   litige: "Litige",
   retenuEscrow: "Retenu en escrow",
   libereNet: "Libéré net",
-  commissionWico: "Commission WICO (2 %)",
+  commissionArija: "Commission Arija (2 %)",
   montantBrut: "Montant brut",
   net: "Net",
   aucunClient: "Aucun client pour le moment.",
@@ -317,6 +327,13 @@ const fr: Record<Cle, string> = {
 };
 
 const rn: Record<Cle, string> = {
+  sousTitre: "Isoko n'akazi mu Burundi",
+  nomCompletOng:
+    "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
+  aPropos: "Ibijanye na Arija",
+  transparence: "Transparence",
+  support: "Ubufasha",
+
   accueil: "Ahabanza",
   jobs: "Akazi",
   market: "Isoko",
@@ -348,7 +365,7 @@ const rn: Record<Cle, string> = {
   creerCompte: "Iyandikishe",
   langue: "Ururimi",
   inscriptionRequise: "Kwiyandikisha birakenewe",
-  inscriptionRequiseTexte: "Iyandikishe ku buntu kugira ukoreshe WICO.",
+  inscriptionRequiseTexte: "Iyandikishe ku buntu kugira ukoreshe Arija.",
   tout: "Vyose",
   aucunResultat: "Nta co vyabonetse",
   produitsCommunaute: "Ibicuruzwa vy'abanyagihugu",
@@ -356,9 +373,8 @@ const rn: Record<Cle, string> = {
   stock: "Ibihari",
   categories: "Ubwoko",
   trouverVendeur: "Rondera umudandaza",
-  sloganAccueil: "Akazi, isoko n'ukuriha muri Pi",
   seConnecterPi: "Injira na Pi",
-  piBrowserRequis: "Fungura WICO muri Pi Browser kugira ukore ukwishyura na Pi.",
+  piBrowserRequis: "Fungura Arija muri Pi Browser kugira ukore ukwishyura na Pi.",
   explorerSansCompte: "Shakisha nta konti",
   mesCommandes: "Amabwiriza yange",
   aucuneAnnonce: "Nta tandukiriza ine ubu.",
@@ -421,7 +437,7 @@ const rn: Record<Cle, string> = {
   litige: "Ibazo",
   retenuEscrow: "Bibitswe mu gipfuko",
   libereNet: "Byakurwemo buteparo",
-  commissionWico: "Umugabane wa WICO (2 %)",
+  commissionArija: "Umugabane wa Arija (2 %)",
   montantBrut: "Igiciro gihari",
   net: "Buteparo",
   aucunClient: "Nta bakiriya ubu.",
@@ -471,6 +487,13 @@ const rn: Record<Cle, string> = {
 };
 
 const sw: Record<Cle, string> = {
+  sousTitre: "Soko na kazi za ushirikiano Burundi",
+  nomCompletOng:
+    "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
+  aPropos: "Kuhusu Arija",
+  transparence: "Uwazi",
+  support: "Msaada",
+
   accueil: "Mwanzo",
   jobs: "Kazi",
   market: "Soko",
@@ -502,7 +525,7 @@ const sw: Record<Cle, string> = {
   creerCompte: "Fungua akaunti",
   langue: "Lugha",
   inscriptionRequise: "Usajili unahitajika",
-  inscriptionRequiseTexte: "Fungua akaunti bure ili kutumia WICO.",
+  inscriptionRequiseTexte: "Fungua akaunti bure ili kutumia Arija.",
   tout: "Zote",
   aucunResultat: "Hakuna matokeo",
   produitsCommunaute: "Bidhaa za jamii",
@@ -510,9 +533,8 @@ const sw: Record<Cle, string> = {
   stock: "Hisa",
   categories: "Makundi",
   trouverVendeur: "Tafuta muuzaji",
-  sloganAccueil: "Kazi, soko na malipo kwa Pi",
   seConnecterPi: "Ingia kwa Pi",
-  piBrowserRequis: "Fungua WICO kwenye Pi Browser ili kulipa kwa Pi.",
+  piBrowserRequis: "Fungua Arija kwenye Pi Browser ili kulipa kwa Pi.",
   explorerSansCompte: "Vinjiri bila akaunti",
   mesCommandes: "Maagizo yangu",
   aucuneAnnonce: "Hakuna matangazo kwa sasa.",
@@ -575,7 +597,7 @@ const sw: Record<Cle, string> = {
   litige: "Mgogoro",
   retenuEscrow: "Imeshikwa kwenye escrow",
   libereNet: "Iliyotolewa halisi",
-  commissionWico: "Kamisheni ya WICO (2%)",
+  commissionArija: "Kamisheni ya Arija (2%)",
   montantBrut: "Kiasi ghafi",
   net: "Halisi",
   aucunClient: "Hakuna mteja kwa sasa.",
@@ -625,6 +647,13 @@ const sw: Record<Cle, string> = {
 };
 
 const en: Record<Cle, string> = {
+  sousTitre: "Solidarity marketplace and jobs in Burundi",
+  nomCompletOng:
+    "Arija: Alliance for the Reinforcement of the values of Integrity, Socio-economic Justice and Friendship between Peoples",
+  aPropos: "About",
+  transparence: "Transparency",
+  support: "Support",
+
   accueil: "Home",
   jobs: "Jobs",
   market: "Market",
@@ -656,7 +685,7 @@ const en: Record<Cle, string> = {
   creerCompte: "Create account",
   langue: "Language",
   inscriptionRequise: "Sign-up required",
-  inscriptionRequiseTexte: "Create a free account to use WICO.",
+  inscriptionRequiseTexte: "Create a free account to use Arija.",
   tout: "All",
   aucunResultat: "No results",
   produitsCommunaute: "Community products",
@@ -664,9 +693,8 @@ const en: Record<Cle, string> = {
   stock: "Stock",
   categories: "Categories",
   trouverVendeur: "Find a seller",
-  sloganAccueil: "Jobs, marketplace and payments in Pi",
   seConnecterPi: "Sign in with Pi",
-  piBrowserRequis: "Open WICO in the Pi Browser to pay with Pi.",
+  piBrowserRequis: "Open Arija in the Pi Browser to pay with Pi.",
   explorerSansCompte: "Browse without an account",
   mesCommandes: "My orders",
   aucuneAnnonce: "No listings yet.",
@@ -729,7 +757,7 @@ const en: Record<Cle, string> = {
   litige: "Dispute",
   retenuEscrow: "Held in escrow",
   libereNet: "Net released",
-  commissionWico: "WICO commission (2%)",
+  commissionArija: "Arija commission (2%)",
   montantBrut: "Gross amount",
   net: "Net",
   aucunClient: "No customers yet.",

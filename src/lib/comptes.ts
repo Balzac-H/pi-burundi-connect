@@ -141,14 +141,14 @@ export async function supprimerProduit(id: string) {
 
 /** Indicatifs proposés dans les formulaires (Burundi par défaut). */
 export const indicatifs = [
-  { code: "257", pays: "🇧🇮 Burundi (+257)" },
-  { code: "250", pays: "🇷🇼 Rwanda (+250)" },
-  { code: "255", pays: "🇹🇿 Tanzanie (+255)" },
-  { code: "256", pays: "🇺🇬 Ouganda (+256)" },
-  { code: "254", pays: "🇰🇪 Kenya (+254)" },
-  { code: "243", pays: "🇨🇩 RD Congo (+243)" },
-  { code: "32", pays: "🇧🇪 Belgique (+32)" },
-  { code: "33", pays: "🇫🇷 France (+33)" },
+  { code: "257", pays: "Burundi (+257)" },
+  { code: "250", pays: "Rwanda (+250)" },
+  { code: "255", pays: "Tanzanie (+255)" },
+  { code: "256", pays: "Ouganda (+256)" },
+  { code: "254", pays: "Kenya (+254)" },
+  { code: "243", pays: "RD Congo (+243)" },
+  { code: "32", pays: "Belgique (+32)" },
+  { code: "33", pays: "France (+33)" },
 ];
 
 /** Assemble indicatif + numéro local en format international sans « + » ni espace. */
@@ -181,7 +181,7 @@ export function normaliserNumero(numero: string): string {
 
 export const numeroValide = (numero: string) => normaliserNumero(numero).length >= 11;
 
-export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via WICO") =>
+export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via Arija") =>
   `https://wa.me/${normaliserNumero(numero)}?text=${encodeURIComponent(texte)}`;
 
 /** Ouvre WhatsApp de façon fiable (nouvel onglet, avec repli si bloqué : iframe/preview). */

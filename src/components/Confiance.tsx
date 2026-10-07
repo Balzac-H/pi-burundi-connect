@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { BadgeCheck, Flag, Moon, Sun } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
 import { Bouton, Champ, Selection, Zone } from "@/components/ui-kit";
@@ -12,10 +11,10 @@ export function BadgeVerifie({ verifie }: { verifie: boolean }) {
   if (!verifie) return null;
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-xs font-semibold text-success"
+      className="inline-flex items-center gap-1 rounded-md bg-success/15 px-2 py-0.5 text-xs font-semibold text-success"
       title="Email ou téléphone confirmé"
     >
-      <BadgeCheck className="size-3.5" /> Vérifié
+      Vérifié
     </span>
   );
 }
@@ -51,7 +50,7 @@ export function BoutonSignaler({
         raison,
         details,
       });
-      toast.success("Merci, votre signalement a été transmis à l'équipe WICO.");
+      toast.success("Merci, votre signalement a été transmis à l'équipe Arija.");
       setOuvert(false);
       setDetails("");
     } catch (e) {
@@ -66,10 +65,10 @@ export function BoutonSignaler({
       <button
         type="button"
         onClick={() => setOuvert(true)}
-        className="inline-flex items-center gap-1 text-xs font-semibold text-destructive hover:underline"
+        className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-destructive hover:underline"
         aria-label="Signaler"
       >
-        <Flag className="size-3.5" /> {!compact && "Signaler"}
+        Signaler
       </button>
       {ouvert && (
         <div
@@ -83,7 +82,7 @@ export function BoutonSignaler({
             className="card-surface w-full max-w-sm space-y-3 p-5"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-lg font-bold">
+            <h2 className="text-lg font-semibold">
               Signaler {cibleType === "profil" ? "ce membre" : "cette annonce"}
             </h2>
             {!utilisateur ? (
@@ -91,7 +90,7 @@ export function BoutonSignaler({
                 <p className="text-sm text-muted-foreground">
                   Connectez-vous pour envoyer un signalement.
                 </p>
-                <Link to="/connexion" className="font-semibold text-accent">
+                <Link to="/connexion" className="font-semibold text-primary">
                   Se connecter
                 </Link>
               </>
@@ -146,7 +145,6 @@ export function BoutonTheme() {
       onClick={() => definirTheme(sombre ? "clair" : "sombre")}
       aria-label={sombre ? "Passer au thème clair" : "Passer au thème sombre"}
     >
-      {sombre ? <Sun className="size-4" /> : <Moon className="size-4" />}
       {sombre ? "Thème clair" : "Thème sombre"}
     </Bouton>
   );

@@ -9,7 +9,7 @@ import {
 } from "@/lib/admin.functions";
 
 const PI_API = "https://api.minepi.com/v2";
-/** Commission WICO : 2 %, calculés et enregistrés à la libération des fonds. */
+/** Commission Arija : 2 %, calculés et enregistrés à la libération des fonds. */
 export const TAUX_COMMISSION = 0.02;
 
 /** Journal serveur pour approve/complete/cancel. Ne contient JAMAIS la clé API. */
@@ -105,7 +105,7 @@ export const piAuth = createServerFn({ method: "POST" })
         .eq("id", sessionUserId);
       if (error) {
         if (error.code === "23505")
-          throw new Error("Ce compte Pi est déjà lié à un autre compte WICO.");
+          throw new Error("Ce compte Pi est déjà lié à un autre compte Arija.");
         throw new Error("Liaison du compte Pi impossible.");
       }
       return { tokenHash: null, username: moi.username };
@@ -420,7 +420,7 @@ function construireFacture(commandes: LigneCommandeDb[], txid: string, items: Li
     })),
   );
   return {
-    numero: `WICO-${commandes[0].id.slice(0, 8).toUpperCase()}`,
+    numero: `ARIJA-${commandes[0].id.slice(0, 8).toUpperCase()}`,
     date: new Date().toISOString(),
     lignes,
     montant_brut: commandes.reduce((s, c) => s + Number(c.montant), 0),

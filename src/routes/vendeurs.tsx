@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Avatar, Carte, Etiquette, Saisie, TitreSection } from "@/components/ui-kit";
 import { chercherProfils, lienWhatsApp, type Profil } from "@/lib/comptes";
 import { formatPi } from "@/lib/store";
-import { MessageCircle, Search } from "lucide-react";
 
 export const Route = createFileRoute("/vendeurs")({
   head: () => ({
@@ -14,7 +13,7 @@ export const Route = createFileRoute("/vendeurs")({
         content:
           "Trouvez des vendeurs, artisans et prestataires près de chez vous : photo, compétences, ville et contact WhatsApp direct.",
       },
-      { property: "og:title", content: "Rechercher des vendeurs — WICO" },
+      { property: "og:title", content: "Rechercher des vendeurs — Arija" },
       {
         property: "og:description",
         content: "Annuaire des vendeurs et prestataires de la communauté Pi au Burundi.",
@@ -50,10 +49,9 @@ function Vendeurs() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold text-primary">VENDEURS & PRESTATAIRES 🔎</h1>
+      <h1 className="text-2xl font-semibold text-foreground">Vendeurs & prestataires</h1>
 
       <Carte className="flex items-center gap-2">
-        <Search className="size-4 shrink-0 text-muted-foreground" />
         <Saisie
           placeholder="Rechercher par nom, ville ou activité…"
           value={recherche}
@@ -82,11 +80,11 @@ function Vendeurs() {
                   className="size-12 shrink-0 rounded-full object-cover"
                 />
               ) : (
-                <Avatar emoji="🧑🏿" />
+                <Avatar nom={v.nom} />
               )}
               <div className="min-w-0">
-                <h2 className="truncate font-bold">{v.nom || "Utilisateur"}</h2>
-                {v.ville && <p className="truncate text-xs text-muted-foreground">📍 {v.ville}</p>}
+                <h2 className="truncate font-semibold">{v.nom || "Utilisateur"}</h2>
+                {v.ville && <p className="truncate text-xs text-muted-foreground">{v.ville}</p>}
                 {v.prix_horaire ? (
                   <p className="text-xs font-semibold text-primary">
                     {formatPi(Number(v.prix_horaire))} / h
@@ -97,7 +95,7 @@ function Vendeurs() {
             {v.bio && <p className="line-clamp-2 text-xs text-muted-foreground">{v.bio}</p>}
             <div className="flex flex-wrap gap-1.5">
               {v.competences.slice(0, 4).map((c) => (
-                <Etiquette key={c}>🏷️ {c}</Etiquette>
+                <Etiquette key={c}>{c}</Etiquette>
               ))}
             </div>
             {(v.whatsapp || v.telephone) && (
@@ -105,9 +103,9 @@ function Vendeurs() {
                 href={lienWhatsApp((v.whatsapp || v.telephone) as string)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success"
+                className="inline-flex min-h-11 items-center gap-2 rounded-md bg-success/15 px-3 text-xs font-semibold text-success"
               >
-                <MessageCircle className="size-4" /> WHATSAPP
+                WhatsApp
               </a>
             )}
           </Carte>
