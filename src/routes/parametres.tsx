@@ -5,6 +5,11 @@ import { Bouton, Carte, Champ, Saisie, Selection, LienBouton } from "@/component
 import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { BoutonTheme } from "@/components/Confiance";
+import { useEffect, useState } from "react";
+import { useSession, seDeconnecter } from "@/lib/auth";
+import { estAdmin } from "@/lib/annonces";
+import { supprimerMonCompte } from "@/lib/pi.functions";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/parametres")({
   head: () => ({
@@ -22,6 +27,9 @@ function Parametres() {
   const langue = useLangue();
   const theme = useTheme();
   const navigate = useNavigate();
+  const { utilisateur } = useSession();
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => { if (utilisateur) estAdmin(utilisateur.id).then(setAdmin); }, [utilisateur]);
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
@@ -29,12 +37,7 @@ function Parametres() {
 
       <Carte className="space-y-3">
         <h2 className="text-sm font-bold uppercase text-muted-foreground">Compte</h2>
-        <Champ label="Numéro de téléphone (vérifié)">
-          <Saisie defaultValue="+257 79 123 456" maxLength={15} />
-        </Champ>
-        <Champ label="Email" aide="Une confirmation vous sera envoyée">
-          <Saisie type="email" defaultValue="didier@example.com" maxLength={255} />
-        </Champ>
+        {utilisateur?.email && <p className="text-sm">Compte : <strong>{utilisateur.email.endsWith("@pi.wico.app") ? "Pi Network" : utilisateur.email}</strong></p>}
         <Champ label="Langue / Ururimi / Lugha / Language">
           <Selection value={langue} onChange={(e) => definirLangue(e.target.value as Langue)}>
             {langues.map((l) => (
@@ -56,7 +59,7 @@ function Parametres() {
         <div className="flex flex-wrap gap-2">
           <BoutonTheme />
           <LienBouton to="/profil/modifier" variante="contour" taille="sm">Modifier mon profil</LienBouton>
-          <LienBouton to="/admin" variante="fantome" taille="sm">Espace admin</LienBouton>
+          {admin && <LienBouton to="/admin" variante="fantome" taille="sm">Espace admin</LienBouton>}
         </div>
       </Carte>
 
@@ -83,16 +86,23 @@ function Parametres() {
         <Interrupteur label="Profil visible dans les suggestions" defaut />
       </Carte>
 
-      <Bouton
-        variante="danger"
-        className="w-full"
-        onClick={() => {
-          toast.success("Déconnexion effectuée.");
-          navigate({ to: "/connexion" });
-        }}
-      >
-        SE DÉCONNECTER
-      </Bouton>
+      <Carte className="flex flex-wrap gap-3 text-sm font-semibold">
+        <Link to="/conditions" className="text-accent">Conditions d'utilisation</Link>
+        <Link to="/confidentialite" className="text-accent">Politique de confidentialité</Link>
+      </Carte>
+
+      {utilisateur && (
+        <>
+          <Bouton variante="contour" className="w-full" onClick={async () => {
+            await seDeconnecter(); toast.success("Déconnexion effectuée."); navigate({ to: "/connexion" });
+          }}>Se déconnecter</Bouton>
+          <Bouton variante="danger" className="w-full" onClick={async () => {
+            if (!window.confirm("Supprimer définitivement votre compte et toutes vos données ?")) return;
+            try { await supprimerMonCompte(); await seDeconnecter(); toast.success("Compte supprimé."); navigate({ to: "/" }); }
+            catch { toast.error("Suppression impossible."); }
+          }}>Supprimer mon compte et mes données</Bouton>
+        </>
+      )}
     </div>
   );
 }

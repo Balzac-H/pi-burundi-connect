@@ -2,10 +2,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bouton, Champ, Saisie, Selection } from "@/components/ui-kit";
 import { typesCompte } from "@/lib/annonces";
-import { bientotDisponible } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { Link } from "@tanstack/react-router";
+import { connexionPi } from "@/lib/pi-session";
+import { piDisponible } from "@/lib/pi";
 
 
 export const Route = createFileRoute("/connexion")({
@@ -96,13 +98,14 @@ function Connexion() {
           <Bouton type="button" variante="secondaire" className="w-full" onClick={connexionGoogle} disabled={enCours}>
             Continuer avec Google
           </Bouton>
-          <Bouton
-            type="button"
-            variante="pi"
-            className="w-full"
-            onClick={() => bientotDisponible("L'authentification Pi Wallet")}
-          >
-            π Continuer avec Pi Network
+          <Bouton type="button" variante="pi" className="w-full" disabled={enCours} onClick={async () => {
+            if (!piDisponible()) return toast("Ouvrez WICO dans le Pi Browser pour payer en Pi.");
+            setEnCours(true);
+            try { const u = await connexionPi(); toast.success(`Bienvenue ${u} !`); navigate({ to: "/profil" }); }
+            catch (e) { toast.error(e instanceof Error ? e.message : "Connexion Pi impossible."); }
+            finally { setEnCours(false); }
+          }}>
+            π Se connecter avec Pi
           </Bouton>
           <button
             type="button"
@@ -111,10 +114,10 @@ function Connexion() {
           >
             Explorer l'application sans compte
           </button>
+          <p className="text-center text-xs text-muted-foreground">
+            En continuant, vous acceptez les <Link to="/conditions" className="underline">conditions</Link> et la <Link to="/confidentialite" className="underline">politique de confidentialité</Link>.
+          </p>
         </div>
-
-
-
         {attenteConfirmation ? (
           <div className="card-surface space-y-2 p-5 text-center">
             <h2 className="text-lg font-bold">Confirmez votre email 📩</h2>
@@ -160,18 +163,6 @@ function Connexion() {
             {enCours ? "Patientez…" : inscription ? "CRÉER MON COMPTE" : "SE CONNECTER"}
           </Bouton>
 
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="h-px flex-1 bg-border" /> ou <span className="h-px flex-1 bg-border" />
-          </div>
-
-          <Bouton
-            type="button"
-            variante="pi"
-            className="w-full"
-            onClick={() => bientotDisponible("La connexion Pi Wallet")}
-          >
-            π Se connecter avec Pi Wallet
-          </Bouton>
 
           <div className="flex justify-between text-xs font-semibold">
             <button type="button" className="text-accent" onClick={() => setInscription((v) => !v)}>

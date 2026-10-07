@@ -20,6 +20,7 @@ import { AssistantWico } from "../components/AssistantWico";
 import { EtatReseau } from "../components/EtatReseau";
 import { enregistrerServiceWorker } from "../lib/pwa";
 import { initTheme } from "../lib/theme";
+import { initPi } from "../lib/pi";
 
 
 function NotFoundComponent() {
@@ -119,6 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/icon-192.png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
     ],
+    scripts: [{ src: "https://sdk.minepi.com/pi-sdk.js" }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -148,6 +150,7 @@ function RootComponent() {
 
   useEffect(() => {
     initTheme();
+    initPi();
     enregistrerServiceWorker();
   }, []);
 
