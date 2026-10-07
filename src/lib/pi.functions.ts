@@ -118,6 +118,7 @@ export const piComplete = createServerFn({ method: "POST" })
         await appelPi(`/payments/${encodeURIComponent(data.paymentId)}/complete`, { method: "POST", body: JSON.stringify({ txid: data.txid }) });
       }
       const { data: cmd } = await supabaseAdmin.from("orders").select("*").eq("id", pay.order_id).single();
+      if (!cmd) throw new Error("Commande introuvable.");
       const facture = {
         numero: `WICO-${pay.id.slice(0, 8).toUpperCase()}`,
         date: new Date().toISOString(),
@@ -175,6 +176,7 @@ export const piRelease = createServerFn({ method: "POST" })
     if (!admin) throw new Error("Réservé aux administrateurs.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: pay } = await supabaseAdmin.from("payments").select("*").eq("id", data.paymentId).single();
+    if (!pay) throw new Error("Paiement introuvable.");
     if (pay.statut !== "paid_held") throw new Error("Fonds non retenus.");
     const commission = Math.round(Number(pay.montant) * TAUX_COMMISSION * 1e7) / 1e7;
     // TODO : paiement A2U avec le SDK backend Pi, nécessite la clé du portefeuille de l'app.
