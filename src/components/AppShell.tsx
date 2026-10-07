@@ -120,7 +120,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-4 lg:pb-10">{children}</main>
+      <main className="mx-auto w-full max-w-6xl px-4 pb-6 pt-4">{children}</main>
+      <footer className="mx-auto flex w-full max-w-6xl flex-wrap gap-4 px-4 pb-28 text-xs text-muted-foreground lg:pb-8">
+        <span>© WICO — Wisdom Connect</span>
+        <Link to="/conditions" className="hover:text-primary">Conditions</Link>
+        <Link to="/confidentialite" className="hover:text-primary">Confidentialité</Link>
+      </footer>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card/95 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-md items-stretch">
