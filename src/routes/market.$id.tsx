@@ -129,7 +129,7 @@ function DetailProduit() {
             <a href={lienWhatsApp(vendeur.whatsapp, `Bonjour ${vendeur.nom}, je suis intéressé par « ${produit.titre} »`)} target="_blank" rel="noopener noreferrer"
               className="inline-flex min-h-9 items-center gap-2 rounded-lg bg-success/15 px-3 text-xs font-semibold text-success">💬 WhatsApp</a>
           ) : <Etiquette>📵 Numéro non vérifié</Etiquette>}
-          <BoutonSignaler cibleType="produit" cibleId={produit.id} utilisateurSignaleId={produit.vendeur_id} />
+          <BoutonSignaler cibleType="produit" cibleId={produit.id} utilisateurId={produit.vendeur_id} />
         </div>
       </Carte>
 
