@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 /** Accès à la vue publique `profils_publics` (sans coordonnées téléphoniques). */
 const vuePublique = () => (supabase as unknown as SupabaseClient).from("profils_publics");
 
+
 export type Profil = {
   id: string;
   nom: string;
@@ -27,8 +28,6 @@ export type ProduitDb = {
   prix: number;
   unite: string;
   stock: number;
-  quantite_min: number;
-  publie: boolean;
   lieu: string | null;
   livraison: string | null;
   photo_url: string | null;
@@ -36,21 +35,6 @@ export type ProduitDb = {
 };
 
 const DIX_ANS = 60 * 60 * 24 * 365 * 10;
-
-const cacheProfils = new Map<string, { expire: number; profil: Profil | null }>();
-
-/** Profil mis en cache 60 s (les listes en affichent plusieurs à la suite). */
-export async function chargerProfilCache(id: string): Promise<Profil | null> {
-  const enCache = cacheProfils.get(id);
-  if (enCache && enCache.expire > Date.now()) return enCache.profil;
-  const profil = await chargerProfil(id);
-  cacheProfils.set(id, { expire: Date.now() + 60_000, profil });
-  return profil;
-}
-
-export function oublierProfil(id: string) {
-  cacheProfils.delete(id);
-}
 
 export async function chargerProfil(id: string): Promise<Profil | null> {
   const { data } = await supabase.from("profils").select("*").eq("id", id).maybeSingle();
@@ -76,16 +60,13 @@ export async function chercherProfils(recherche: string): Promise<Profil[]> {
   return ((pub ?? []) as Profil[]).map((p) => ({ ...p, whatsapp: null, telephone: null }));
 }
 
+
 export async function enregistrerProfil(id: string, valeurs: Partial<Profil>) {
   const { error } = await supabase.from("profils").upsert({ id, ...valeurs } as never);
   if (error) throw error;
 }
 
-export async function televerserPhoto(
-  bucket: "avatars" | "produits",
-  userId: string,
-  fichier: File,
-) {
+export async function televerserPhoto(bucket: "avatars" | "produits", userId: string, fichier: File) {
   const ext = fichier.name.split(".").pop()?.toLowerCase() ?? "jpg";
   const chemin = `${userId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from(bucket).upload(chemin, fichier, { upsert: true });
@@ -94,40 +75,15 @@ export async function televerserPhoto(
   return data?.signedUrl ?? null;
 }
 
-/** Annonces publiées, visibles par tous (RLS : publie = true). */
-export async function listerProduits(): Promise<ProduitDb[]> {
-  const { data } = await supabase
-    .from("produits")
-    .select("*")
-    .eq("publie", true)
-    .order("created_at", { ascending: false })
-    .limit(60);
+export async function listerProduits(vendeurId?: string): Promise<ProduitDb[]> {
+  let requete = supabase.from("produits").select("*").order("created_at", { ascending: false }).limit(60);
+  if (vendeurId) requete = requete.eq("vendeur_id", vendeurId);
+  const { data } = await requete;
   return (data as ProduitDb[] | null) ?? [];
 }
 
-/** Les annonces d'un vendeur (y compris celles masquées), pour sa boutique. */
-export async function listerMesProduits(vendeurId: string): Promise<ProduitDb[]> {
-  const { data } = await supabase
-    .from("produits")
-    .select("*")
-    .eq("vendeur_id", vendeurId)
-    .order("created_at", { ascending: false })
-    .limit(60);
-  return (data as ProduitDb[] | null) ?? [];
-}
-
-export type NouveauProduit = Omit<ProduitDb, "id" | "created_at" | "quantite_min" | "publie"> & {
-  quantite_min?: number;
-  publie?: boolean;
-};
-
-export async function creerProduit(valeurs: NouveauProduit) {
+export async function creerProduit(valeurs: Omit<ProduitDb, "id" | "created_at">) {
   const { error } = await supabase.from("produits").insert(valeurs);
-  if (error) throw error;
-}
-
-export async function modifierProduit(id: string, valeurs: Partial<NouveauProduit>) {
-  const { error } = await supabase.from("produits").update(valeurs).eq("id", id);
   if (error) throw error;
 }
 
@@ -156,10 +112,7 @@ export function composerNumero(indicatif: string, local: string): string {
 }
 
 /** Sépare un numéro enregistré en indicatif connu + partie locale. */
-export function separerNumero(numero: string | null | undefined): {
-  indicatif: string;
-  local: string;
-} {
+export function separerNumero(numero: string | null | undefined): { indicatif: string; local: string } {
   const n = (numero ?? "").replace(/\D/g, "");
   const trouve = indicatifs.find((i) => n.startsWith(i.code));
   if (!trouve) return { indicatif: "257", local: n };
@@ -170,7 +123,7 @@ export function separerNumero(numero: string | null | undefined): {
 export function normaliserNumero(numero: string): string {
   let n = (numero ?? "").replace(/\D/g, "");
   if (!n) return "";
-  n = n.replace(/^0+/, ""); // 079… -> 79…
+  n = n.replace(/^0+/, "");            // 079… -> 79…
   if (n.startsWith("00")) n = n.slice(2);
   if (!n.startsWith("257") && n.length <= 9) n = `257${n}`; // numéro local burundais
   return n;

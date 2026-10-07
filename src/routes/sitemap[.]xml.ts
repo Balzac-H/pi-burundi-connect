@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-// TODO: renseigner l'URL publique du site (domaine Lovable ou personnalisé).
+import { jobs, produits, utilisateurs } from "@/lib/data";
+
+// TODO: replace with your project URL once a project name or custom domain is set.
 const BASE_URL = "";
 
 interface SitemapEntry {
@@ -22,8 +24,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/market/vendre", changefreq: "monthly", priority: "0.5" },
           { path: "/market/boutique", changefreq: "weekly", priority: "0.5" },
           { path: "/connexion", changefreq: "monthly", priority: "0.4" },
-          { path: "/conditions", changefreq: "yearly", priority: "0.3" },
-          { path: "/confidentialite", changefreq: "yearly", priority: "0.3" },
+          ...jobs.map((j) => ({ path: `/jobs/${j.id}`, changefreq: "weekly" as const, priority: "0.8" })),
+          ...produits.map((p) => ({ path: `/market/${p.id}`, changefreq: "weekly" as const, priority: "0.8" })),
+          ...utilisateurs.map((u) => ({ path: `/profil/${u.id}`, changefreq: "weekly" as const, priority: "0.6" })),
         ];
 
         const urls = entries.map((e) =>

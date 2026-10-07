@@ -1,71 +1,43 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Carte, TitreSection } from "@/components/ui-kit";
-import { useT } from "@/lib/i18n";
+import { PageLegale } from "@/components/PageLegale";
 
 export const Route = createFileRoute("/conditions")({
   head: () => ({
     meta: [
       { title: "Conditions d'utilisation — WICO" },
-      {
-        name: "description",
-        content: "Conditions d'utilisation de la plateforme WICO (paiements en Pi).",
-      },
+      { name: "description", content: "Règles d'utilisation de WICO : annonces, emplois, paiements en Pi, escrow et litiges." },
+      { property: "og:title", content: "Conditions d'utilisation — WICO" },
+      { property: "og:description", content: "Les règles de la communauté WICO." },
+      { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: Conditions,
+  component: () => (
+    <PageLegale
+      titre="Conditions d'utilisation"
+      contenu={{
+        fr: (
+          <>
+            <h2>1. Objet</h2>
+            <p>WICO (Wisdom Connect) met en relation des acheteurs, vendeurs, employeurs et chercheurs d'emploi au Burundi. WICO n'est pas partie aux contrats conclus entre membres.</p>
+            <h2>2. Compte</h2>
+            <p>Vous pouvez vous inscrire par email, Google ou Pi Network. Vous êtes responsable de l'exactitude de vos informations et de la sécurité de votre compte.</p>
+            <h2>3. Annonces</h2>
+            <p>Les annonces doivent être licites, exactes (prix, stock, unité) et respecter la loi burundaise. WICO peut retirer toute annonce signalée et suspendre un compte.</p>
+            <h2>4. Paiements en Pi</h2>
+            <p>Les prix sont exprimés uniquement en Pi (π). Le paiement passe par le Pi Browser. Les fonds sont retenus par WICO jusqu'à la confirmation de réception, puis reversés au vendeur, moins une commission de 2 % à la charge du vendeur.</p>
+            <h2>5. Litiges</h2>
+            <p>L'acheteur peut signaler un problème depuis « Mes commandes et paiements ». L'équipe examine le litige et peut rembourser ou libérer les fonds.</p>
+            <h2>6. Responsabilité</h2>
+            <p>WICO fournit le service « en l'état » et ne garantit pas la qualité des biens et services proposés par les membres.</p>
+            <h2>7. Contact</h2>
+            <p>Pour toute question, utilisez l'assistant de l'application.</p>
+          </>
+        ),
+        rn: <p>WICO ihuza abagura, abadandaza, abatanga akazi n'abarondera akazi mu Burundi. Ibiciro biri muri Pi gusa. Amahera agumizwa na WICO gushika umuguzi yemeje ko yashikiwe, hanyuma ahabwa umudandaza hakuwemwo 2 %. Amatangazo ategerezwa kuba ay'ukuri kandi yubahiriza amategeko.</p>,
+        sw: <p>WICO inaunganisha wanunuzi, wauzaji, waajiri na watafuta kazi nchini Burundi. Bei ziko kwa Pi pekee. Fedha zinashikiliwa na WICO hadi mnunuzi athibitishe kupokea, kisha zinatolewa kwa muuzaji ukiondoa ada ya 2 %. Matangazo lazima yawe ya kweli na halali.</p>,
+        en: <p>WICO connects buyers, sellers, employers and job seekers in Burundi. Prices are in Pi only. Funds are held by WICO until the buyer confirms receipt, then released to the seller minus a 2% commission. Listings must be accurate and lawful; disputes can be opened from "My orders and payments".</p>,
+      }}
+    />
+  ),
 });
-
-function Conditions() {
-  const t = useT();
-  return (
-    <div className="mx-auto max-w-2xl space-y-4">
-      <TitreSection>📜 {t("conditions")} d'utilisation</TitreSection>
-
-      <Carte className="space-y-3 text-sm leading-relaxed">
-        <p className="text-xs font-semibold text-muted-foreground">{t("aValider")}</p>
-
-        <h3 className="font-bold">1. Objet</h3>
-        <p>
-          WICO (« la Plateforme ») met en relation des membres du Burundi pour la vente de produits,
-          de services et l'offre d'emploi. Les paiements entre membres s'effectuent en Pi (Pi
-          Network).
-        </p>
-
-        <h3 className="font-bold">2. Compte</h3>
-        <p>
-          Le compte est créé à l'aide de votre identité Pi Network. Vous êtes responsable des
-          activités réalisées via votre compte et vous vous engagez à fournir des informations
-          exactes. Vous pouvez supprimer votre compte et vos données à tout moment depuis les
-          paramètres.
-        </p>
-
-        <h3 className="font-bold">3. Engagements des membres</h3>
-        <ul className="list-disc space-y-1 pl-5">
-          <li>Ne publier que des annonces sincères et légales.</li>
-          <li>Ne pas tenter de contournement du système de paiement de la Plateforme.</li>
-          <li>Respecter les autres membres et signaler tout comportement suspect.</li>
-        </ul>
-
-        <h3 className="font-bold">4. Paiements et fonds retenus</h3>
-        <p>
-          Le paiement est confirmé par Pi Network puis conservé en séquestre (« fonds retenus »)
-          jusqu'à la confirmation de réception par l'acheteur. La Plateforme prélève une commission
-          de 2 % à la libération des fonds. Un litige peut être ouvert par l'acheteur ; les fonds
-          restent bloqués jusqu'à traitement.
-        </p>
-
-        <h3 className="font-bold">5. Responsabilité</h3>
-        <p>
-          WICO n'est pas partie aux transactions entre membres. En cas de désaccord, un litige peut
-          être signalé ; l'équipe examine les éléments fournis par les deux parties.
-        </p>
-
-        <h3 className="font-bold">6. Modifications</h3>
-        <p>
-          Les présentes conditions peuvent évoluer. La version en vigueur est celle publiée sur
-          cette page. Dernière mise à jour : 6 octobre 2026.
-        </p>
-      </Carte>
-    </div>
-  );
-}

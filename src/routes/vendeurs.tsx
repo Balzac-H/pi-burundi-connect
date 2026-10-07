@@ -9,16 +9,9 @@ export const Route = createFileRoute("/vendeurs")({
   head: () => ({
     meta: [
       { title: "Rechercher des vendeurs et prestataires au Burundi" },
-      {
-        name: "description",
-        content:
-          "Trouvez des vendeurs, artisans et prestataires près de chez vous : photo, compétences, ville et contact WhatsApp direct.",
-      },
+      { name: "description", content: "Trouvez des vendeurs, artisans et prestataires près de chez vous : photo, compétences, ville et contact WhatsApp direct." },
       { property: "og:title", content: "Rechercher des vendeurs — WICO" },
-      {
-        property: "og:description",
-        content: "Annuaire des vendeurs et prestataires de la communauté Pi au Burundi.",
-      },
+      { property: "og:description", content: "Annuaire des vendeurs et prestataires de la communauté Pi au Burundi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -66,9 +59,7 @@ function Vendeurs() {
       <TitreSection>{chargement ? "Recherche…" : `${liste.length} résultat(s)`}</TitreSection>
 
       {!chargement && liste.length === 0 && (
-        <Carte className="text-sm text-muted-foreground">
-          Aucun vendeur trouvé pour cette recherche.
-        </Carte>
+        <Carte className="text-sm text-muted-foreground">Aucun vendeur trouvé pour cette recherche.</Carte>
       )}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -76,11 +67,7 @@ function Vendeurs() {
           <Carte key={v.id} className="space-y-2">
             <div className="flex gap-3">
               {v.photo_url ? (
-                <img
-                  src={v.photo_url}
-                  alt={`Photo de ${v.nom}`}
-                  className="size-12 shrink-0 rounded-full object-cover"
-                />
+                <img src={v.photo_url} alt={`Photo de ${v.nom}`} className="size-12 shrink-0 rounded-full object-cover" />
               ) : (
                 <Avatar emoji="🧑🏿" />
               )}
@@ -88,9 +75,7 @@ function Vendeurs() {
                 <h2 className="truncate font-bold">{v.nom || "Utilisateur"}</h2>
                 {v.ville && <p className="truncate text-xs text-muted-foreground">📍 {v.ville}</p>}
                 {v.prix_horaire ? (
-                  <p className="text-xs font-semibold text-primary">
-                    {formatPi(Number(v.prix_horaire))} / h
-                  </p>
+                  <p className="text-xs font-semibold text-primary">{formatPi(Number(v.prix_horaire))} / h</p>
                 ) : null}
               </div>
             </div>
@@ -110,6 +95,7 @@ function Vendeurs() {
                 <MessageCircle className="size-4" /> WHATSAPP
               </a>
             )}
+
           </Carte>
         ))}
       </div>

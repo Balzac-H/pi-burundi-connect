@@ -11,11 +11,7 @@ export const Route = createFileRoute("/jobs/creer")({
   head: () => ({
     meta: [
       { title: "Publier une offre d'emploi — WICO" },
-      {
-        name: "description",
-        content:
-          "Publiez gratuitement une offre d'emploi payée en Pi et recrutez des travailleurs près de chez vous.",
-      },
+      { name: "description", content: "Publiez gratuitement une offre d'emploi payée en Pi et recrutez des travailleurs près de chez vous." },
       { property: "og:title", content: "Publier une offre d'emploi — WICO" },
       { property: "og:description", content: "Recrutez rapidement au Burundi, paiement en Pi." },
     ],
@@ -49,9 +45,7 @@ function CreerOffre() {
             titre: titre.slice(0, 100),
             description: description.slice(0, 1000),
             categorie: String(f.get("categorie") || "Autre"),
-            localisation: String(f.get("localisation") ?? "")
-              .trim()
-              .slice(0, 150),
+            localisation: String(f.get("localisation") ?? "").trim().slice(0, 150),
             salaire: Number.isFinite(salaire) && salaire > 0 ? salaire : null,
             duree: String(f.get("duree") || "") || null,
             urgent: f.get("urgent") === "on",
@@ -69,32 +63,18 @@ function CreerOffre() {
 
       <Carte className="space-y-4">
         <Champ label="Titre du poste" obligatoire>
-          <Saisie
-            name="titre"
-            required
-            maxLength={100}
-            placeholder="Ex. Fabrication de portes en bois"
-          />
+          <Saisie name="titre" required maxLength={100} placeholder="Ex. Fabrication de portes en bois" />
         </Champ>
         <Champ label="Catégorie" obligatoire>
           <Selection name="categorie" required defaultValue="">
-            <option value="" disabled>
-              Choisir une catégorie
-            </option>
+            <option value="" disabled>Choisir une catégorie</option>
             {categoriesJobs.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+              <option key={c} value={c}>{c}</option>
             ))}
           </Selection>
         </Champ>
         <Champ label="Description détaillée" obligatoire aide="Max 1000 caractères">
-          <Zone
-            name="description"
-            required
-            maxLength={1000}
-            placeholder="Décrivez la mission, les conditions, le matériel fourni…"
-          />
+          <Zone name="description" required maxLength={1000} placeholder="Décrivez la mission, les conditions, le matériel fourni…" />
         </Champ>
         <div className="grid gap-4 sm:grid-cols-2">
           <Champ label="Salaire (π)">
@@ -110,21 +90,14 @@ function CreerOffre() {
           </Champ>
         </div>
         <Champ label="Localisation" obligatoire>
-          <Saisie
-            name="localisation"
-            required
-            maxLength={150}
-            placeholder="Quartier Rohero, Bujumbura"
-          />
+          <Saisie name="localisation" required maxLength={150} placeholder="Quartier Rohero, Bujumbura" />
         </Champ>
         <label className="flex items-center gap-2 text-sm font-semibold">
           <input name="urgent" type="checkbox" className="size-4" /> ⚡ Offre urgente
         </label>
       </Carte>
 
-      <Bouton type="submit" disabled={envoi}>
-        {envoi ? "Publication…" : "Publier l'offre"}
-      </Bouton>
+      <Bouton type="submit" disabled={envoi}>{envoi ? "Publication…" : "Publier l'offre"}</Bouton>
     </form>
   );
 }

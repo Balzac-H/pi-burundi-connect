@@ -1,55 +1,35 @@
 import { useCallback, useRef, useSyncExternalStore } from "react";
 
-/**
- * État local de l'application (hors compte).
- * Tout ce qui concerne le compte, les annonces, les commandes et les suivis
- * vit dans Supabase ; ici il ne reste que les préférences de l'appareil.
- */
 export type AppState = {
+  connecte: boolean;
+  utilisateurId: string;
+  suivis: string[];
   favoris: string[];
   panier: { produitId: string; quantite: number }[];
+  soldePi: number;
+  soldeEscrow: number;
+  notificationsNonLues: number;
   candidatures: string[];
 };
 
 const initial: AppState = {
+  connecte: true,
+  utilisateurId: "u-moi",
+  suivis: [],
   favoris: [],
   panier: [],
+  soldePi: 0,
+  soldeEscrow: 0,
+  notificationsNonLues: 0,
   candidatures: [],
 };
 
 let state: AppState = initial;
 const listeners = new Set<() => void>();
 
-const CLE = "bpc-preferences";
-
 function set(partiel: Partial<AppState>) {
   state = { ...state, ...partiel };
-  if (typeof window !== "undefined") {
-    try {
-      window.localStorage.setItem(CLE, JSON.stringify(state));
-    } catch {
-      /* stockage indisponible */
-    }
-  }
   listeners.forEach((l) => l());
-}
-
-/** Restaure les préférences de l'appareil après le rendu (évite tout écart SSR). */
-export function chargerEtatLocal() {
-  if (typeof window === "undefined") return;
-  try {
-    const brut = window.localStorage.getItem(CLE);
-    if (!brut) return;
-    const lu = JSON.parse(brut) as Partial<AppState>;
-    state = {
-      favoris: Array.isArray(lu.favoris) ? lu.favoris : [],
-      panier: Array.isArray(lu.panier) ? lu.panier : [],
-      candidatures: Array.isArray(lu.candidatures) ? lu.candidatures : [],
-    };
-    listeners.forEach((l) => l());
-  } catch {
-    state = initial;
-  }
 }
 
 export const store = {
@@ -57,6 +37,12 @@ export const store = {
   subscribe(l: () => void) {
     listeners.add(l);
     return () => listeners.delete(l);
+  },
+  basculerSuivi(id: string) {
+    const suivis = state.suivis.includes(id)
+      ? state.suivis.filter((s) => s !== id)
+      : [...state.suivis, id];
+    set({ suivis });
   },
   basculerFavori(id: string) {
     const favoris = state.favoris.includes(id)
@@ -67,26 +53,27 @@ export const store = {
   ajouterAuPanier(produitId: string, quantite = 1) {
     const existant = state.panier.find((p) => p.produitId === produitId);
     const panier = existant
-      ? state.panier.map((p) =>
-          p.produitId === produitId ? { ...p, quantite: p.quantite + quantite } : p,
-        )
+      ? state.panier.map((p) => (p.produitId === produitId ? { ...p, quantite: p.quantite + quantite } : p))
       : [...state.panier, { produitId, quantite }];
     set({ panier });
   },
   retirerDuPanier(produitId: string) {
     set({ panier: state.panier.filter((p) => p.produitId !== produitId) });
   },
-  definirQuantite(produitId: string, quantite: number) {
-    set({ panier: state.panier.map((p) => (p.produitId === produitId ? { ...p, quantite } : p)) });
-  },
   viderPanier() {
     set({ panier: [] });
+  },
+  debiter(montant: number) {
+    set({ soldePi: Math.max(0, state.soldePi - montant) });
   },
   postuler(jobId: string) {
     if (!state.candidatures.includes(jobId)) set({ candidatures: [...state.candidatures, jobId] });
   },
   annulerCandidature(jobId: string) {
     set({ candidatures: state.candidatures.filter((c) => c !== jobId) });
+  },
+  lireNotifications() {
+    set({ notificationsNonLues: 0 });
   },
 };
 
@@ -119,10 +106,12 @@ export function useStore<T>(selecteur: (s: AppState) => T): T {
     return cached as T;
   }, []);
 
-  return useSyncExternalStore(store.subscribe, getSnapshot, getServerSnapshot);
+  return useSyncExternalStore(
+    store.subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 }
 
 export const formatPi = (n: number) =>
   `${n.toLocaleString("fr-FR", { minimumFractionDigits: n < 0.01 ? 3 : 2, maximumFractionDigits: 4 })} π`;
-
-export { shallowEqual };

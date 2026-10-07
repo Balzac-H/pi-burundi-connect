@@ -1,15 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  Bouton,
-  Carte,
-  Champ,
-  Saisie,
-  Selection,
-  Zone,
-  Avatar,
-  LienBouton,
-} from "@/components/ui-kit";
+import { Bouton, Carte, Champ, Saisie, Selection, Zone, Avatar, LienBouton } from "@/components/ui-kit";
 import { toast } from "sonner";
 import { useSession } from "@/lib/auth";
 import {
@@ -26,16 +17,9 @@ export const Route = createFileRoute("/profil/modifier")({
   head: () => ({
     meta: [
       { title: "Modifier mon profil — WICO" },
-      {
-        name: "description",
-        content:
-          "Mettez à jour votre photo, bio, compétences, numéro WhatsApp, localisation et prix horaire.",
-      },
+      { name: "description", content: "Mettez à jour votre photo, bio, compétences, numéro WhatsApp, localisation et prix horaire." },
       { property: "og:title", content: "Modifier mon profil — WICO" },
-      {
-        property: "og:description",
-        content: "Gérez vos informations publiques sur la plateforme.",
-      },
+      { property: "og:description", content: "Gérez vos informations publiques sur la plateforme." },
     ],
   }),
   component: Modifier,
@@ -60,8 +44,7 @@ function Modifier() {
   const tel = separerNumero(profil?.telephone);
   const wa = separerNumero(profil?.whatsapp);
 
-  if (chargement)
-    return <p className="py-10 text-center text-sm text-muted-foreground">Chargement…</p>;
+  if (chargement) return <p className="py-10 text-center text-sm text-muted-foreground">Chargement…</p>;
   if (!utilisateur) return <NonConnecte />;
 
   async function choisirPhoto(fichier: File) {
@@ -82,10 +65,7 @@ function Modifier() {
     e.preventDefault();
     if (!utilisateur) return;
     const f = new FormData(e.currentTarget);
-    const telephone = composerNumero(
-      String(f.get("indicatif") ?? "257"),
-      String(f.get("telephone") ?? ""),
-    );
+    const telephone = composerNumero(String(f.get("indicatif") ?? "257"), String(f.get("telephone") ?? ""));
     const brutWhatsapp = String(f.get("whatsapp") ?? "").trim();
     const whatsapp = brutWhatsapp
       ? composerNumero(String(f.get("indicatifWhatsapp") ?? "257"), brutWhatsapp)
@@ -142,79 +122,31 @@ function Modifier() {
             className="hidden"
             onChange={(e) => e.target.files?.[0] && choisirPhoto(e.target.files[0])}
           />
-          <Bouton
-            type="button"
-            variante="contour"
-            taille="sm"
-            disabled={envoi}
-            onClick={() => fichierRef.current?.click()}
-          >
+          <Bouton type="button" variante="contour" taille="sm" disabled={envoi} onClick={() => fichierRef.current?.click()}>
             {envoi ? "Envoi…" : "Changer la photo"}
           </Bouton>
         </div>
 
         <Champ label="Nom complet" obligatoire>
-          <Saisie
-            name="nom"
-            required
-            defaultValue={profil?.nom ?? ""}
-            maxLength={100}
-            key={profil?.nom}
-          />
+          <Saisie name="nom" required defaultValue={profil?.nom ?? ""} maxLength={100} key={profil?.nom} />
         </Champ>
         <Champ label="Bio / Description" aide="Max 300 caractères">
-          <Zone
-            name="bio"
-            defaultValue={profil?.bio ?? ""}
-            maxLength={300}
-            key={`b${profil?.id ?? ""}`}
-          />
+          <Zone name="bio" defaultValue={profil?.bio ?? ""} maxLength={300} key={`b${profil?.id ?? ""}`} />
         </Champ>
         <Champ label="Compétences / Tags" aide="Séparées par des virgules">
-          <Saisie
-            name="competences"
-            defaultValue={(profil?.competences ?? []).join(", ")}
-            maxLength={200}
-            key={`c${profil?.id ?? ""}`}
-          />
+          <Saisie name="competences" defaultValue={(profil?.competences ?? []).join(", ")} maxLength={200} key={`c${profil?.id ?? ""}`} />
         </Champ>
         <Champ label="Localisation" obligatoire>
-          <Saisie
-            name="ville"
-            required
-            defaultValue={profil?.ville ?? ""}
-            maxLength={120}
-            key={`v${profil?.id ?? ""}`}
-          />
+          <Saisie name="ville" required defaultValue={profil?.ville ?? ""} maxLength={120} key={`v${profil?.id ?? ""}`} />
         </Champ>
-        <Champ
-          label="Numéro de téléphone"
-          aide="Chiffres uniquement, sans le zéro initial"
-          obligatoire
-        >
+        <Champ label="Numéro de téléphone" aide="Chiffres uniquement, sans le zéro initial" obligatoire>
           <div className="flex gap-2">
-            <Selection
-              name="indicatif"
-              className="max-w-44"
-              defaultValue={tel.indicatif}
-              key={`i${profil?.id ?? ""}`}
-            >
+            <Selection name="indicatif" className="max-w-44" defaultValue={tel.indicatif} key={`i${profil?.id ?? ""}`}>
               {indicatifs.map((i) => (
-                <option key={i.code} value={i.code}>
-                  {i.pays}
-                </option>
+                <option key={i.code} value={i.code}>{i.pays}</option>
               ))}
             </Selection>
-            <Saisie
-              name="telephone"
-              required
-              type="tel"
-              inputMode="numeric"
-              placeholder="79 000 000"
-              defaultValue={tel.local}
-              maxLength={15}
-              key={`t${profil?.id ?? ""}`}
-            />
+            <Saisie name="telephone" required type="tel" inputMode="numeric" placeholder="79 000 000" defaultValue={tel.local} maxLength={15} key={`t${profil?.id ?? ""}`} />
           </div>
         </Champ>
         <Champ
@@ -223,55 +155,26 @@ function Modifier() {
           obligatoire
         >
           <div className="flex gap-2">
-            <Selection
-              name="indicatifWhatsapp"
-              className="max-w-44"
-              defaultValue={wa.indicatif}
-              key={`iw${profil?.id ?? ""}`}
-            >
+            <Selection name="indicatifWhatsapp" className="max-w-44" defaultValue={wa.indicatif} key={`iw${profil?.id ?? ""}`}>
               {indicatifs.map((i) => (
-                <option key={i.code} value={i.code}>
-                  {i.pays}
-                </option>
+                <option key={i.code} value={i.code}>{i.pays}</option>
               ))}
             </Selection>
-            <Saisie
-              name="whatsapp"
-              type="tel"
-              inputMode="numeric"
-              placeholder="79 000 000"
-              defaultValue={wa.local}
-              maxLength={15}
-              key={`w${profil?.id ?? ""}`}
-            />
+            <Saisie name="whatsapp" type="tel" inputMode="numeric" placeholder="79 000 000" defaultValue={wa.local} maxLength={15} key={`w${profil?.id ?? ""}`} />
           </div>
         </Champ>
         <Champ label="Prix horaire (Pi)">
-          <Saisie
-            name="prix"
-            type="number"
-            min={0}
-            defaultValue={profil?.prix_horaire ?? undefined}
-            key={`p${profil?.id ?? ""}`}
-          />
+          <Saisie name="prix" type="number" min={0} defaultValue={profil?.prix_horaire ?? undefined} key={`p${profil?.id ?? ""}`} />
         </Champ>
         <Champ label="Type de compte" obligatoire>
-          <Selection
-            name="type_compte"
-            defaultValue={profil?.type_compte ?? "chercheur"}
-            key={`t${profil?.id ?? ""}`}
-          >
+          <Selection name="type_compte" defaultValue={profil?.type_compte ?? "chercheur"} key={`t${profil?.id ?? ""}`}>
             <option value="vendeur">Vendeur</option>
             <option value="employeur">Employeur</option>
             <option value="chercheur">Chercheur d'emploi</option>
           </Selection>
         </Champ>
         <Champ label="Statut">
-          <Selection
-            name="statut"
-            defaultValue={profil?.statut ?? "prestataire"}
-            key={`s${profil?.id ?? ""}`}
-          >
+          <Selection name="statut" defaultValue={profil?.statut ?? "prestataire"} key={`s${profil?.id ?? ""}`}>
             <option value="prestataire">Prestataire de services</option>
             <option value="vendeur">Vendeur Market</option>
             <option value="les-deux">Les deux</option>
@@ -281,9 +184,7 @@ function Modifier() {
 
       <div className="flex gap-2">
         <Bouton type="submit">ENREGISTRER</Bouton>
-        <Bouton type="button" variante="contour" onClick={() => navigate({ to: "/profil" })}>
-          ANNULER
-        </Bouton>
+        <Bouton type="button" variante="contour" onClick={() => navigate({ to: "/profil" })}>ANNULER</Bouton>
       </div>
     </form>
   );
@@ -292,9 +193,7 @@ function Modifier() {
 function NonConnecte() {
   return (
     <Carte className="mx-auto max-w-md space-y-3 text-center">
-      <p className="text-sm text-muted-foreground">
-        Connectez-vous pour personnaliser votre profil.
-      </p>
+      <p className="text-sm text-muted-foreground">Connectez-vous pour personnaliser votre profil.</p>
       <LienBouton to="/connexion">SE CONNECTER</LienBouton>
     </Carte>
   );
