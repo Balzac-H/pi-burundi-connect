@@ -11,10 +11,11 @@ import {
   Settings,
   LogIn,
   LogOut,
+  ShoppingCart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession, seDeconnecter } from "@/lib/auth";
-import { chargerEtatLocal } from "@/lib/store";
+import { chargerEtatLocal, compterPanier, useStore } from "@/lib/store";
 import {
   useAlertesTempsReel,
   useNotifsLive,
@@ -41,6 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   useAlertesTempsReel(!!utilisateur, utilisateur?.id);
   const notifs = useNotifsLive();
   const nonLues = compterNonLues(notifs);
+  const nbPanier = useStore((st) => compterPanier(st.panier));
 
   useEffect(() => {
     if (utilisateur?.id) chargerNotificationsBd(utilisateur.id).catch(() => undefined);
@@ -74,6 +76,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               { to: "/market", label: t("market") },
               { to: "/messages", label: t("chat") },
               { to: "/portefeuille", label: t("mesCommandes") },
+              { to: "/activite", label: t("monActivite") },
               { to: "/vendeurs", label: t("vendeurs") },
               { to: "/favoris", label: t("favoris") },
             ].map((l) => (
@@ -103,6 +106,19 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </option>
               ))}
             </select>
+            <Link
+              to="/panier"
+              className="relative rounded-lg p-2 text-primary hover:bg-muted"
+              aria-label={t("panier")}
+              title={t("panier")}
+            >
+              <ShoppingCart className="size-5" />
+              {nbPanier > 0 && (
+                <span className="absolute -right-1 -top-1 grid min-w-4 place-items-center rounded-full bg-secondary px-1 text-[0.6rem] font-bold leading-4 text-secondary-foreground">
+                  {nbPanier > 99 ? "99+" : nbPanier}
+                </span>
+              )}
+            </Link>
             <Link
               to="/portefeuille"
               className="hidden rounded-lg p-2 text-primary hover:bg-muted sm:block"

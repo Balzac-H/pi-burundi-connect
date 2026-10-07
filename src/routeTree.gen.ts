@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ActiviteRouteImport } from './routes/activite'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ConditionsRouteImport } from './routes/conditions'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
@@ -17,6 +18,7 @@ import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as FavorisRouteImport } from './routes/favoris'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PaiementRouteImport } from './routes/paiement'
+import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ParametresRouteImport } from './routes/parametres'
 import { Route as PortefeuilleRouteImport } from './routes/portefeuille'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -38,6 +40,11 @@ import { Route as ProfilModifierRouteImport } from './routes/profil.modifier'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActiviteRoute = ActiviteRouteImport.update({
+  id: '/activite',
+  path: '/activite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -73,6 +80,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const PaiementRoute = PaiementRouteImport.update({
   id: '/paiement',
   path: '/paiement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanierRoute = PanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ParametresRoute = ParametresRouteImport.update({
@@ -163,6 +175,7 @@ const ProfilModifierRoute = ProfilModifierRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
@@ -170,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/favoris': typeof FavorisRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
+  '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -190,6 +204,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
@@ -197,6 +212,7 @@ export interface FileRoutesByTo {
   '/favoris': typeof FavorisRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
+  '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -218,6 +234,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
@@ -225,6 +242,7 @@ export interface FileRoutesById {
   '/favoris': typeof FavorisRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
+  '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -247,6 +265,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activite'
     | '/admin'
     | '/conditions'
     | '/confidentialite'
@@ -254,6 +273,7 @@ export interface FileRouteTypes {
     | '/favoris'
     | '/notifications'
     | '/paiement'
+    | '/panier'
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
@@ -274,6 +294,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activite'
     | '/admin'
     | '/conditions'
     | '/confidentialite'
@@ -281,6 +302,7 @@ export interface FileRouteTypes {
     | '/favoris'
     | '/notifications'
     | '/paiement'
+    | '/panier'
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
@@ -301,6 +323,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/activite'
     | '/admin'
     | '/conditions'
     | '/confidentialite'
@@ -308,6 +331,7 @@ export interface FileRouteTypes {
     | '/favoris'
     | '/notifications'
     | '/paiement'
+    | '/panier'
     | '/parametres'
     | '/portefeuille'
     | '/sitemap.xml'
@@ -329,6 +353,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActiviteRoute: typeof ActiviteRoute
   AdminRoute: typeof AdminRoute
   ConditionsRoute: typeof ConditionsRoute
   ConfidentialiteRoute: typeof ConfidentialiteRoute
@@ -336,6 +361,7 @@ export interface RootRouteChildren {
   FavorisRoute: typeof FavorisRoute
   NotificationsRoute: typeof NotificationsRoute
   PaiementRoute: typeof PaiementRoute
+  PanierRoute: typeof PanierRoute
   ParametresRoute: typeof ParametresRoute
   PortefeuilleRoute: typeof PortefeuilleRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -362,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activite': {
+      id: '/activite'
+      path: '/activite'
+      fullPath: '/activite'
+      preLoaderRoute: typeof ActiviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -411,6 +444,13 @@ declare module '@tanstack/react-router' {
       path: '/paiement'
       fullPath: '/paiement'
       preLoaderRoute: typeof PaiementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panier': {
+      id: '/panier'
+      path: '/panier'
+      fullPath: '/panier'
+      preLoaderRoute: typeof PanierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/parametres': {
@@ -537,6 +577,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActiviteRoute: ActiviteRoute,
   AdminRoute: AdminRoute,
   ConditionsRoute: ConditionsRoute,
   ConfidentialiteRoute: ConfidentialiteRoute,
@@ -544,6 +585,7 @@ const rootRouteChildren: RootRouteChildren = {
   FavorisRoute: FavorisRoute,
   NotificationsRoute: NotificationsRoute,
   PaiementRoute: PaiementRoute,
+  PanierRoute: PanierRoute,
   ParametresRoute: ParametresRoute,
   PortefeuilleRoute: PortefeuilleRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

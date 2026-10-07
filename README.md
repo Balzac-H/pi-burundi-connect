@@ -13,8 +13,12 @@ L'application est prête côté code. Il ne reste que la configuration Pi :
 4. **Réseau** : `VITE_PI_SANDBOX=true` (Testnet) pendant les tests, puis
    `VITE_PI_SANDBOX=false` pour passer en Mainnet.
 5. **Migrations** : appliquez tout ce qui se trouve dans `supabase/migrations/`
-   (notamment `20261006120000_wico_paiements_escrow.sql` et la contrainte
-   unique sur `payments.pi_payment_id`).
+   dans l'ordre chronologique, et en dernier les migrations WICO :
+   `20261006120000_wico_paiements_escrow.sql`, `20261007090000_wico_prix_calcule_par_la_base.sql`,
+   `20261007091000_wico_espace_vendeur.sql`, `20261007092000_wico_avis_apres_reception.sql`,
+   `20261007093000_wico_gouvernance.sql`, `20261007094000_wico_activite.sql`,
+   `20261007095000_wico_hygiene.sql`,
+  `20261007100000_wico_order_items.sql`.
 
 Commandes utiles :
 
@@ -26,10 +30,34 @@ npm run lint       # ESLint + Prettier
 npx tsc --noEmit   # vérification des types
 ```
 
-Flux de paiement : `payerAvecPi()` crée une commande, le serveur vérifie le
-montant et l'utilisateur, Pi approuve puis finalise (`piComplete`), les fonds
-sont retenus (`paid_held`) puis libérés par un admin (`piRelease`, commission
-2 %, TODO A2U). La page « Mes commandes et paiements » est sur `/portefeuille`.
+`.env` n'est **jamais** commité (retiré de l'index git, voir `.gitignore`) :
+copiez `.env.example` puis complétez les secrets.
+
+## Fonctionnalités livrées (A → G)
+
+| | |
+|---|---|
+| **A. Prix calculé par la base** | Le trigger `orders_calculer_commande` calcule `montant = prix × quantité` et interdit l'auto-achat. `piApprove` / `piComplete` relisent **toujours** le montant en base. La page `/paiement` crée les commandes puis affiche les montants confirmés par `RETURNING` avant le paiement. |
+| **B. Espace vendeur** | `profils.vendeur_actif` ; publication refusée tant que l'espace n'est pas activé **et** que `pi_uid` est absent (triggers sur `produits` et `jobs`, contrôle uniquement à la publication). Activation sur `/profil`. |
+| **C. Avis après réception** | `reviews.order_id` obligatoire, auteur = acheteur de la commande `recue`, une note par commande (trigger `reviews_verifier_commande`). Lecture via la vue `reviews_publics` (sans `order_id`). Bouton « Noter » sur `/portefeuille`. |
+| **D. Gouvernance** | `admin` / `moderator`, conflit d'intérêt (message unique `refuser_conflit_interet`) sur libération, remboursement et traitement de litige, double validation au-dessus du seuil (`reglages.seuil_double_validation`), journal `audit_log`. |
+| **E. /activite** | Vue vendeur : annonces, commandes reçues (filtres par statut), clients (`clients_vendeur`) et gains (`gains_lignes` / `gains_totaux`, escrow, net, commission 2 %) — agrégats SQL en `security_invoker`, déclaration de livraison (`declarer_livraison`). |
+| **F. Hygiène** | Commandes `en_attente_paiement` annulées après 30 min (`annuler_commandes_perimees`, planifiée pg_cron si présent), `.env` désindexé, README. |
+| **G. Un paiement Pi par vendeur** | Table `order_items` (prix, titre, unité, montant écrits par le trigger `order_items_calculer_ligne` depuis `produits`), `orders.montant = SUM(lignes)` via `order_items_recalculer_order`. La RPC `creer_commandes(jsonb)` est le **seul** point d'entrée navigateur : elle regroupe le panier et crée **une commande par vendeur**. Icône panier partout (`/panier`), récap `/paiement` groupé par vendeur, historique `/portefeuille` = « Mes commandes » avec filtres Toutes / En attente / Succès / Annulées / Litiges, facture et txid copiables, reprise du paiement < 30 min. |
+
+Rôles : un **moderator** lit et traite les litiges et signalements (commande
+liée, messages d'une commande litigieuse) ; il ne libère ni ne rembourse et ne
+gère pas les réglages. L'**admin** fait tout. Toutes les chaînes ajoutées
+existent en FR, RN, SW et EN (`src/lib/i18n.ts`).
+
+Flux de paiement : `/paiement` appelle `creerCommandes()` → RPC
+`creer_commandes(jsonb)` qui crée **une commande par vendeur**, **la base**
+renvoie les montants (`RETURNING`), Pi approuve puis finalise (`piComplete`, un
+paiement Pi par commande), les fonds sont retenus (`paid_held`) puis libérés par
+un admin (`piRelease`, commission 2 %, TODO A2U) ou remboursés (`piRefund`).
+Hors Pi Browser, « Acheter maintenant » redirige vers
+`/connexion?retour=<page>` sans erreur rouge. Pages : `/panier`, `/paiement`,
+`/portefeuille`, `/activite`, `/admin`.
 
 ---
 

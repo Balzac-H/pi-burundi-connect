@@ -16,6 +16,9 @@ export type Profil = {
   prix_horaire: number | null;
   statut: string;
   type_compte?: string;
+  pi_uid?: string | null;
+  pi_username?: string | null;
+  vendeur_actif?: boolean;
 };
 
 export type ProduitDb = {

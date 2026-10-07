@@ -14,12 +14,14 @@ import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "@/lib/auth";
 import {
+  chargerProfil,
   creerProduit,
   listerMesProduits,
   modifierProduit,
   televerserPhoto,
   type ProduitDb,
 } from "@/lib/comptes";
+import { useT } from "@/lib/i18n";
 
 type Recherche = { id?: string };
 
@@ -47,6 +49,7 @@ export const Route = createFileRoute("/market/vendre")({
 
 function Vendre() {
   const navigate = useNavigate();
+  const t = useT();
   const { utilisateur, chargement } = useSession();
   const { id } = Route.useSearch();
   const [photo, setPhoto] = useState<string | null>(null);
@@ -148,6 +151,18 @@ function Vendre() {
     };
     setEnregistrement(true);
     try {
+      // Publication = nouvel enregistrement ou transition false → true.
+      if (valeurs.publie && (!existant || !existant.publie)) {
+        const profil = await chargerProfil(utilisateur.id);
+        if (!profil?.pi_uid) {
+          toast.error(t("piRequisPourVendre"));
+          return;
+        }
+        if (!profil.vendeur_actif) {
+          toast.error(t("activerPourPublier"));
+          return;
+        }
+      }
       if (existant) {
         await modifierProduit(existant.id, valeurs);
         toast.success("Annonce mise à jour !");

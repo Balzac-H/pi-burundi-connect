@@ -2,7 +2,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { creerPaiementPi, piDisponible, piPaiementAutorise } from "@/lib/pi";
 import { connexionPi } from "@/lib/pi-session";
 import { piApprove, piCancel, piComplete } from "@/lib/pi.functions";
-import type { ProduitDb } from "@/lib/comptes";
 
 export type CodeAchat = "PI_ABSENT" | "NON_CONNECTE" | "ANNULE" | "ERREUR";
 
@@ -98,69 +97,75 @@ function payerUneCommande(
   });
 }
 
-/** Création de la commande en base, avant paiement. */
-export async function creerCommande(valeurs: {
-  acheteurId: string;
-  vendeurId: string;
-  produitId?: string;
-  titre: string;
-  quantite: number;
-  unite: string;
+/** Une commande créée en base : montant, titre, unité et vendeur sont
+ *  DÉFINIS PAR LA BASE (triggers `orders_calculer_commande` et
+ *  `order_items_calculer_ligne`), jamais par le navigateur. On les relit
+ *  via RETURNING. Une commande = UN vendeur. */
+export type CommandeCreee = {
+  orderId: string;
   montant: number;
-}): Promise<{ orderId: string } | { erreur: string }> {
-  const { data, error } = await supabase
-    .from("orders")
-    .insert({
-      acheteur_id: valeurs.acheteurId,
-      vendeur_id: valeurs.vendeurId,
-      produit_id: valeurs.produitId ?? null,
-      titre: valeurs.titre,
-      quantite: valeurs.quantite,
-      unite: valeurs.unite,
-      montant: valeurs.montant,
-    })
-    .select("id")
-    .single();
-  if (error || !data) return { erreur: "Création de la commande impossible." };
-  return { orderId: data.id };
+  titre: string;
+  unite: string;
+  vendeurId: string;
+  produitId: string | null;
+  quantite: number;
+};
+
+type RetourLigne = {
+  id: string;
+  montant: number;
+  titre: string;
+  unite: string;
+  vendeur_id: string;
+  produit_id: string | null;
+  quantite: number;
+};
+
+function versCommande(d: RetourLigne): CommandeCreee {
+  return {
+    orderId: d.id,
+    montant: Number(d.montant),
+    titre: d.titre,
+    unite: d.unite,
+    vendeurId: d.vendeur_id,
+    produitId: d.produit_id,
+    quantite: d.quantite,
+  };
 }
 
-/** Achat immédiat d'une annonce : commande → paiement Pi. */
-export async function acheterAvecPi(produit: ProduitDb, quantite: number): Promise<ResultatAchat> {
-  const { data: s } = await supabase.auth.getSession();
-  const uid = s.session?.user.id;
-  if (!uid) return { ok: false, code: "NON_CONNECTE", erreur: "Connexion requise." };
-  if (uid === produit.vendeur_id)
-    return { ok: false, code: "ERREUR", erreur: "Vente impossible : c'est votre annonce." };
-
-  const min = Math.max(1, produit.quantite_min ?? 1);
-  if (quantite < min || quantite > produit.stock)
-    return {
-      ok: false,
-      code: "ERREUR",
-      erreur: `Quantité entre ${min} et ${produit.stock} ${produit.unite}.`,
-    };
-
-  const montant = Math.round(produit.prix * quantite * 1e7) / 1e7;
-  const commande = await creerCommande({
-    acheteurId: uid,
-    vendeurId: produit.vendeur_id,
-    produitId: produit.id,
-    titre: produit.titre,
-    quantite,
-    unite: produit.unite,
-    montant,
+/**
+ * Crée UNE COMMANDE PAR VENDEUR à partir des lignes du panier.
+ * Le regroupement, les stocks, la quantité minimale, l'auto-achat et les
+ * montants sont vérifiés côté base (RPC `creer_commandes`).
+ */
+export async function creerCommandes(valeurs: {
+  acheteurId: string;
+  lignes: { produitId: string; quantite: number }[];
+}): Promise<{ commandes: CommandeCreee[] } | { erreur: string }> {
+  if (!valeurs.lignes.length) return { erreur: "Panier vide." };
+  const { data, error } = await supabase.rpc("creer_commandes", {
+    _lignes: valeurs.lignes.map((l) => ({
+      produit_id: l.produitId,
+      quantite: l.quantite,
+    })),
   });
-  if ("erreur" in commande) return { ok: false, code: "ERREUR", erreur: commande.erreur };
+  if (error || !data?.length) {
+    return { erreur: error?.message ?? "Création de la commande impossible." };
+  }
+  return { commandes: (data as unknown as RetourLigne[]).map(versCommande) };
+}
 
-  return payerAvecPi([
-    {
-      orderId: commande.orderId,
-      titre: produit.titre,
-      montant,
-      vendeurId: produit.vendeur_id,
-      produitId: produit.id,
-      quantite,
-    },
-  ]);
+/** Compatibilité : une commande, un seul produit. */
+export async function creerCommande(valeurs: {
+  acheteurId: string;
+  produitId: string;
+  quantite: number;
+}): Promise<{ commande: CommandeCreee } | { erreur: string }> {
+  const r = await creerCommandes({
+    acheteurId: valeurs.acheteurId,
+    lignes: [{ produitId: valeurs.produitId, quantite: valeurs.quantite }],
+  });
+  if ("erreur" in r) return { erreur: r.erreur };
+  if (!r.commandes.length) return { erreur: "Création de la commande impossible." };
+  return { commande: r.commandes[0] };
 }

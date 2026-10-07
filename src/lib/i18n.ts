@@ -9,7 +9,7 @@ export const langues: { code: Langue; nom: string; drapeau: string }[] = [
   { code: "en", nom: "English", drapeau: "🇬🇧" },
 ];
 
-type Cle =
+export type Cle =
   | "accueil"
   | "jobs"
   | "market"
@@ -71,6 +71,7 @@ type Cle =
   | "paiementEnCours"
   | "paiementConfirme"
   | "paiementAnnule"
+  | "paiementLabel"
   | "acheterMaintenant"
   | "ajouterPanier"
   | "connexionRequise"
@@ -86,7 +87,79 @@ type Cle =
   | "abonnes"
   | "abonnementsCourt"
   | "offresPubliees"
-  | "ventesConfirmees";
+  | "ventesConfirmees"
+  | "monActivite"
+  | "activerEspaceVendeur"
+  | "espaceVendeurActif"
+  | "activerPourPublier"
+  | "piRequisPourVendre"
+  | "espaceVendeurActive"
+  | "noter"
+  | "noteEnvoyee"
+  | "avisImpossible"
+  | "dejaNoteCommande"
+  | "conflitInteret"
+  | "validationEnAttente"
+  | "validationDejaPremier"
+  | "mesAnnonces"
+  | "commandesRecues"
+  | "mesClients"
+  | "mesGains"
+  | "marquerLivre"
+  | "livraisonDeclaree"
+  | "attente"
+  | "payee"
+  | "livreeRecue"
+  | "litige"
+  | "retenuEscrow"
+  | "libereNet"
+  | "commissionWico"
+  | "montantBrut"
+  | "net"
+  | "aucunClient"
+  | "aucunGain"
+  | "messagerie"
+  | "derniereCommande"
+  | "commandes"
+  | "journalAudit"
+  | "roles"
+  | "seuilDoubleValidation"
+  | "reglagesAdmin"
+  | "espaceResponsable"
+  | "adminSeul"
+  | "commandeConfirmee"
+  | "payerEnPi"
+  | "retourAuPanier"
+  | "enAttenteValidation"
+  | "continuer"
+  | "passerCommande"
+  | "panierVide"
+  | "sousTotal"
+  | "total"
+  | "retirerArticle"
+  | "articleIndisponible"
+  | "annonceRetiree"
+  | "stockInsuffisant"
+  | "votreAnnonce"
+  | "nbPaiements"
+  | "connexionPiRequise"
+  | "reprendrePaiement"
+  | "filtreToutes"
+  | "filtreEnAttente"
+  | "filtreSucces"
+  | "filtreAnnulees"
+  | "filtreLitiges"
+  | "etatEnAttente"
+  | "etatSucces"
+  | "etatAnnule"
+  | "etatLitige"
+  | "facture"
+  | "copierTxid"
+  | "acheteur"
+  | "vendeur"
+  | "quantite"
+  | "lignes"
+  | "ajouteAuPanier";
 
 const fr: Record<Cle, string> = {
   accueil: "Accueil",
@@ -132,7 +205,7 @@ const fr: Record<Cle, string> = {
   seConnecterPi: "Se connecter avec Pi",
   piBrowserRequis: "Ouvrez WICO dans le Pi Browser pour payer en Pi.",
   explorerSansCompte: "Explorer sans compte",
-  mesCommandes: "Mes commandes et paiements",
+  mesCommandes: "Mes commandes",
   aucuneAnnonce: "Aucune annonce pour le moment.",
   aucuneOffre: "Aucune offre pour le moment.",
   aucuneCommande: "Aucune commande pour le moment.",
@@ -150,6 +223,7 @@ const fr: Record<Cle, string> = {
   paiementEnCours: "Paiement en cours…",
   paiementConfirme: "Paiement confirmé",
   paiementAnnule: "Paiement annulé",
+  paiementLabel: "Paiement",
   acheterMaintenant: "Acheter maintenant",
   ajouterPanier: "Ajouter au panier",
   connexionRequise: "Connexion Pi requise",
@@ -166,6 +240,80 @@ const fr: Record<Cle, string> = {
   abonnementsCourt: "Abonnements",
   offresPubliees: "Offres publiées",
   ventesConfirmees: "Ventes confirmées",
+  monActivite: "Mon activité",
+  activerEspaceVendeur: "Activer mon espace vendeur",
+  espaceVendeurActif: "Espace vendeur actif",
+  activerPourPublier: "Activez votre espace vendeur depuis votre profil pour publier une annonce.",
+  piRequisPourVendre: "Enregistrez votre identifiant Pi dans votre profil pour être payé.",
+  espaceVendeurActive: "Espace vendeur activé !",
+  noter: "Noter",
+  noteEnvoyee: "Merci, votre avis a été publié.",
+  avisImpossible: "Un avis n'est possible qu'après réception de la commande.",
+  dejaNoteCommande: "Vous avez déjà noté cette commande.",
+  conflitInteret: "Conflit d'intérêt : un autre responsable doit traiter ce dossier.",
+  validationEnAttente:
+    "Montant supérieur au seuil : une seconde validation administrateur est nécessaire.",
+  validationDejaPremier:
+    "Cette libération attend déjà votre validation : faites-valider par un autre administrateur.",
+  mesAnnonces: "Mes annonces",
+  commandesRecues: "Commandes reçues",
+  mesClients: "Mes clients",
+  mesGains: "Mes gains",
+  marquerLivre: "Marquer comme livré",
+  livraisonDeclaree: "Livraison déclarée : l'acheteur peut confirmer la réception.",
+  attente: "En attente",
+  payee: "Payée",
+  livreeRecue: "Livrée / Reçue",
+  litige: "Litige",
+  retenuEscrow: "Retenu en escrow",
+  libereNet: "Libéré net",
+  commissionWico: "Commission WICO (2 %)",
+  montantBrut: "Montant brut",
+  net: "Net",
+  aucunClient: "Aucun client pour le moment.",
+  aucunGain: "Aucun gain pour le moment.",
+  messagerie: "Messagerie",
+  derniereCommande: "Dernière commande",
+  commandes: "commandes",
+  journalAudit: "Journal d'audit",
+  roles: "Rôles",
+  seuilDoubleValidation: "Seuil de double validation (π)",
+  reglagesAdmin: "Réglages admin",
+  espaceResponsable: "Espace responsables",
+  adminSeul: "Réservé aux administrateurs.",
+  commandeConfirmee: "Commande créée — montant confirmé par la base.",
+  payerEnPi: "PAYER EN PI",
+  retourAuPanier: "Retour au panier",
+  enAttenteValidation: "Libérations en attente de 2ᵉ validation",
+  continuer: "Continuer",
+  passerCommande: "Passer la commande",
+  panierVide: "Votre panier est vide.",
+  sousTotal: "Sous-total",
+  total: "Total",
+  retirerArticle: "Retirer",
+  articleIndisponible: "Article indisponible",
+  annonceRetiree: "Cette annonce n'est plus en vente.",
+  stockInsuffisant: "Stock insuffisant.",
+  votreAnnonce: "C'est votre annonce : article retiré du panier.",
+  nbPaiements: "Vous allez confirmer {n} paiements dans Pi, un par vendeur.",
+  connexionPiRequise: "Connectez-vous avec Pi pour finaliser votre commande.",
+  reprendrePaiement: "Reprendre le paiement",
+  filtreToutes: "Toutes",
+  filtreEnAttente: "En attente",
+  filtreSucces: "Succès",
+  filtreAnnulees: "Annulées",
+  filtreLitiges: "Litiges",
+  etatEnAttente: "En attente",
+  etatSucces: "Succès",
+  etatAnnule: "Annulé",
+  etatLitige: "Litige",
+  facture: "Facture",
+  copierTxid: "Copier le txid",
+  acheteur: "Acheteur",
+  vendeur: "Vendeur",
+  quantite: "Quantité",
+  lignes: "Articles",
+  ajouteAuPanier: "Ajouté au panier",
 };
 
 const rn: Record<Cle, string> = {
@@ -212,7 +360,7 @@ const rn: Record<Cle, string> = {
   seConnecterPi: "Injira na Pi",
   piBrowserRequis: "Fungura WICO muri Pi Browser kugira ukore ukwishyura na Pi.",
   explorerSansCompte: "Shakisha nta konti",
-  mesCommandes: "Amabwiriza n'ibishyurwa byanje",
+  mesCommandes: "Amabwiriza yange",
   aucuneAnnonce: "Nta tandukiriza ine ubu.",
   aucuneOffre: "Nta muhaye akazi ubu.",
   aucuneCommande: "Nta kuguru ingirakamaro ubu.",
@@ -230,6 +378,7 @@ const rn: Record<Cle, string> = {
   paiementEnCours: "Ubishyurwa…",
   paiementConfirme: "Ubishyurwe neza",
   paiementAnnule: "Kwishyura kwahagaritswe",
+  paiementLabel: "Ibishyura",
   acheterMaintenant: "Gura ubu",
   ajouterPanier: "Shyira mu gasho",
   connexionRequise: "Kwiyandikisha na Pi birakenewe",
@@ -246,6 +395,79 @@ const rn: Record<Cle, string> = {
   abonnementsCourt: "Ukurikira",
   offresPubliees: "Amasomo yashizwe",
   ventesConfirmees: "Ibyatanzwe neza",
+  monActivite: "Umurimo wanjye",
+  activerEspaceVendeur: "Gutangiza uru rugero rwa kugurisha",
+  espaceVendeurActif: "Uru rugero rwa kugurisha rutangijwe",
+  activerPourPublier:
+    "Gutangiza uru rugero rwa kugurisha ukoreshe urubuga rwawe kugira utangire itangwa.",
+  piRequisPourVendre: "Andika umwanya wawe wa Pi muri urubuga rwawe kugira uhabwe ibishyura.",
+  espaceVendeurActive: "Uru rugero rwa kugurisha rutangijwe!",
+  noter: "Impa imigane",
+  noteEnvoyee: "Murakoze, itsindiri ryawe ryashizweho.",
+  avisImpossible: "Itsindiri riba ryanyuma gusa yo kubona kuguru ku mwanya urangira.",
+  dejaNoteCommande: "Waba wasanzwe usanzwe impa imigane ku kuguru uyu.",
+  conflitInteret: "Ihene ry'ingabane : undi witegetse agomba gukemura iki kintu.",
+  validationEnAttente: "Igiciro kirenze urwego: keneye ubufasha bwa kabiri bw'umuyobozi.",
+  validationDejaPremier: "Uku kuroho gusubirwa kwa cyawe: hicwe na umuyobozi undi.",
+  mesAnnonces: "Ivyatanzwe vyanjye",
+  commandesRecues: "Amabwiriza yakiriwe",
+  mesClients: "Abakiriya banjye",
+  mesGains: "Ibyinjiye",
+  marquerLivre: "Emera nk'ubwatse",
+  livraisonDeclaree: "Kubarira ko ubwatse: ugurishi ashobora kwemera ko abyakiriye.",
+  attente: "Bitegereje",
+  payee: "Ibishyurwe",
+  livreeRecue: "Ubwatse / Yakiriwe",
+  litige: "Ibazo",
+  retenuEscrow: "Bibitswe mu gipfuko",
+  libereNet: "Byakurwemo buteparo",
+  commissionWico: "Umugabane wa WICO (2 %)",
+  montantBrut: "Igiciro gihari",
+  net: "Buteparo",
+  aucunClient: "Nta bakiriya ubu.",
+  aucunGain: "Nta kintu cyinjiye ubu.",
+  messagerie: "Ubutumwa",
+  derniereCommande: "Iguriza rishasha",
+  commandes: "amabwiriza",
+  journalAudit: "Igitabo c'igenzura",
+  roles: "Inshingano",
+  seuilDoubleValidation: "Urwego rwa kugenzura kabiri (π)",
+  reglagesAdmin: "Ibyiyerejwe n'umuyobozi",
+  espaceResponsable: "Ahantu h'abitegetse",
+  adminSeul: "Kubw'abayobozi gusa.",
+  commandeConfirmee: "Kuguru kwakozwe — igiciro kemejwe na vidiyo.",
+  payerEnPi: "ISHYURA NA PI",
+  retourAuPanier: "Subira mu gasho",
+  enAttenteValidation: "Ibyo guroho bisubirje kugenzurwa",
+  continuer: "Komeza",
+  passerCommande: "Kora igikuru",
+  panierVide: "Agasho kawe karimo ubusa.",
+  sousTotal: "Igiteranyo gicukiriye",
+  total: "Igiteranyo cyose",
+  retirerArticle: "Kuraho",
+  articleIndisponible: "Igicuruzwa ntigiboneka",
+  annonceRetiree: "Iri tangazo rihanwa ku isoko.",
+  stockInsuffisant: "Ingano idashoboka.",
+  votreAnnonce: "Ni yo tangazo yawe : igicuruzwa cyakurwemo mu gasho.",
+  nbPaiements: "Uzemeza {n} ishyurwa na Pi, imwe kuri buri mwandazi.",
+  connexionPiRequise: "Injira na Pi kugira ukomeze uguha.",
+  reprendrePaiement: "Subira mu ishyura",
+  filtreToutes: "Byose",
+  filtreEnAttente: "Bitegereje",
+  filtreSucces: "Byakunze",
+  filtreAnnulees: "Bikurwemu",
+  filtreLitiges: "Amakosi",
+  etatEnAttente: "Bitegereje",
+  etatSucces: "Byakunze",
+  etatAnnule: "Bikurwemu",
+  etatLitige: "Amakosi",
+  facture: "Ifagitire",
+  copierTxid: "Koporora txid",
+  acheteur: "Umuguzi",
+  vendeur: "Uwandazi",
+  quantite: "Ingano",
+  lignes: "Ibicuruzwa",
+  ajouteAuPanier: "Byashyizwe mu gasho",
 };
 
 const sw: Record<Cle, string> = {
@@ -292,7 +514,7 @@ const sw: Record<Cle, string> = {
   seConnecterPi: "Ingia kwa Pi",
   piBrowserRequis: "Fungua WICO kwenye Pi Browser ili kulipa kwa Pi.",
   explorerSansCompte: "Vinjiri bila akaunti",
-  mesCommandes: "Maagizo na malipo yangu",
+  mesCommandes: "Maagizo yangu",
   aucuneAnnonce: "Hakuna matangazo kwa sasa.",
   aucuneOffre: "Hakuna nafasi za kazi kwa sasa.",
   aucuneCommande: "Hakuna agizo kwa sasa.",
@@ -310,6 +532,7 @@ const sw: Record<Cle, string> = {
   paiementEnCours: "Malipo yanapoendelea…",
   paiementConfirme: "Malipo yamethibitishwa",
   paiementAnnule: "Malipo yameghairiwa",
+  paiementLabel: "Malipo",
   acheterMaintenant: "Nunua sasa",
   ajouterPanier: "Weka kikapuni",
   connexionRequise: "Uhusishaji wa Pi unahitajika",
@@ -326,6 +549,79 @@ const sw: Record<Cle, string> = {
   abonnementsCourt: "Unafuatilia",
   offresPubliees: "Nafasi zilizotangazwa",
   ventesConfirmees: "Mauzo yaliyothibitishwa",
+  monActivite: "Shughuli yangu",
+  activerEspaceVendeur: "Washa nafasi yangu ya muuzaji",
+  espaceVendeurActif: "Nafasi ya muuzaji imewashwa",
+  activerPourPublier: "Washa nafasi yako ya muuzaji kutoka kwenye wasifu ili kutangaza.",
+  piRequisPourVendre: "Weka kitambulisho chako cha Pi kwenye wasifu wako ili kulipwa.",
+  espaceVendeurActive: "Nafasi ya muuzaji imewashwa!",
+  noter: "Kupa alama",
+  noteEnvoyee: "Asante, maoni yako yamewekwa.",
+  avisImpossible: "Maoni yanawezekana tu baada ya kupokea agizo linalomalizika.",
+  dejaNoteCommande: "Tayari umeona agizo hili awali.",
+  conflitInteret: "Mgongano wa maslahi: mhusika mwingine anapaswa kushughulikia kesi hii.",
+  validationEnAttente: "Kiasi kiko juu ya kikomo: hitajika uthibitisho wa pili wa msimamizi.",
+  validationDejaPremier:
+    "Utoleaji huu tayari unasubiri uthibitisho wako: pata uthibitisho wa msimamizi mwingine.",
+  mesAnnonces: "Matangazo yangu",
+  commandesRecues: "Maagizo yaliyopokelewa",
+  mesClients: "Wateja wangu",
+  mesGains: "Mapato yangu",
+  marquerLivre: "Weka kama imefika",
+  livraisonDeclaree: "Umefika: mnunuzi anaweza kuthibitisha upokeaji.",
+  attente: "Inasubiri",
+  payee: "Imelipwa",
+  livreeRecue: "Imefika / Imepokelewa",
+  litige: "Mgogoro",
+  retenuEscrow: "Imeshikwa kwenye escrow",
+  libereNet: "Iliyotolewa halisi",
+  commissionWico: "Kamisheni ya WICO (2%)",
+  montantBrut: "Kiasi ghafi",
+  net: "Halisi",
+  aucunClient: "Hakuna mteja kwa sasa.",
+  aucunGain: "Hakuna mapato kwa sasa.",
+  messagerie: "Ujumbe",
+  derniereCommande: "Agizo la mwisho",
+  commandes: "maagizo",
+  journalAudit: "Kumbukumbu za ufuatiliaji",
+  roles: "Majukumu",
+  seuilDoubleValidation: "Kikomo cha uthibitisho wa pili (π)",
+  reglagesAdmin: "Mipangilio ya msimamizi",
+  espaceResponsable: "Nafasi ya wahusika",
+  adminSeul: "Kwa wasimamizi pekee.",
+  commandeConfirmee: "Agizo limeundwa — kiasi kimethibitishwa na database.",
+  payerEnPi: "LIPA KWA PI",
+  retourAuPanier: "Rudi kikapuni",
+  enAttenteValidation: "Utoleaji unasubiri uthibitisho wa pili",
+  continuer: "Endelea",
+  passerCommande: "Tengeneza agizo",
+  panierVide: "Kikapu chako ni tupu.",
+  sousTotal: "Jumla ndogo",
+  total: "Jumla",
+  retirerArticle: "Ondoa",
+  articleIndisponible: "Bidhaa haipo",
+  annonceRetiree: "Tangazo haliwezi tena kuuzwa.",
+  stockInsuffisant: "Stoo haitoshi.",
+  votreAnnonce: "Ni tangazo lako: bidhaa imeondolewa kikapuni.",
+  nbPaiements: "Utathibitisha malipo {n} ya Pi, kwa kila muuzaji.",
+  connexionPiRequise: "Ingia kwa Pi ili kamilisha agizo lako.",
+  reprendrePaiement: "Endelea malipo",
+  filtreToutes: "Zote",
+  filtreEnAttente: "Inasubiri",
+  filtreSucces: "Mafanikio",
+  filtreAnnulees: "Zilizoghairiwa",
+  filtreLitiges: "Migogoro",
+  etatEnAttente: "Inasubiri",
+  etatSucces: "Mafanikio",
+  etatAnnule: "Imeghairiwa",
+  etatLitige: "Mgogoro",
+  facture: "Ankara",
+  copierTxid: "Nakili txid",
+  acheteur: "Mnunuzi",
+  vendeur: "Muuzaji",
+  quantite: "Idadi",
+  lignes: "Bidhaa",
+  ajouteAuPanier: "Imewekwa kikapuni",
 };
 
 const en: Record<Cle, string> = {
@@ -372,7 +668,7 @@ const en: Record<Cle, string> = {
   seConnecterPi: "Sign in with Pi",
   piBrowserRequis: "Open WICO in the Pi Browser to pay with Pi.",
   explorerSansCompte: "Browse without an account",
-  mesCommandes: "My orders and payments",
+  mesCommandes: "My orders",
   aucuneAnnonce: "No listings yet.",
   aucuneOffre: "No job offers yet.",
   aucuneCommande: "No orders yet.",
@@ -390,6 +686,7 @@ const en: Record<Cle, string> = {
   paiementEnCours: "Payment in progress…",
   paiementConfirme: "Payment confirmed",
   paiementAnnule: "Payment cancelled",
+  paiementLabel: "Payment",
   acheterMaintenant: "Buy now",
   ajouterPanier: "Add to cart",
   connexionRequise: "Pi sign-in required",
@@ -406,6 +703,79 @@ const en: Record<Cle, string> = {
   abonnementsCourt: "Following",
   offresPubliees: "Jobs posted",
   ventesConfirmees: "Confirmed sales",
+  monActivite: "My activity",
+  activerEspaceVendeur: "Activate my seller space",
+  espaceVendeurActif: "Seller space active",
+  activerPourPublier: "Activate your seller space from your profile to publish a listing.",
+  piRequisPourVendre: "Add your Pi username to your profile to get paid.",
+  espaceVendeurActive: "Seller space activated!",
+  noter: "Rate",
+  noteEnvoyee: "Thank you, your review has been published.",
+  avisImpossible: "You can only review after the order has been received.",
+  dejaNoteCommande: "You have already rated this order.",
+  conflitInteret: "Conflict of interest: another officer must handle this case.",
+  validationEnAttente: "Above the threshold: a second administrator validation is required.",
+  validationDejaPremier:
+    "This release already awaits your validation: get it approved by another administrator.",
+  mesAnnonces: "My listings",
+  commandesRecues: "Received orders",
+  mesClients: "My customers",
+  mesGains: "My earnings",
+  marquerLivre: "Mark as delivered",
+  livraisonDeclaree: "Delivery declared: the buyer can confirm receipt.",
+  attente: "Pending",
+  payee: "Paid",
+  livreeRecue: "Delivered / Received",
+  litige: "Dispute",
+  retenuEscrow: "Held in escrow",
+  libereNet: "Net released",
+  commissionWico: "WICO commission (2%)",
+  montantBrut: "Gross amount",
+  net: "Net",
+  aucunClient: "No customers yet.",
+  aucunGain: "No earnings yet.",
+  messagerie: "Messages",
+  derniereCommande: "Last order",
+  commandes: "orders",
+  journalAudit: "Audit log",
+  roles: "Roles",
+  seuilDoubleValidation: "Double validation threshold (π)",
+  reglagesAdmin: "Admin settings",
+  espaceResponsable: "Officers' space",
+  adminSeul: "Administrators only.",
+  commandeConfirmee: "Order created — amount confirmed by the database.",
+  payerEnPi: "PAY WITH PI",
+  retourAuPanier: "Back to cart",
+  enAttenteValidation: "Releases awaiting 2nd validation",
+  continuer: "Continue",
+  passerCommande: "Checkout",
+  panierVide: "Your cart is empty.",
+  sousTotal: "Subtotal",
+  total: "Total",
+  retirerArticle: "Remove",
+  articleIndisponible: "Item unavailable",
+  annonceRetiree: "This listing is no longer for sale.",
+  stockInsuffisant: "Not enough stock.",
+  votreAnnonce: "This is your own listing: item removed from the cart.",
+  nbPaiements: "You are about to confirm {n} Pi payments, one per seller.",
+  connexionPiRequise: "Sign in with Pi to complete your order.",
+  reprendrePaiement: "Resume payment",
+  filtreToutes: "All",
+  filtreEnAttente: "Pending",
+  filtreSucces: "Success",
+  filtreAnnulees: "Cancelled",
+  filtreLitiges: "Disputes",
+  etatEnAttente: "Pending",
+  etatSucces: "Success",
+  etatAnnule: "Cancelled",
+  etatLitige: "Dispute",
+  facture: "Invoice",
+  copierTxid: "Copy txid",
+  acheteur: "Buyer",
+  vendeur: "Seller",
+  quantite: "Quantity",
+  lignes: "Items",
+  ajouteAuPanier: "Added to cart",
 };
 
 const dictionnaires: Record<Langue, Record<Cle, string>> = { fr, rn, sw, en };

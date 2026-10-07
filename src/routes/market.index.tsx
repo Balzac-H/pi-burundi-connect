@@ -176,6 +176,7 @@ function Market() {
 }
 
 function CarteAnnonce({ p, favori }: { p: ProduitDb; favori: boolean }) {
+  const t = useT();
   const [v, setV] = useState<Profil | null>(null);
   useEffect(() => {
     chargerProfilCache(p.vendeur_id)
@@ -246,8 +247,8 @@ function CarteAnnonce({ p, favori }: { p: ProduitDb; favori: boolean }) {
           aria-label={`Ajouter ${p.titre} au panier`}
           className="w-9 px-0"
           onClick={() => {
-            store.ajouterAuPanier(p.id);
-            toast.success("Ajouté au panier");
+            store.ajouterAuPanier(p.id, 1, p.titre);
+            toast.success(t("ajouteAuPanier"));
           }}
         >
           <ShoppingCart className="size-4" />

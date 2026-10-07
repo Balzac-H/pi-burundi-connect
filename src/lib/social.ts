@@ -54,9 +54,10 @@ export type AvisDb = {
   created_at: string;
 };
 
+/** Vue publie : sans `order_id`, sans donnée de commande. */
 export async function avisDeVendeur(vendeurId: string): Promise<AvisDb[]> {
   const { data } = await supabase
-    .from("reviews")
+    .from("reviews_publics")
     .select("*")
     .eq("vendeur_id", vendeurId)
     .order("created_at", { ascending: false })
@@ -64,20 +65,27 @@ export async function avisDeVendeur(vendeurId: string): Promise<AvisDb[]> {
   return (data as AvisDb[] | null) ?? [];
 }
 
+/** Un avis par commande, obligatoirement sur une commande « recue »
+ *  (contrainte SQL `reviews_verifier_commande`). */
 export async function laisserAvis(
   auteurId: string,
   vendeurId: string,
   note: number,
   commentaire?: string,
+  orderId?: string,
 ) {
   const { error } = await supabase.from("reviews").insert({
     auteur_id: auteurId,
     vendeur_id: vendeurId,
     note,
     commentaire: commentaire?.slice(0, 500) || null,
+    order_id: orderId ?? null,
   });
   if (error) {
-    if (error.code === "23505") throw new Error("Vous avez déjà laissé un avis pour ce vendeur.");
+    if (error.code === "23505") throw new Error("dejaNoteCommande");
+    if (error.code === "23514") throw new Error("avisImpossible");
+    if (error.message?.includes("vide") || error.message?.includes("order_id"))
+      throw new Error("avisImpossible");
     throw error;
   }
 }

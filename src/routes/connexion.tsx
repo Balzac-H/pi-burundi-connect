@@ -1,12 +1,18 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bouton } from "@/components/ui-kit";
 import { useT } from "@/lib/i18n";
 import { connexionPi } from "@/lib/pi-session";
 import { piDisponible } from "@/lib/pi";
+import { cheminRetour } from "@/lib/retour";
 import { toast } from "sonner";
 
+type ConnexionSearch = { retour?: string };
+
 export const Route = createFileRoute("/connexion")({
+  validateSearch: (search: Record<string, unknown>): ConnexionSearch => ({
+    retour: typeof search.retour === "string" ? search.retour : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Connexion — WICO" },
@@ -22,6 +28,9 @@ function Connexion() {
   const t = useT();
   const [enCours, setEnCours] = useState(false);
   const navigate = useNavigate();
+  const router = useRouter();
+  const { retour } = Route.useSearch();
+  const cible = cheminRetour(retour);
 
   async function seConnecterAvecPi() {
     if (!piDisponible()) {
@@ -32,7 +41,9 @@ function Connexion() {
     try {
       const username = await connexionPi();
       toast.success(t("seConnecter") + " : " + username);
-      navigate({ to: "/profil" });
+      // Retour automatique à la page d'origine (le panier est conservé).
+      if (retour) router.history.push(cible);
+      else navigate({ to: "/profil" });
     } catch (err) {
       const message = err instanceof Error ? err.message : "";
       if (message !== "User cancelled the login flow") {

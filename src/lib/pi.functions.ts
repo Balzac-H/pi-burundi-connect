@@ -2,6 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import {
+  DEJA_PREMIER_VALIDATEUR,
+  SEUIL_DOUBLE_VALIDATION,
+  normaliserErreurServeur,
+} from "@/lib/admin.functions";
 
 const PI_API = "https://api.minepi.com/v2";
 /** Commission WICO : 2 %, calculés et enregistrés à la libération des fonds. */
@@ -180,11 +185,14 @@ export const piApprove = createServerFn({ method: "POST" })
 
       const { data: commandes } = await supabaseAdmin.from("orders").select("*").in("id", ids);
       if (!commandes || commandes.length !== ids.length) throw new Error("Commande introuvable.");
+      // Le montant vient TOUJOURS de la base (trigger `orders_calculer_commande`), jamais du navigateur.
       const total = commandes.reduce((s, c) => s + Number(c.montant), 0);
       if (commandes.some((c) => c.acheteur_id !== context.userId))
         throw new Error("Utilisateur différent de la commande.");
       if (commandes.some((c) => c.statut !== "en_attente_paiement"))
         throw new Error("Commande non en attente.");
+      // Une commande sans ligne (montant 0) ne peut jamais être payée.
+      if (commandes.some((c) => Number(c.montant) <= 0)) throw new Error("Montant incorrect.");
       if (Math.abs(Number(p.amount) - total) > 1e-7) throw new Error("Montant incorrect.");
 
       const { data: prof } = await supabaseAdmin
@@ -252,7 +260,10 @@ export const piComplete = createServerFn({ method: "POST" })
       if (!commandes || commandes.length !== ids.length) throw new Error("Commande introuvable.");
       if (commandes.some((c) => c.acheteur_id !== context.userId))
         throw new Error("Utilisateur différent de la commande.");
+      // Le montant vient TOUJOURS de la base (triggers `orders_calculer_commande`
+      // et `order_items_recalculer_order`), jamais du navigateur.
       const total = commandes.reduce((s, c) => s + Number(c.montant), 0);
+      if (commandes.some((c) => Number(c.montant) <= 0)) throw new Error("Montant incorrect.");
       if (Math.abs(Number(p.amount) - total) > 1e-7) throw new Error("Montant incorrect.");
 
       // Enregistrement du paiement s'il n'a pas été approuvé par notre équipe
@@ -286,12 +297,23 @@ export const piComplete = createServerFn({ method: "POST" })
         });
       }
 
+      const { data: lignesFacture } = await supabaseAdmin
+        .from("order_items")
+        .select("*")
+        .in("order_id", ids);
+      const lignesParCommande = new Map<string, LigneItemDb[]>();
+      for (const i of (lignesFacture ?? []) as LigneItemDb[]) {
+        const liste = lignesParCommande.get(i.order_id);
+        if (liste) liste.push(i);
+        else lignesParCommande.set(i.order_id, [i]);
+      }
+
       const maj = await supabaseAdmin
         .from("payments")
         .update({
           statut: "paid_held",
           txid: data.txid,
-          facture: construireFacture(commandes, data.txid),
+          facture: construireFacture(commandes, data.txid, lignesFacture ?? []),
         })
         .eq("id", pay.id)
         .in("statut", ["pending", "approved"])
@@ -304,23 +326,25 @@ export const piComplete = createServerFn({ method: "POST" })
             .update({ statut: "payee" })
             .eq("id", cmd.id)
             .eq("statut", "en_attente_paiement");
-          if (cmd.produit_id) {
+          for (const l of lignesDuCommande(lignesParCommande, cmd)) {
+            if (!l.produit_id) continue;
             const { data: prod } = await supabaseAdmin
               .from("produits")
               .select("stock")
-              .eq("id", cmd.produit_id)
+              .eq("id", l.produit_id)
               .maybeSingle();
             if (prod) {
               await supabaseAdmin
                 .from("produits")
-                .update({ stock: Math.max(0, prod.stock - cmd.quantite) })
-                .eq("id", cmd.produit_id);
+                .update({ stock: Math.max(0, prod.stock - l.quantite) })
+                .eq("id", l.produit_id);
             }
           }
+          const resume = resumeCommande(lignesParCommande, cmd);
           await supabaseAdmin.from("notifications").insert({
             user_id: cmd.vendeur_id,
             titre: "Nouvelle commande payée",
-            contenu: `${cmd.titre} × ${cmd.quantite} ${cmd.unite}`,
+            contenu: resume,
             lien: "/portefeuille",
           });
         }
@@ -337,19 +361,68 @@ export const piComplete = createServerFn({ method: "POST" })
     }
   });
 
-function construireFacture(
-  commandes: { id: string; titre: string; quantite: number; unite: string; montant: number }[],
-  txid: string,
-) {
+type LigneCommandeDb = {
+  id: string;
+  titre: string;
+  quantite: number;
+  unite: string;
+  montant: number;
+  produit_id?: string | null;
+};
+
+type LigneItemDb = {
+  order_id: string;
+  produit_id: string | null;
+  titre: string;
+  quantite: number;
+  unite: string;
+  montant: number;
+};
+
+/** Lignes réelles de la commande (`order_items`), sinon l'ancien format à un produit. */
+function lignesDuCommande(
+  parCommande: Map<string, LigneItemDb[]>,
+  cmd: LigneCommandeDb,
+): LigneItemDb[] {
+  const lignes = parCommande.get(cmd.id);
+  if (lignes?.length) return lignes;
+  return [
+    {
+      order_id: cmd.id,
+      produit_id: cmd.produit_id ?? null,
+      titre: cmd.titre,
+      quantite: cmd.quantite,
+      unite: cmd.unite,
+      montant: Number(cmd.montant),
+    },
+  ];
+}
+
+function resumeCommande(parCommande: Map<string, LigneItemDb[]>, cmd: LigneCommandeDb): string {
+  return lignesDuCommande(parCommande, cmd)
+    .map((l) => `${l.titre} × ${l.quantite} ${l.unite}`)
+    .join(" · ");
+}
+
+function construireFacture(commandes: LigneCommandeDb[], txid: string, items: LigneItemDb[]) {
+  const parCommande = new Map<string, LigneItemDb[]>();
+  for (const i of items) {
+    const liste = parCommande.get(i.order_id);
+    if (liste) liste.push(i);
+    else parCommande.set(i.order_id, [i]);
+  }
+  const lignes = commandes.flatMap((c) =>
+    lignesDuCommande(parCommande, c).map((l) => ({
+      libelle: l.titre,
+      quantite: l.quantite,
+      unite: l.unite,
+      montant: Number(l.montant),
+    })),
+  );
   return {
     numero: `WICO-${commandes[0].id.slice(0, 8).toUpperCase()}`,
     date: new Date().toISOString(),
-    lignes: commandes.map((c) => ({
-      libelle: c.titre,
-      quantite: c.quantite,
-      unite: c.unite,
-      montant: Number(c.montant),
-    })),
+    lignes,
     montant_brut: commandes.reduce((s, c) => s + Number(c.montant), 0),
     txid,
   };
@@ -399,6 +472,13 @@ export const piCancel = createServerFn({ method: "POST" })
 /* ------------------------------------------------------------------ */
 /* Libération des fonds (espace admin)                                 */
 /* ------------------------------------------------------------------ */
+
+/** Le message unique est produit par la fonction SQL `refuser_conflit_interet`
+ *  et reconnu par `normaliserErreurServeur` (traduit côté client). */
+function verifierConflit(error: { message: string } | null) {
+  if (error) throw new Error(normaliserErreurServeur(error.message));
+}
+
 export const piRelease = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d) => z.object({ paymentId: z.string().uuid() }).parse(d))
@@ -407,7 +487,7 @@ export const piRelease = createServerFn({ method: "POST" })
       _user_id: context.userId,
       _role: "admin",
     });
-    if (!admin) throw new Error("Réservé aux administrateurs.");
+    if (!admin) throw new Error("AdminSeul");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: pay } = await supabaseAdmin
       .from("payments")
@@ -416,6 +496,59 @@ export const piRelease = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!pay) throw new Error("Paiement introuvable.");
     if (pay.statut !== "paid_held") throw new Error("Fonds non retenus.");
+
+    const { data: cmd } = await supabaseAdmin
+      .from("orders")
+      .select("*")
+      .eq("id", pay.order_id)
+      .maybeSingle();
+    if (!cmd) throw new Error("Commande introuvable.");
+
+    // 1. Conflit d'intérêt : message unique, identique au traitement des litiges.
+    const { error: conflit } = await context.supabase.rpc("refuser_conflit_interet", {
+      _acteur: context.userId,
+      _acheteur: cmd.acheteur_id,
+      _vendeur: cmd.vendeur_id,
+    });
+    verifierConflit(conflit);
+
+    // 2. Sortie d'escrow : réception confirmée, ou paiement âgé de 72 h sans litige.
+    const depuis = new Date(cmd.livre_declare_at ?? cmd.updated_at).getTime();
+    const recue = cmd.statut === "recue";
+    const perime = cmd.statut === "payee" && Date.now() - depuis > 72 * 3600 * 1000;
+    if (cmd.statut === "litige") throw new Error("Libération impossible : litige ouvert.");
+    if (!recue && !perime)
+      throw new Error("Libération impossible : réception confirmée ou délai de 72 h requis.");
+
+    // 3. Double validation au-dessus du seuil (reglages.seuil_double_validation).
+    const { data: reg } = await context.supabase
+      .from("reglages")
+      .select("valeur")
+      .eq("cle", "seuil_double_validation")
+      .maybeSingle();
+    const seuil = Number((reg?.valeur as number | null) ?? 0);
+    if (Number(pay.montant) >= seuil) {
+      const { data: attente } = await supabaseAdmin
+        .from("liberations_en_attente")
+        .select("*")
+        .eq("payment_id", pay.id)
+        .maybeSingle();
+      if (!attente) {
+        await supabaseAdmin.from("liberations_en_attente").insert({
+          payment_id: pay.id,
+          premier_admin: context.userId,
+          montant: Number(pay.montant),
+        });
+        throw new Error(SEUIL_DOUBLE_VALIDATION);
+      }
+      if (attente.statut === "en_attente") {
+        if (attente.premier_admin === context.userId) throw new Error(DEJA_PREMIER_VALIDATEUR);
+        await supabaseAdmin
+          .from("liberations_en_attente")
+          .update({ second_admin: context.userId, statut: "validee" })
+          .eq("id", attente.id);
+      }
+    }
 
     const commission = Math.round(Number(pay.montant) * TAUX_COMMISSION * 1e7) / 1e7;
     // TODO : paiement A2U avec le SDK backend Pi, nécessite la clé du portefeuille de l'app.
@@ -435,21 +568,83 @@ export const piRelease = createServerFn({ method: "POST" })
       .eq("id", pay.id)
       .eq("statut", "paid_held");
     if (error) throw new Error("Libération impossible.");
-    const { data: cmd } = await supabaseAdmin
-      .from("orders")
-      .select("vendeur_id, titre")
-      .eq("id", pay.order_id)
-      .maybeSingle();
-    if (cmd) {
-      await supabaseAdmin.from("notifications").insert({
-        user_id: cmd.vendeur_id,
-        titre: "Fonds libérés",
-        contenu: `${cmd.titre} — ${Number(pay.montant) - commission} π (commission ${commission} π)`,
-        lien: "/portefeuille",
-      });
-    }
+    await supabaseAdmin.from("notifications").insert({
+      user_id: cmd.vendeur_id,
+      titre: "Fonds libérés",
+      contenu: `${cmd.titre} — ${Number(pay.montant) - commission} π (commission ${commission} π)`,
+      lien: "/portefeuille",
+    });
+    await supabaseAdmin.rpc("ecrire_audit", {
+      _acteur: context.userId,
+      _action: "fonds_liberes",
+      _cible: pay.id,
+      _detail: { montant: Number(pay.montant), commission },
+    });
     journal("release", { paymentId: pay.id, commission });
     return { ok: true, commission };
+  });
+
+/* ------------------------------------------------------------------ */
+/* Remboursement des fonds retenus (espace admin)                      */
+/* ------------------------------------------------------------------ */
+
+export const piRefund = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d) => z.object({ paymentId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: admin } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (!admin) throw new Error("AdminSeul");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: pay } = await supabaseAdmin
+      .from("payments")
+      .select("*")
+      .eq("id", data.paymentId)
+      .maybeSingle();
+    if (!pay) throw new Error("Paiement introuvable.");
+    if (pay.statut !== "paid_held")
+      throw new Error("Fonds non retenus : remboursement impossible.");
+
+    const { data: cmd } = await supabaseAdmin
+      .from("orders")
+      .select("*")
+      .eq("id", pay.order_id)
+      .maybeSingle();
+    if (!cmd) throw new Error("Commande introuvable.");
+    const { error: conflitRefund } = await context.supabase.rpc("refuser_conflit_interet", {
+      _acteur: context.userId,
+      _acheteur: cmd.acheteur_id,
+      _vendeur: cmd.vendeur_id,
+    });
+    verifierConflit(conflitRefund);
+
+    const { error } = await supabaseAdmin
+      .from("payments")
+      .update({ statut: "refunded" })
+      .eq("id", pay.id)
+      .eq("statut", "paid_held");
+    if (error) throw new Error("Remboursement impossible.");
+    await supabaseAdmin
+      .from("orders")
+      .update({ statut: "remboursee" })
+      .eq("id", cmd.id)
+      .in("statut", ["payee", "recue", "litige"]);
+    await supabaseAdmin.from("notifications").insert({
+      user_id: cmd.acheteur_id,
+      titre: "Remboursement enregistré",
+      contenu: `${cmd.titre} — ${Number(pay.montant)} π`,
+      lien: "/portefeuille",
+    });
+    await supabaseAdmin.rpc("ecrire_audit", {
+      _acteur: context.userId,
+      _action: "fonds_rembourses",
+      _cible: pay.id,
+      _detail: { montant: Number(pay.montant), order_id: cmd.id },
+    });
+    journal("refund", { paymentId: pay.id, order: cmd.id });
+    return { ok: true };
   });
 
 /* ------------------------------------------------------------------ */

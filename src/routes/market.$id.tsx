@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Bouton,
@@ -10,11 +10,18 @@ import {
   Saisie,
 } from "@/components/ui-kit";
 import { supabase } from "@/integrations/supabase/client";
-import { chargerProfil, lienWhatsApp, type ProduitDb, type Profil } from "@/lib/comptes";
+import {
+  chargerProfil,
+  chargerProfilCache,
+  lienWhatsApp,
+  type ProduitDb,
+  type Profil,
+} from "@/lib/comptes";
 import { store, useStore, formatPi } from "@/lib/store";
 import { imageProduit } from "@/lib/produits-visuels";
-import { acheterAvecPi } from "@/lib/achat";
 import { piDisponible } from "@/lib/pi";
+import { lienConnexion } from "@/lib/retour";
+import { useSession } from "@/lib/auth";
 import { toast } from "sonner";
 import { ArrowLeft, Heart } from "lucide-react";
 import { BoutonSignaler } from "@/components/Confiance";
@@ -40,13 +47,22 @@ function DetailProduit() {
   const { id } = Route.useParams();
   const t = useT();
   const navigate = useNavigate();
+  const router = useRouter();
+  const { utilisateur } = useSession();
   const [produit, setProduit] = useState<Produit | null | undefined>(undefined);
   const [vendeur, setVendeur] = useState<Profil | null>(null);
+  const [moi, setMoi] = useState<Profil | null>(null);
   const [quantite, setQuantite] = useState(1);
-  const [enCours, setEnCours] = useState(false);
-  const [confirme, setConfirme] = useState<string | null>(null);
   const [pi, setPi] = useState(true);
   const favori = useStore((s) => s.favoris.includes(id));
+
+  useEffect(() => {
+    setPi(piDisponible());
+    if (utilisateur?.id)
+      chargerProfilCache(utilisateur.id)
+        .then(setMoi)
+        .catch(() => undefined);
+  }, [utilisateur?.id]);
 
   useEffect(() => {
     setPi(piDisponible());
@@ -81,48 +97,30 @@ function DetailProduit() {
   const min = Math.max(1, produit.quantite_min ?? 1);
   const epuise = produit.stock < min;
   const qValide = quantite >= min && quantite <= produit.stock;
+  const monAnnonce = !!utilisateur && produit.vendeur_id === utilisateur.id;
+  const connectePi = !!utilisateur && !!moi?.pi_uid;
+  const fiche = produit;
 
-  async function acheter() {
-    if (!produit || enCours) return;
-    setEnCours(true);
-    try {
-      const r = await acheterAvecPi(produit, quantite);
-      if (r.ok) setConfirme(r.payes[0] ?? "ok");
-      else if (r.code === "ANNULE") toast(r.erreur);
-      else toast.error(r.erreur);
-    } catch (e) {
-      toast.error(
-        (e as Error).message === "PI_ABSENT"
-          ? "Ouvrez WICO dans le Pi Browser pour payer en Pi."
-          : "Paiement impossible.",
-      );
-    } finally {
-      setEnCours(false);
-    }
+  /** Connexion Pi obligatoire : on ne montre aucune erreur rouge, on redirige. */
+  function versConnexion() {
+    router.history.push(lienConnexion(`/market/${fiche.id}`));
   }
 
-  if (confirme) {
-    return (
-      <Carte className="mx-auto max-w-lg space-y-3 text-center">
-        <p className="text-4xl">✅</p>
-        <h1 className="text-2xl font-extrabold text-primary">{t("paiementConfirme")}</h1>
-        <p className="text-sm">
-          {produit.titre} × {quantite} {produit.unite} —{" "}
-          <strong>{formatPi(produit.prix * quantite)}</strong>
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Les fonds sont retenus jusqu'à la confirmation de réception.
-        </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          <LienBouton to="/portefeuille" taille="sm">
-            Mes commandes
-          </LienBouton>
-          <LienBouton to="/market" variante="contour" taille="sm">
-            {t("voirTout")}
-          </LienBouton>
-        </div>
-      </Carte>
-    );
+  function ajouterAuPanier() {
+    store.ajouterAuPanier(fiche.id, quantite, fiche.titre);
+    toast.success(t("ajouteAuPanier"));
+  }
+
+  /** « Acheter maintenant » : au panier, puis /paiement avec cet article seul. */
+  function acheter() {
+    if (monAnnonce || epuise || !qValide) return;
+    if (!connectePi) {
+      versConnexion();
+      return;
+    }
+    store.ajouterAuPanier(fiche.id, quantite, fiche.titre);
+    if (!pi) toast.info(t("piBrowserRequis"));
+    navigate({ to: "/paiement", search: { produits: fiche.id } });
   }
 
   return (
@@ -203,6 +201,9 @@ function DetailProduit() {
       </Carte>
 
       {!pi && <Carte className="text-sm font-semibold text-accent">{t("piBrowserRequis")}</Carte>}
+      {monAnnonce && (
+        <Carte className="text-sm font-semibold text-accent">{t("votreAnnonce")}</Carte>
+      )}
       <BandeauPi />
 
       <Carte className="sticky bottom-20 space-y-2 lg:bottom-4">
@@ -232,20 +233,13 @@ function DetailProduit() {
           <Bouton
             variante="contour"
             taille="sm"
-            disabled={epuise || !qValide || !pi}
-            onClick={() => {
-              store.ajouterAuPanier(produit.id, quantite);
-              toast.success("Ajouté au panier");
-            }}
+            disabled={epuise || !qValide || monAnnonce}
+            onClick={ajouterAuPanier}
           >
             {t("ajouterPanier")}
           </Bouton>
-          <Bouton
-            className="flex-1"
-            disabled={epuise || !qValide || enCours || !pi}
-            onClick={acheter}
-          >
-            {enCours ? t("paiementEnCours") : t("acheterMaintenant")}
+          <Bouton className="flex-1" disabled={epuise || !qValide || monAnnonce} onClick={acheter}>
+            {t("acheterMaintenant")}
           </Bouton>
         </div>
       </Carte>

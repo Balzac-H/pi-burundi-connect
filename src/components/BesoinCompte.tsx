@@ -1,10 +1,13 @@
 import type { ReactNode } from "react";
-import { Carte, LienBouton } from "@/components/ui-kit";
+import { useRouter, useRouterState } from "@tanstack/react-router";
+import { Bouton, Carte } from "@/components/ui-kit";
 import { useSession } from "@/lib/auth";
+import { lienConnexion } from "@/lib/retour";
 
 /**
- * Laisse consulter l'application sans compte, mais demande la création
- * d'un compte au moment d'exécuter une action (publier, payer, discuter…).
+ * Laisse consulter l'application sans compte, mais demande la connexion
+ * au moment d'exécuter une action (publier, payer, discuter…).
+ * Le lien de connexion revient automatiquement à la page d'origine.
  */
 export function BesoinCompte({
   titre,
@@ -16,6 +19,9 @@ export function BesoinCompte({
   children: ReactNode;
 }) {
   const { utilisateur, chargement } = useSession();
+  const router = useRouter();
+  const localisation = useRouterState({ select: (s) => s.location });
+  const retour = `${localisation.pathname}${localisation.searchStr ?? ""}`;
 
   if (chargement) {
     return <p className="py-10 text-center text-sm text-muted-foreground">Chargement…</p>;
@@ -26,7 +32,9 @@ export function BesoinCompte({
       <Carte className="mx-auto max-w-md space-y-3 text-center">
         <h1 className="text-xl font-extrabold text-primary">{titre}</h1>
         <p className="text-sm text-muted-foreground">{message}</p>
-        <LienBouton to="/connexion">CRÉER UN COMPTE / SE CONNECTER</LienBouton>
+        <Bouton onClick={() => router.history.push(lienConnexion(retour))}>
+          SE CONNECTER AVEC PI
+        </Bouton>
       </Carte>
     );
   }

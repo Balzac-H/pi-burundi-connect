@@ -15,6 +15,8 @@ import { formatPi } from "@/lib/store";
 import { toast } from "sonner";
 import { LogOut, Pencil, Share2, MessageCircle } from "lucide-react";
 import { BoutonTheme } from "@/components/Confiance";
+import { useT } from "@/lib/i18n";
+import { activerEspaceVendeur } from "@/lib/activite";
 
 export const Route = createFileRoute("/profil/")({
   head: () => ({
@@ -36,6 +38,7 @@ export const Route = createFileRoute("/profil/")({
 });
 
 function MonProfil() {
+  const t = useT();
   const { utilisateur, chargement } = useSession();
   const [profil, setProfil] = useState<Profil | null>(null);
   const [produits, setProduits] = useState<ProduitDb[]>([]);
@@ -85,6 +88,9 @@ function MonProfil() {
               {(profil?.competences ?? []).map((c) => (
                 <Etiquette key={c}>🏷️ {c}</Etiquette>
               ))}
+              {profil?.vendeur_actif && (
+                <Etiquette ton="succes">🛍️ {t("espaceVendeurActif")}</Etiquette>
+              )}
             </div>
           </div>
         </div>
@@ -119,6 +125,34 @@ function MonProfil() {
           <LienBouton to="/portefeuille" variante="pi" taille="sm">
             π MON WALLET
           </LienBouton>
+          <LienBouton to="/activite" variante="secondaire" taille="sm">
+            {t("monActivite")}
+          </LienBouton>
+          {profil?.vendeur_actif ? (
+            <Etiquette ton="succes">🛍️ {t("espaceVendeurActif")}</Etiquette>
+          ) : (
+            <Bouton
+              variante="secondaire"
+              taille="sm"
+              onClick={async () => {
+                try {
+                  await activerEspaceVendeur(utilisateur.id);
+                  setProfil((p) => (p ? { ...p, vendeur_actif: true } : p));
+                  toast.success(t("espaceVendeurActive"));
+                } catch (e) {
+                  toast.error(
+                    e instanceof Error && e.message.includes("Pi")
+                      ? t("piRequisPourVendre")
+                      : e instanceof Error
+                        ? e.message
+                        : "Action impossible.",
+                  );
+                }
+              }}
+            >
+              {t("activerEspaceVendeur")}
+            </Bouton>
+          )}
           <BoutonTheme />
           <Bouton
             variante="contour"

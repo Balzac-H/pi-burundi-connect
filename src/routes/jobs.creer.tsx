@@ -4,6 +4,8 @@ import { Bouton, Carte, Champ, Saisie, Selection, Zone } from "@/components/ui-k
 import { categoriesJobs } from "@/lib/data";
 import { creerJob } from "@/lib/annonces";
 import { useSession } from "@/lib/auth";
+import { chargerProfil } from "@/lib/comptes";
+import { useT } from "@/lib/i18n";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
 
@@ -25,6 +27,7 @@ export const Route = createFileRoute("/jobs/creer")({
 
 function CreerOffre() {
   const navigate = useNavigate();
+  const t = useT();
   const { utilisateur } = useSession();
   const [envoi, setEnvoi] = useState(false);
 
@@ -44,6 +47,15 @@ function CreerOffre() {
         const salaire = Number(f.get("salaire"));
         setEnvoi(true);
         try {
+          const profil = await chargerProfil(utilisateur.id);
+          if (!profil?.pi_uid) {
+            toast.error(t("piRequisPourVendre"));
+            return;
+          }
+          if (!profil.vendeur_actif) {
+            toast.error(t("activerPourPublier"));
+            return;
+          }
           await creerJob({
             employeur_id: utilisateur.id,
             titre: titre.slice(0, 100),

@@ -7,7 +7,7 @@ import { useCallback, useRef, useSyncExternalStore } from "react";
  */
 export type AppState = {
   favoris: string[];
-  panier: { produitId: string; quantite: number }[];
+  panier: { produitId: string; quantite: number; titre?: string }[];
   candidatures: string[];
 };
 
@@ -64,17 +64,23 @@ export const store = {
       : [...state.favoris, id];
     set({ favoris });
   },
-  ajouterAuPanier(produitId: string, quantite = 1) {
+  ajouterAuPanier(produitId: string, quantite = 1, titre?: string) {
     const existant = state.panier.find((p) => p.produitId === produitId);
     const panier = existant
       ? state.panier.map((p) =>
-          p.produitId === produitId ? { ...p, quantite: p.quantite + quantite } : p,
+          p.produitId === produitId
+            ? { ...p, quantite: p.quantite + quantite, titre: titre ?? p.titre }
+            : p,
         )
-      : [...state.panier, { produitId, quantite }];
+      : [...state.panier, { produitId, quantite, titre }];
     set({ panier });
   },
   retirerDuPanier(produitId: string) {
     set({ panier: state.panier.filter((p) => p.produitId !== produitId) });
+  },
+  retirerPlusieursDuPanier(produitIds: string[]) {
+    const cibles = new Set(produitIds);
+    set({ panier: state.panier.filter((p) => !cibles.has(p.produitId)) });
   },
   definirQuantite(produitId: string, quantite: number) {
     set({ panier: state.panier.map((p) => (p.produitId === produitId ? { ...p, quantite } : p)) });
@@ -124,5 +130,16 @@ export function useStore<T>(selecteur: (s: AppState) => T): T {
 
 export const formatPi = (n: number) =>
   `${n.toLocaleString("fr-FR", { minimumFractionDigits: n < 0.01 ? 3 : 2, maximumFractionDigits: 4 })} π`;
+
+/** Arrondi monétaire WICO : 7 décimales (même précision que la base). */
+export const arrondi7 = (n: number) => Math.round((n + Number.EPSILON) * 1e7) / 1e7;
+
+/** Prix en π affiché avec la précision complète (7 décimales). */
+export const formatPi7 = (n: number) =>
+  `${arrondi7(n).toLocaleString("fr-FR", { maximumFractionDigits: 7 })} π`;
+
+/** Nombre d'articles dans le panier (somme des quantités) — pastille du compteur. */
+export const compterPanier = (panier: AppState["panier"]) =>
+  panier.reduce((n, l) => n + Math.max(0, l.quantite), 0);
 
 export { shallowEqual };

@@ -17,10 +17,8 @@ export async function listerLitiges(): Promise<LitigeDb[]> {
   return (data as LitigeDb[] | null) ?? [];
 }
 
-export async function modifierStatutLitige(id: string, statut: string) {
-  const { error } = await supabase.from("litiges").update({ statut }).eq("id", id);
-  if (error) throw error;
-}
+/** La mise à jour d'un litige passe obligatoirement par la fonction serveur
+ *  `traiterLitige` (conflit d'intérêt + journal d'audit). */
 
 /** Paiements dont les fonds sont retenus (candidats à la libération). */
 export async function paiementsEnAttente(): Promise<CommandeAvecPaiement[]> {
@@ -31,4 +29,14 @@ export async function paiementsEnAttente(): Promise<CommandeAvecPaiement[]> {
     .order("created_at", { ascending: false })
     .limit(100);
   return (data as CommandeAvecPaiement[] | null) ?? [];
+}
+
+/** Seuil de double validation (π) : réglage public, écriture admin. */
+export async function lireSeuilDoubleValidation(): Promise<number> {
+  const { data } = await supabase
+    .from("reglages")
+    .select("valeur")
+    .eq("cle", "seuil_double_validation")
+    .maybeSingle();
+  return Number((data?.valeur as number | null) ?? 0);
 }

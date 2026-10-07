@@ -105,6 +105,19 @@ export async function estAdmin(userId: string): Promise<boolean> {
   return data === true;
 }
 
+export async function estModerateur(userId: string): Promise<boolean> {
+  const { data } = await db().rpc("has_role", { _user_id: userId, _role: "moderator" });
+  return data === true;
+}
+
+/** Responsable = admin ou moderator (litiges, signalements, messages de litige). */
+export type Responsable = "admin" | "moderator" | null;
+
+export async function roleResponsable(userId: string): Promise<Responsable> {
+  const [admin, mod] = await Promise.all([estAdmin(userId), estModerateur(userId)]);
+  return admin ? "admin" : mod ? "moderator" : null;
+}
+
 export const typesCompte = [
   { code: "vendeur", nom: "Vendeur" },
   { code: "employeur", nom: "Employeur" },

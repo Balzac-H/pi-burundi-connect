@@ -8,6 +8,33 @@ export type Database = {
   };
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string;
+          acteur: string | null;
+          cible: string | null;
+          date: string;
+          detail: Json;
+          id: string;
+        };
+        Insert: {
+          action: string;
+          acteur?: string | null;
+          cible?: string | null;
+          date?: string;
+          detail?: Json;
+          id?: string;
+        };
+        Update: {
+          action?: string;
+          acteur?: string | null;
+          cible?: string | null;
+          date?: string;
+          detail?: Json;
+          id?: string;
+        };
+        Relationships: [];
+      };
       follows: {
         Row: {
           created_at: string;
@@ -67,6 +94,47 @@ export type Database = {
           urgent?: boolean;
         };
         Relationships: [];
+      };
+      liberations_en_attente: {
+        Row: {
+          created_at: string;
+          id: string;
+          montant: number;
+          payment_id: string;
+          premier_admin: string;
+          second_admin: string | null;
+          statut: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          montant: number;
+          payment_id: string;
+          premier_admin: string;
+          second_admin?: string | null;
+          statut?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          montant?: number;
+          payment_id?: string;
+          premier_admin?: string;
+          second_admin?: string | null;
+          statut?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "liberations_en_attente_payment_id_fkey";
+            columns: ["payment_id"];
+            isOneToOne: true;
+            referencedRelation: "payments";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       litiges: {
         Row: {
@@ -160,11 +228,63 @@ export type Database = {
         };
         Relationships: [];
       };
+      order_items: {
+        Row: {
+          created_at: string;
+          id: string;
+          montant: number;
+          order_id: string;
+          prix_unitaire: number;
+          produit_id: string | null;
+          quantite: number;
+          titre: string;
+          unite: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          montant: number;
+          order_id: string;
+          prix_unitaire: number;
+          produit_id?: string | null;
+          quantite: number;
+          titre: string;
+          unite?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          montant?: number;
+          order_id?: string;
+          prix_unitaire?: number;
+          produit_id?: string | null;
+          quantite?: number;
+          titre?: string;
+          unite?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "order_items_produit_id_fkey";
+            columns: ["produit_id"];
+            isOneToOne: false;
+            referencedRelation: "produits";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       orders: {
         Row: {
           acheteur_id: string;
           created_at: string;
           id: string;
+          livre_declare_at: string | null;
           montant: number;
           produit_id: string | null;
           quantite: number;
@@ -179,20 +299,22 @@ export type Database = {
           acheteur_id: string;
           created_at?: string;
           id?: string;
-          montant: number;
+          livre_declare_at?: string | null;
+          montant?: number;
           produit_id?: string | null;
           quantite: number;
           recu_confirme?: boolean;
           statut?: string;
-          titre: string;
+          titre?: string;
           unite?: string;
           updated_at?: string;
-          vendeur_id: string;
+          vendeur_id?: string;
         };
         Update: {
           acheteur_id?: string;
           created_at?: string;
           id?: string;
+          livre_declare_at?: string | null;
           montant?: number;
           produit_id?: string | null;
           quantite?: number;
@@ -333,6 +455,7 @@ export type Database = {
           theme: string | null;
           type_compte: string;
           updated_at: string;
+          vendeur_actif: boolean;
           ville: string | null;
           whatsapp: string | null;
         };
@@ -351,6 +474,7 @@ export type Database = {
           theme?: string | null;
           type_compte?: string;
           updated_at?: string;
+          vendeur_actif?: boolean;
           ville?: string | null;
           whatsapp?: string | null;
         };
@@ -369,6 +493,7 @@ export type Database = {
           theme?: string | null;
           type_compte?: string;
           updated_at?: string;
+          vendeur_actif?: boolean;
           ville?: string | null;
           whatsapp?: string | null;
         };
@@ -399,6 +524,7 @@ export type Database = {
           created_at: string;
           id: string;
           note: number;
+          order_id: string | null;
           vendeur_id: string;
         };
         Insert: {
@@ -407,6 +533,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           note: number;
+          order_id?: string | null;
           vendeur_id: string;
         };
         Update: {
@@ -415,9 +542,25 @@ export type Database = {
           created_at?: string;
           id?: string;
           note?: number;
+          order_id?: string | null;
           vendeur_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reviews_vendeur_id_fkey";
+            columns: ["vendeur_id"];
+            isOneToOne: false;
+            referencedRelation: "profils";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       signalements: {
         Row: {
@@ -475,6 +618,52 @@ export type Database = {
       };
     };
     Views: {
+      clients_vendeur: {
+        Row: {
+          acheteur_id: string | null;
+          derniere_commande: string | null;
+          nb_commandes: number | null;
+          total: number | null;
+          vendeur_id: string | null;
+        };
+        Insert: Record<string, never>;
+        Update: Record<string, never>;
+        Relationships: [];
+      };
+      gains_lignes: {
+        Row: {
+          commission: number | null;
+          commission_payee: number | null;
+          created_at: string | null;
+          en_escrow: number | null;
+          libere_brut: number | null;
+          libere_net: number | null;
+          livre_declare_at: string | null;
+          montant: number | null;
+          order_id: string | null;
+          paiement_statut: string | null;
+          quantite: number | null;
+          statut: string | null;
+          titre: string | null;
+          unite: string | null;
+          vendeur_id: string | null;
+        };
+        Insert: Record<string, never>;
+        Update: Record<string, never>;
+        Relationships: [];
+      };
+      gains_totaux: {
+        Row: {
+          commission_payee: number | null;
+          en_escrow: number | null;
+          libere_brut: number | null;
+          libere_net: number | null;
+          vendeur_id: string | null;
+        };
+        Insert: Record<string, never>;
+        Update: Record<string, never>;
+        Relationships: [];
+      };
       profils_publics: {
         Row: {
           bio: string | null;
@@ -514,9 +703,44 @@ export type Database = {
         };
         Relationships: [];
       };
+      reviews_publics: {
+        Row: {
+          auteur_id: string | null;
+          commentaire: string | null;
+          created_at: string | null;
+          id: string | null;
+          note: number | null;
+          vendeur_id: string | null;
+        };
+        Insert: Record<string, never>;
+        Update: Record<string, never>;
+        Relationships: [];
+      };
     };
     Functions: {
+      annuler_commandes_perimees: { Args: Record<string, never>; Returns: number };
+      commande_a_litige: { Args: { _order: string }; Returns: boolean };
+      declarer_livraison: { Args: { _order: string }; Returns: undefined };
+      ecrire_audit: {
+        Args: {
+          _action: string;
+          _acteur: string | null;
+          _cible?: string | null;
+          _detail?: Json;
+        };
+        Returns: undefined;
+      };
+      parties_commande_litigiee: { Args: { _a: string; _b: string }; Returns: boolean };
+      refuser_conflit_interet: {
+        Args: { _acheteur: string; _acteur: string; _vendeur: string };
+        Returns: undefined;
+      };
+      traiter_litige: { Args: { _litige: string; _statut: string }; Returns: undefined };
       confirmer_reception: { Args: { _order: string }; Returns: undefined };
+      creer_commandes: {
+        Args: { _lignes: Json };
+        Returns: Database["public"]["Tables"]["orders"]["Row"][];
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];

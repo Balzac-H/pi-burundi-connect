@@ -3,11 +3,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Bouton, Carte, Etiquette, LienBouton, TitreSection } from "@/components/ui-kit";
 import { useSession } from "@/lib/auth";
 import {
+  chargerProfil,
   listerMesProduits,
   modifierProduit,
   supprimerProduit,
   type ProduitDb,
 } from "@/lib/comptes";
+import { useT } from "@/lib/i18n";
 import { formatPi } from "@/lib/store";
 import { toast } from "sonner";
 import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
@@ -28,6 +30,7 @@ export const Route = createFileRoute("/market/boutique")({
 });
 
 function Boutique() {
+  const t = useT();
   const { utilisateur, chargement } = useSession();
   const [produits, setProduits] = useState<ProduitDb[]>([]);
 
@@ -123,6 +126,17 @@ function Boutique() {
                   taille="sm"
                   onClick={async () => {
                     try {
+                      if (!p.publie) {
+                        const profil = await chargerProfil(utilisateur.id);
+                        if (!profil?.pi_uid) {
+                          toast.error(t("piRequisPourVendre"));
+                          return;
+                        }
+                        if (!profil.vendeur_actif) {
+                          toast.error(t("activerPourPublier"));
+                          return;
+                        }
+                      }
                       await modifierProduit(p.id, { publie: !p.publie });
                       toast.success(
                         p.publie ? "Annonce masquée du Market." : "Annonce visible dans le Market.",

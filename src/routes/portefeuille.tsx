@@ -1,31 +1,37 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Bouton, Carte, BandeauPi, TitreSection, Etiquette, LienBouton } from "@/components/ui-kit";
 import { formatPi } from "@/lib/store";
 import {
   confirmerReception,
+  correspondAuFiltre,
+  declarerLivraison,
   libelleStatut,
+  lignesCommande,
   mesCommandes,
   ouvrirLitige,
   type CommandeAvecPaiement,
+  type FiltreCommandes,
 } from "@/lib/commandes";
+import { chargerProfilCache, type Profil } from "@/lib/comptes";
+import { laisserAvis } from "@/lib/social";
 import { useSession } from "@/lib/auth";
 import { useT } from "@/lib/i18n";
 import { estAdmin } from "@/lib/annonces";
 import { piRelease } from "@/lib/pi.functions";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
-import { Copy, PackageCheck, TriangleAlert } from "lucide-react";
+import { Copy, FileText, PackageCheck, RotateCcw, TriangleAlert } from "lucide-react";
 
 export const Route = createFileRoute("/portefeuille")({
   head: () => ({
     meta: [
-      { title: "Mes commandes et paiements — WICO" },
+      { title: "Mes commandes — WICO" },
       {
         name: "description",
         content: "Suivez vos commandes, vos paiements en Pi et la libération des fonds sur WICO.",
       },
-      { property: "og:title", content: "Mes commandes et paiements — WICO" },
+      { property: "og:title", content: "Mes commandes — WICO" },
       {
         property: "og:description",
         content: "Commandes, paiements Pi et escrow en un coup d'œil.",
@@ -35,13 +41,19 @@ export const Route = createFileRoute("/portefeuille")({
   component: PortefeuilleProtege,
 });
 
+/** Un paiement interrompu reste reprenable pendant 30 minutes. */
+const DELAI_REPRISE_MS = 30 * 60 * 1000;
+
 function Portefeuille() {
   const t = useT();
+  const navigate = useNavigate();
   const { utilisateur } = useSession();
   const [commandes, setCommandes] = useState<CommandeAvecPaiement[]>([]);
   const [onglet, setOnglet] = useState<"achats" | "ventes">("achats");
+  const [filtre, setFiltre] = useState<FiltreCommandes>("toutes");
   const [admin, setAdmin] = useState(false);
   const [enCours, setEnCours] = useState<string | null>(null);
+  const [profils, setProfils] = useState<Record<string, Profil | null>>({});
 
   const recharger = useCallback(() => {
     if (!utilisateur?.id) return;
@@ -58,21 +70,35 @@ function Portefeuille() {
         .catch(() => undefined);
   }, [recharger, utilisateur?.id]);
 
-  const visibles = commandes.filter((c) =>
-    onglet === "achats" ? c.acheteur_id === utilisateur?.id : c.vendeur_id === utilisateur?.id,
-  );
+  const visibles = commandes
+    .filter((c) =>
+      onglet === "achats" ? c.acheteur_id === utilisateur?.id : c.vendeur_id === utilisateur?.id,
+    )
+    .filter((c) => correspondAuFiltre(c, filtre));
 
-  const paye = commandes
-    .filter((c) => c.acheteur_id === utilisateur?.id)
-    .reduce((s, c) => s + (c.statut === "en_attente_paiement" ? 0 : Number(c.montant)), 0);
-  const enEscrow = commandes
-    .filter((c) => c.vendeur_id === utilisateur?.id && c.statut === "payee")
-    .reduce((s, c) => s + Number(c.montant), 0);
-  const libere = commandes
-    .filter((c) => c.vendeur_id === utilisateur?.id)
-    .flatMap((c) => c.payments)
-    .filter((p) => p.statut === "released")
-    .reduce((s, p) => s + Number(p.montant), 0);
+  // Noms du contrepartie (acheteur ou vendeur).
+  useEffect(() => {
+    const ids = visibles
+      .map((c) => (onglet === "achats" ? c.vendeur_id : c.acheteur_id))
+      .filter((id) => !(id in profils));
+    if (!ids.length) return;
+    let vivant = true;
+    Promise.all([...new Set(ids)].map((id) => chargerProfilCache(id)))
+      .then((liste) => {
+        if (!vivant) return;
+        setProfils((prec) => {
+          const suivant = { ...prec };
+          liste.forEach((p, i) => {
+            suivant[ids[i]] = p;
+          });
+          return suivant;
+        });
+      })
+      .catch(() => undefined);
+    return () => {
+      vivant = false;
+    };
+  }, [visibles, onglet, profils]);
 
   async function confirmer(id: string) {
     try {
@@ -109,6 +135,43 @@ function Portefeuille() {
     }
   }
 
+  async function marquerLivree(c: CommandeAvecPaiement) {
+    try {
+      await declarerLivraison(c.id);
+      toast.success(t("livraisonDeclaree"));
+      recharger();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Action impossible.");
+    }
+  }
+
+  async function noter(c: CommandeAvecPaiement) {
+    if (!utilisateur) return;
+    const brut = window.prompt("Votre note (1 à 5) :");
+    if (brut === null) return;
+    const note = Number(brut);
+    if (!Number.isFinite(note) || note < 1 || note > 5) {
+      toast.error("Note entre 1 et 5.");
+      return;
+    }
+    const commentaire = window.prompt("Votre commentaire (facultatif) :");
+    try {
+      await laisserAvis(
+        utilisateur.id,
+        c.vendeur_id,
+        Math.round(note),
+        commentaire?.trim() || undefined,
+        c.id,
+      );
+      toast.success(t("noteEnvoyee"));
+    } catch (e) {
+      const cle = e instanceof Error ? e.message : "";
+      if (cle === "avisImpossible") toast.error(t("avisImpossible"));
+      else if (cle === "dejaNoteCommande") toast.error(t("dejaNoteCommande"));
+      else toast.error(cle || "Action impossible.");
+    }
+  }
+
   function copierTxid(txid: string) {
     navigator.clipboard?.writeText(txid).then(
       () => toast.success("Identifiant de transaction copié."),
@@ -116,28 +179,39 @@ function Portefeuille() {
     );
   }
 
+  function copierFacture(c: CommandeAvecPaiement) {
+    const texte = texteFacture(c);
+    navigator.clipboard?.writeText(texte).then(
+      () => toast.success(`${t("facture")} · copiée`),
+      () => toast(texte),
+    );
+  }
+
+  function reprendre(c: CommandeAvecPaiement) {
+    navigate({ to: "/paiement", search: { commande: c.id } });
+  }
+
+  const peutReprendre = (c: CommandeAvecPaiement) =>
+    c.statut === "en_attente_paiement" &&
+    Date.now() - new Date(c.created_at).getTime() < DELAI_REPRISE_MS;
+
+  const filtresPrincipaux: { cle: FiltreCommandes; libelle: string }[] = [
+    { cle: "toutes", libelle: t("filtreToutes") },
+    { cle: "attente", libelle: t("filtreEnAttente") },
+    { cle: "succes", libelle: t("filtreSucces") },
+  ];
+  const filtresSecondaires: { cle: FiltreCommandes; libelle: string }[] = [
+    { cle: "annulees", libelle: t("filtreAnnulees") },
+    { cle: "litiges", libelle: t("filtreLitiges") },
+  ];
+
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       <h1 className="text-2xl font-extrabold text-primary">🧾 {t("mesCommandes")}</h1>
 
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <Carte>
-          <p className="text-[0.7rem] uppercase text-muted-foreground">Acheté</p>
-          <p className="text-lg font-extrabold text-primary">{formatPi(paye)}</p>
-        </Carte>
-        <Carte>
-          <p className="text-[0.7rem] uppercase text-muted-foreground">En escrow (à recevoir)</p>
-          <p className="text-lg font-extrabold text-secondary">{formatPi(enEscrow)}</p>
-        </Carte>
-        <Carte>
-          <p className="text-[0.7rem] uppercase text-muted-foreground">Libéré (net vendeur)</p>
-          <p className="text-lg font-extrabold text-accent">{formatPi(libere)}</p>
-        </Carte>
-      </div>
-
       <BandeauPi texte="Paiements confirmés par Pi Network, fonds retenus jusqu'à réception" />
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Bouton
           taille="sm"
           variante={onglet === "achats" ? "primaire" : "contour"}
@@ -154,53 +228,58 @@ function Portefeuille() {
         </Bouton>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        {filtresPrincipaux.map((f) => (
+          <Bouton
+            key={f.cle}
+            taille="sm"
+            variante={filtre === f.cle ? "primaire" : "contour"}
+            onClick={() => setFiltre(f.cle)}
+          >
+            {f.libelle}
+          </Bouton>
+        ))}
+      </div>
+      <div className="-mt-2 flex flex-wrap gap-2">
+        {filtresSecondaires.map((f) => (
+          <Bouton
+            key={f.cle}
+            taille="sm"
+            variante={filtre === f.cle ? "doux" : "fantome"}
+            onClick={() => setFiltre(f.cle)}
+          >
+            {f.libelle}
+          </Bouton>
+        ))}
+      </div>
+
       <section className="space-y-3">
-        <TitreSection>Commandes</TitreSection>
+        <TitreSection>
+          {t("commandes")} ({visibles.length})
+        </TitreSection>
         {visibles.length === 0 ? (
           <Carte className="text-sm text-muted-foreground">{t("aucuneCommande")}</Carte>
         ) : (
-          visibles.map((c) => <CarteCommande key={c.id} c={c} onglet={onglet} />)
+          visibles.map((c) => (
+            <CarteCommande
+              key={c.id}
+              c={c}
+              onglet={onglet}
+              contrepartie={profils[onglet === "achats" ? c.vendeur_id : c.acheteur_id]}
+              admin={admin}
+              enCours={enCours}
+              peutReprendre={peutReprendre(c)}
+              onConfirmer={() => confirmer(c.id)}
+              onSignaler={() => signalerProbleme(c)}
+              onLivrer={() => marquerLivree(c)}
+              onNoter={() => noter(c)}
+              onLiberer={(p) => liberer(p)}
+              onCopierTxid={copierTxid}
+              onCopierFacture={() => copierFacture(c)}
+              onReprendre={() => reprendre(c)}
+            />
+          ))
         )}
-      </section>
-
-      <section className="space-y-3">
-        <TitreSection>Actions</TitreSection>
-        <div className="space-y-3">
-          {visibles.map((c) => {
-            const paiement = c.payments[0];
-            const estAcheteur = c.acheteur_id === utilisateur?.id;
-            return (
-              <Carte key={`a-${c.id}`} className="flex flex-wrap items-center gap-2 text-sm">
-                <span className="min-w-0 flex-1 truncate font-semibold">{c.titre}</span>
-                {estAcheteur && c.statut === "payee" && (
-                  <>
-                    <Bouton taille="sm" onClick={() => confirmer(c.id)}>
-                      <PackageCheck className="size-4" /> {t("confirmerReception")}
-                    </Bouton>
-                    <Bouton taille="sm" variante="danger" onClick={() => signalerProbleme(c)}>
-                      <TriangleAlert className="size-4" /> {t("signalerProbleme")}
-                    </Bouton>
-                  </>
-                )}
-                {!estAcheteur && admin && paiement && paiement.statut === "paid_held" && (
-                  <Bouton
-                    taille="sm"
-                    variante="pi"
-                    disabled={enCours === paiement.id}
-                    onClick={() => liberer(paiement.id)}
-                  >
-                    {t("liberer")} {formatPi(Number(paiement.montant))}
-                  </Bouton>
-                )}
-                {paiement?.txid && (
-                  <Bouton taille="sm" variante="contour" onClick={() => copierTxid(paiement.txid!)}>
-                    <Copy className="size-4" /> txid
-                  </Bouton>
-                )}
-              </Carte>
-            );
-          })}
-        </div>
       </section>
 
       <LienBouton to="/market" variante="contour" className="w-full">
@@ -210,12 +289,46 @@ function Portefeuille() {
   );
 }
 
-function CarteCommande({ c, onglet }: { c: CommandeAvecPaiement; onglet: "achats" | "ventes" }) {
+function CarteCommande({
+  c,
+  onglet,
+  contrepartie,
+  admin,
+  enCours,
+  peutReprendre,
+  onConfirmer,
+  onSignaler,
+  onLivrer,
+  onNoter,
+  onLiberer,
+  onCopierTxid,
+  onCopierFacture,
+  onReprendre,
+}: {
+  c: CommandeAvecPaiement;
+  onglet: "achats" | "ventes";
+  contrepartie: Profil | null | undefined;
+  admin: boolean;
+  enCours: string | null;
+  peutReprendre: boolean;
+  onConfirmer: () => void;
+  onSignaler: () => void;
+  onLivrer: () => void;
+  onNoter: () => void;
+  onLiberer: (paiementId: string) => void;
+  onCopierTxid: (txid: string) => void;
+  onCopierFacture: () => void;
+  onReprendre: () => void;
+}) {
+  const t = useT();
   const paiement = c.payments[0];
+  const lignes = lignesCommande(c);
+  const estAcheteur = onglet === "achats";
+
   return (
-    <Carte className="space-y-2">
+    <Carte className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="font-bold">{c.titre}</p>
+        <p className="min-w-0 flex-1 truncate font-bold">{c.titre}</p>
         <Etiquette
           ton={
             c.statut === "recue" || c.statut === "payee"
@@ -228,21 +341,119 @@ function CarteCommande({ c, onglet }: { c: CommandeAvecPaiement; onglet: "achats
           {libelleStatut(c.statut)}
         </Etiquette>
       </div>
+
       <p className="text-xs text-muted-foreground">
-        {onglet === "achats" ? "Acheté" : "Vendu"} le{" "}
-        {new Date(c.created_at).toLocaleDateString("fr-FR")} · {c.quantite} {c.unite} ×{" "}
-        {formatPi(Number(c.montant) / c.quantite)}
+        {new Date(c.created_at).toLocaleString("fr-FR")} ·{" "}
+        {estAcheteur ? t("vendeur") : t("acheteur")} : {contrepartie?.nom ?? "…"}
+        {contrepartie?.ville ? ` · ${contrepartie.ville}` : ""}
       </p>
-      <p className="text-base font-extrabold text-primary">{formatPi(Number(c.montant))}</p>
-      {paiement && (
-        <p className="truncate text-xs text-muted-foreground">
-          Paiement : {libelleStatut(paiement.statut)}
-          {paiement.commission != null && ` · commission ${formatPi(Number(paiement.commission))}`}
-          {paiement.txid && ` · ${paiement.txid.slice(0, 10)}…`}
+
+      <ul className="space-y-1">
+        {lignes.map((l) => (
+          <li key={l.id} className="flex items-start justify-between gap-2 text-sm">
+            <span className="min-w-0 truncate">
+              {l.titre} × {l.quantite} {l.unite}
+            </span>
+            <span className="shrink-0 font-semibold">{formatPi(Number(l.montant))}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="flex items-center justify-between border-t border-border pt-2">
+        <span className="text-sm text-muted-foreground">{t("total")}</span>
+        <span className="text-base font-extrabold text-primary">{formatPi(Number(c.montant))}</span>
+      </div>
+
+      <div className="space-y-1 text-xs text-muted-foreground">
+        <p>
+          {t("paiementLabel")} : {paiement ? libelleStatut(paiement.statut) : "—"}
+          {paiement?.commission != null && ` · commission ${formatPi(Number(paiement.commission))}`}
         </p>
-      )}
+        {paiement?.txid && <p className="truncate font-mono">txid : {paiement.txid}</p>}
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {peutReprendre && (
+          <Bouton taille="sm" variante="pi" onClick={onReprendre}>
+            <RotateCcw className="size-4" /> {t("reprendrePaiement")}
+          </Bouton>
+        )}
+        {estAcheteur && c.statut === "payee" && (
+          <>
+            <Bouton taille="sm" onClick={onConfirmer}>
+              <PackageCheck className="size-4" /> {t("confirmerReception")}
+            </Bouton>
+            <Bouton taille="sm" variante="danger" onClick={onSignaler}>
+              <TriangleAlert className="size-4" /> {t("signalerProbleme")}
+            </Bouton>
+          </>
+        )}
+        {!estAcheteur && c.statut === "payee" && !c.livre_declare_at && (
+          <Bouton taille="sm" variante="contour" onClick={onLivrer}>
+            <PackageCheck className="size-4" /> {t("marquerLivre")}
+          </Bouton>
+        )}
+        {estAcheteur && c.statut === "recue" && (
+          <Bouton taille="sm" variante="pi" onClick={onNoter}>
+            {t("noter")}
+          </Bouton>
+        )}
+        {!estAcheteur && admin && paiement && paiement.statut === "paid_held" && (
+          <Bouton
+            taille="sm"
+            variante="pi"
+            disabled={enCours === paiement.id}
+            onClick={() => onLiberer(paiement.id)}
+          >
+            {t("liberer")} {formatPi(Number(paiement.montant))}
+          </Bouton>
+        )}
+        {paiement?.txid && (
+          <Bouton taille="sm" variante="contour" onClick={() => onCopierTxid(paiement.txid!)}>
+            <Copy className="size-4" /> {t("copierTxid")}
+          </Bouton>
+        )}
+        <Bouton taille="sm" variante="contour" onClick={onCopierFacture}>
+          <FileText className="size-4" /> {t("facture")}
+        </Bouton>
+      </div>
     </Carte>
   );
+}
+
+type FactureDb = {
+  numero?: string;
+  date?: string;
+  lignes?: { libelle: string; quantite: number; unite: string; montant: number }[];
+  montant_brut?: number;
+  txid?: string;
+};
+
+function texteFacture(c: CommandeAvecPaiement): string {
+  const paiement = c.payments[0];
+  const f = (paiement?.facture ?? null) as FactureDb | null;
+  const lignes = lignesCommande(c);
+  const detail =
+    f?.lignes && f.lignes.length
+      ? f.lignes
+      : lignes.map((l) => ({
+          libelle: l.titre,
+          quantite: l.quantite,
+          unite: l.unite,
+          montant: Number(l.montant),
+        }));
+  const numero = f?.numero ?? `WICO-${c.id.slice(0, 8).toUpperCase()}`;
+  return [
+    `Facture ${numero}`,
+    `Date : ${f?.date ?? c.created_at}`,
+    ...detail.map(
+      (l) => `- ${l.libelle} × ${l.quantite} ${l.unite} : ${formatPi(Number(l.montant))}`,
+    ),
+    `Total : ${formatPi(f?.montant_brut ?? Number(c.montant))}`,
+    paiement?.txid ? `Txid : ${paiement.txid}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 function PortefeuilleProtege() {
