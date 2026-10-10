@@ -8,34 +8,46 @@ type Message = { role: "user" | "assistant"; content: string };
 
 const textes = {
   fr: {
-    titre: "Assistant Arija",
+    titre: "Assistant Arija Connect",
     accueil:
-      "Bonjour, je suis l'assistant d'Arija. Comment puis-je vous aider ? Vous cherchez un produit, un service ou un emploi ?",
+      "Bonjour, je suis l'assistant d'Arija Connect. Comment puis-je vous aider ? Vous cherchez un produit, un service ou un emploi ?",
+    avertissement:
+      "Ne partagez jamais d'informations personnelles : mot de passe, phrase secrète, code de validation ou numéro de téléphone.",
     placeholder: "Écrivez votre question…",
+    envoyez: "Envoyer",
     ouvrir: "Ouvrir l'assistant",
     fermer: "Fermer l'assistant",
   },
   rn: {
-    titre: "Umufasha Arija",
+    titre: "Umufasha Arija Connect",
     accueil:
-      "Bwakeye, ndi umufasha w'Arija. Nogufasha gute ? Urondera igicuruzwa, serivisi canke akazi ?",
+      "Bwakeye, ndi umufasha w'Arija Connect. Nogufasha gute ? Urondera igicuruzwa, serivisi canke akazi ?",
+    avertissement:
+      "Ntuze utange amakuru bwite : ijambobanga, ijambo ry'ibanga, kode yo kwemeza canke nimero ya telefone.",
     placeholder: "Andika ikibazo cawe…",
+    envoyez: "Ohereza",
     ouvrir: "Fungura umufasha",
     fermer: "Ugara umufasha",
   },
   sw: {
-    titre: "Msaidizi Arija",
+    titre: "Msaidizi Arija Connect",
     accueil:
-      "Habari, mimi ni msaidizi wa Arija. Nikusaidie vipi ? Unatafuta bidhaa, huduma au kazi ?",
+      "Habari, mimi ni msaidizi wa Arija Connect. Nikusaidie vipi ? Unatafuta bidhaa, huduma au kazi ?",
+    avertissement:
+      "Usishiriki taarifa za kibinafsi : nenosiri, neno la siri, msimbo wa uthibitisho au namba ya simu.",
     placeholder: "Andika swali lako…",
+    envoyez: "Tuma",
     ouvrir: "Fungua msaidizi",
     fermer: "Funga msaidizi",
   },
   en: {
-    titre: "Arija Assistant",
+    titre: "Arija Connect Assistant",
     accueil:
-      "Hello, I'm the Arija assistant. How can I help? Looking for a product, a service or a job?",
+      "Hello, I'm the Arija Connect assistant. How can I help? Looking for a product, a service or a job?",
+    avertissement:
+      "Never share personal information: password, passphrase, verification code or phone number.",
     placeholder: "Type your question…",
+    envoyez: "Send",
     ouvrir: "Open assistant",
     fermer: "Close assistant",
   },
@@ -109,6 +121,10 @@ export function AssistantArija() {
             <div ref={finRef} />
           </div>
 
+          <p className="border-t border-border px-3 py-2 text-xs text-muted-foreground">
+            {t.avertissement}
+          </p>
+
           <form
             className="flex items-center gap-2 border-t border-border p-2"
             onSubmit={(e) => {
@@ -129,7 +145,7 @@ export function AssistantArija() {
               disabled={enCours || !saisie.trim()}
               className="min-h-11 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors duration-150 hover:bg-primary/90 disabled:opacity-50"
             >
-              Envoyer
+              {t.envoyez}
             </button>
           </form>
         </div>

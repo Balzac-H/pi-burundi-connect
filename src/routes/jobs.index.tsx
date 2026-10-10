@@ -20,13 +20,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/jobs/")({
   head: () => ({
     meta: [
-      { title: "Offres d'emploi payées en Pi — Arija" },
+      { title: "Offres d'emploi payées en Pi — Arija Connect" },
       {
         name: "description",
         content:
           "Parcourez les offres d'emploi au Burundi : menuiserie, électricité, construction, nettoyage. Salaires payés en Pi.",
       },
-      { property: "og:title", content: "Offres d'emploi — Arija" },
+      { property: "og:title", content: "Offres d'emploi — Arija Connect" },
       {
         property: "og:description",
         content: "Trouvez un job près de chez vous et soyez payé en Pi.",

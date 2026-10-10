@@ -21,13 +21,13 @@ import { activerEspaceVendeur } from "@/lib/activite";
 export const Route = createFileRoute("/profil/")({
   head: () => ({
     meta: [
-      { title: "Mon profil — Arija" },
+      { title: "Mon profil — Arija Connect" },
       {
         name: "description",
         content:
-          "Gérez votre photo, vos informations de profil et vos produits en vente sur Arija.",
+          "Gérez votre photo, vos informations de profil et vos produits en vente sur Arija Connect.",
       },
-      { property: "og:title", content: "Mon profil — Arija" },
+      { property: "og:title", content: "Mon profil — Arija Connect" },
       {
         property: "og:description",
         content: "Votre compte, vos produits et vos contacts sur la plateforme.",

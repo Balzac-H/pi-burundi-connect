@@ -50,7 +50,7 @@ export function BoutonSignaler({
         raison,
         details,
       });
-      toast.success("Merci, votre signalement a été transmis à l'équipe Arija.");
+      toast.success("Merci, votre signalement a été transmis à l'équipe Arija Connect.");
       setOuvert(false);
       setDetails("");
     } catch (e) {

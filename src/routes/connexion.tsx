@@ -15,9 +15,12 @@ export const Route = createFileRoute("/connexion")({
   }),
   head: () => ({
     meta: [
-      { title: "Connexion — Arija" },
-      { name: "description", content: "Connectez-vous à Arija avec votre compte Pi Network." },
-      { property: "og:title", content: "Connexion — Arija" },
+      { title: "Connexion — Arija Connect" },
+      {
+        name: "description",
+        content: "Connectez-vous à Arija Connect avec votre compte Pi Network.",
+      },
+      { property: "og:title", content: "Connexion — Arija Connect" },
       { property: "og:description", content: "Accédez à la plateforme peer-to-peer du Burundi." },
     ],
   }),
@@ -60,11 +63,11 @@ function Connexion() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           {logoAbsent ? (
-            <h1 className="text-3xl font-bold text-primary">Arija</h1>
+            <h1 className="text-3xl font-bold text-primary">Arija Connect</h1>
           ) : (
             <img
               src="/logo-arija.svg"
-              alt="Arija"
+              alt="Arija Connect"
               className="mx-auto h-12 w-auto"
               onError={() => setLogoAbsent(true)}
             />

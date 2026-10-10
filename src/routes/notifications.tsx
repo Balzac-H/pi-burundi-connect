@@ -7,13 +7,13 @@ import { useT } from "@/lib/i18n";
 export const Route = createFileRoute("/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — Arija" },
+      { title: "Notifications — Arija Connect" },
       {
         name: "description",
         content:
           "Candidatures, messages, paiements Pi et nouvelles annonces : suivez toute votre activité en direct.",
       },
-      { property: "og:title", content: "Notifications — Arija" },
+      { property: "og:title", content: "Notifications — Arija Connect" },
       { property: "og:description", content: "Centre de notifications de la plateforme." },
     ],
   }),

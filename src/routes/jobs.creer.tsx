@@ -12,13 +12,13 @@ import { BesoinCompte } from "@/components/BesoinCompte";
 export const Route = createFileRoute("/jobs/creer")({
   head: () => ({
     meta: [
-      { title: "Publier une offre d'emploi — Arija" },
+      { title: "Publier une offre d'emploi — Arija Connect" },
       {
         name: "description",
         content:
           "Publiez gratuitement une offre d'emploi payée en Pi et recrutez des travailleurs près de chez vous.",
       },
-      { property: "og:title", content: "Publier une offre d'emploi — Arija" },
+      { property: "og:title", content: "Publier une offre d'emploi — Arija Connect" },
       { property: "og:description", content: "Recrutez rapidement au Burundi, paiement en Pi." },
     ],
   }),

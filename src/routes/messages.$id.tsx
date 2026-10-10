@@ -10,9 +10,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/messages/$id")({
   head: () => ({
     meta: [
-      { title: "Chat — Arija" },
+      { title: "Chat — Arija Connect" },
       { name: "description", content: "Conversation directe entre membres de la plateforme." },
-      { property: "og:title", content: "Chat — Arija" },
+      { property: "og:title", content: "Chat — Arija Connect" },
       { property: "og:description", content: "Messagerie directe entre membres de la plateforme." },
     ],
   }),

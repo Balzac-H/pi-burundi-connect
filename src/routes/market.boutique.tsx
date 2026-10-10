@@ -16,13 +16,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/market/boutique")({
   head: () => ({
     meta: [
-      { title: "Ma boutique — Arija" },
+      { title: "Ma boutique — Arija Connect" },
       {
         name: "description",
         content: "Gérez vos annonces, vos photos de produits et votre stock sur le Market en Pi.",
       },
-      { property: "og:title", content: "Ma boutique — Arija" },
-      { property: "og:description", content: "Vos produits en vente sur Arija." },
+      { property: "og:title", content: "Ma boutique — Arija Connect" },
+      { property: "og:description", content: "Vos produits en vente sur Arija Connect." },
     ],
   }),
   component: Boutique,

@@ -159,8 +159,8 @@ export const modifierReglage = createServerFn({ method: "POST" })
   .validator((d) =>
     z
       .object({
-        cle: z.enum(["seuil_double_validation"]),
-        valeur: z.number().min(0).max(1_000_000),
+        cle: z.enum(["seuil_double_validation", "assistant_actif"]),
+        valeur: z.union([z.number().min(0).max(1_000_000), z.boolean()]),
       })
       .parse(d),
   )

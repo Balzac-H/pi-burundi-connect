@@ -5,12 +5,12 @@ import { useT } from "@/lib/i18n";
 export const Route = createFileRoute("/conditions")({
   head: () => ({
     meta: [
-      { title: "Conditions d'utilisation — Arija" },
+      { title: "Conditions d'utilisation — Arija Connect" },
       {
         name: "description",
-        content: "Conditions d'utilisation de la plateforme Arija (paiements en Pi).",
+        content: "Conditions d'utilisation de la plateforme Arija Connect (paiements en Pi).",
       },
-      { property: "og:title", content: "Conditions d'utilisation — Arija" },
+      { property: "og:title", content: "Conditions d'utilisation — Arija Connect" },
     ],
   }),
   component: Conditions,
@@ -29,7 +29,7 @@ function Conditions() {
 
         <h3 className="font-semibold">1. Objet</h3>
         <p>
-          Arija (« la Plateforme ») met en relation des membres du Burundi pour la vente de
+          Arija Connect (« la Plateforme ») met en relation des membres du Burundi pour la vente de
           produits, de services et l'offre d'emploi. Les paiements entre membres s'effectuent en Pi
           (Pi Network).
         </p>
@@ -51,24 +51,26 @@ function Conditions() {
 
         <h3 className="font-semibold">4. Paiements, fonds retenus et litiges</h3>
         <p>
-          Le paiement est confirmé par Pi Network puis détenu temporairement par Arija (« fonds
-          retenus »). Ces fonds restent entre les mains d'Arija jusqu'à la confirmation de réception
-          par l'acheteur, ou jusqu'à 72 heures après la livraison déclarée par le vendeur si aucun
-          litige n'a été ouvert.
+          Le paiement est confirmé par Pi Network puis détenu temporairement par Arija Connect («
+          fonds retenus »). Ces fonds restent entre les mains d'Arija Connect jusqu'à la
+          confirmation de réception par l'acheteur, ou jusqu'à 72 heures après la livraison déclarée
+          par le vendeur si aucun litige n'a été ouvert.
         </p>
         <p>
-          À la libération des fonds, Arija prélève une commission de 2 %. Si un litige est tranché
-          en faveur de l'acheteur, l'acheteur est remboursé et la commission n'est pas perçue.
+          À la libération des fonds, Arija Connect prélève une commission de 2 %. Si un litige est
+          tranché en faveur de l'acheteur, l'acheteur est remboursé et la commission n'est pas
+          perçue.
         </p>
         <p>
-          Le vendeur reste responsable des produits qu'il met en vente. Arija agit uniquement en
-          tant qu'intermédiaire de paiement et de médiation.
+          Le vendeur reste responsable des produits qu'il met en vente. Arija Connect agit
+          uniquement en tant qu'intermédiaire de paiement et de médiation.
         </p>
 
         <h3 className="font-semibold">5. Responsabilité</h3>
         <p>
-          Arija n'est pas partie aux transactions entre membres. En cas de désaccord, un litige peut
-          être signalé ; un arbitre indépendant examine les éléments fournis par les deux parties.
+          Arija Connect n'est pas partie aux transactions entre membres. En cas de désaccord, un
+          litige peut être signalé ; un arbitre indépendant examine les éléments fournis par les
+          deux parties.
         </p>
 
         <h3 className="font-semibold">6. Modifications</h3>

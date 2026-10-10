@@ -25,7 +25,7 @@ export const Route = createFileRoute("/market/")({
         content:
           "Produits frais, vêtements, électronique et services près de chez vous. Achetez et vendez en Pi.",
       },
-      { property: "og:title", content: "Market — Arija" },
+      { property: "og:title", content: "Market — Arija Connect" },
       {
         property: "og:description",
         content: "Le marché peer-to-peer du Burundi, paiements en Pi.",
@@ -91,7 +91,7 @@ function Market() {
     <div className="space-y-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:justify-between">
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-semibold text-foreground">Market Arija</h1>
+          <h1 className="truncate text-2xl font-semibold text-foreground">Market Arija Connect</h1>
           <p className="text-sm text-muted-foreground">Achetez près de chez vous, payez en Pi.</p>
         </div>
         <div className="flex shrink-0 gap-2">

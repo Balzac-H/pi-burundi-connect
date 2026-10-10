@@ -8,8 +8,8 @@ export const Route = createFileRoute("/manifest.webmanifest")({
       GET: () => {
         const racine = urlAbsolue("/");
         const manifest = {
-          name: "Arija — Marché et emplois solidaires au Burundi",
-          short_name: "Arija",
+          name: "Arija Connect — Marché et emplois solidaires au Burundi",
+          short_name: "Arija Connect",
           description: "Marché et emplois solidaires au Burundi, payés en Pi.",
           start_url: racine,
           scope: racine,

@@ -5,21 +5,21 @@ import { useLangue, useT, type Langue } from "@/lib/i18n";
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
     meta: [
-      { title: "À propos — Arija" },
+      { title: "À propos — Arija Connect" },
       {
         name: "description",
         content:
-          "Arija, marché et emplois solidaires au Burundi : mission, valeurs et fonctionnement.",
+          "Arija Connect, marché et emplois solidaires au Burundi : mission, valeurs et fonctionnement.",
       },
-      { property: "og:title", content: "À propos — Arija" },
-      { property: "og:description", content: "Mission et valeurs de l'ONG Arija." },
+      { property: "og:title", content: "À propos — Arija Connect" },
+      { property: "og:description", content: "Mission et valeurs de l'ONG Arija Connect." },
     ],
   }),
   component: APropos,
 });
 
 const NOM_ONG =
-  "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples";
+  "ARIJA : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples";
 
 const NON_RENSEIGNE = "Non renseigné";
 
@@ -42,9 +42,9 @@ type Contenu = {
 
 const contenus: Record<Langue, Contenu> = {
   fr: {
-    titre: "À propos d'Arija",
+    titre: "À propos d'Arija Connect",
     introduction:
-      "Arija est une plateforme burundaise qui rapproche vendeurs, acheteurs et travailleurs, avec des paiements en Pi.",
+      "Arija Connect est une plateforme burundaise qui rapproche vendeurs, acheteurs et travailleurs, avec des paiements en Pi.",
     missionTitre: "Mission de l'ONG",
     mission: `${NOM_ONG}. L'ONG agit pour le renforcement des valeurs d'intégrité et de justice socio-économique, et pour promouvoir l'amitié entre les peuples du Burundi et de la région.`,
     valeursTitre: "Nos valeurs",
@@ -62,9 +62,9 @@ const contenus: Record<Langue, Contenu> = {
         texte: "La coopération entre membres, communautés et pays de la région.",
       },
     ],
-    plateformeTitre: "Ce qu'est Arija",
+    plateformeTitre: "Ce qu'est Arija Connect",
     plateforme:
-      "Arija réunit un marché de produits et de services et un espace d'offres d'emploi. Les échanges se règlent en Pi (Pi Network), sans espèces ni banque.",
+      "Arija Connect réunit un marché de produits et de services et un espace d'offres d'emploi. Les échanges se règlent en Pi (Pi Network), sans espèces ni banque.",
     vendeursTitre: "Qui peut vendre",
     vendeurs:
       "Tout membre disposant d'un compte Pi actif peut ouvrir un espace vendeur depuis son profil. Chaque annonce reste sous la responsabilité de son auteur.",
@@ -76,23 +76,26 @@ const contenus: Record<Langue, Contenu> = {
       },
       {
         etape: "Fonds retenus",
-        texte: "Arija retient temporairement les fonds, comme garantie pour l'acheteur.",
+        texte: "Arija Connect retient temporairement les fonds, comme garantie pour l'acheteur.",
       },
       {
         etape: "Libération",
         texte:
           "Les fonds sont libérés au vendeur après confirmation de réception, ou 72 heures après la livraison déclarée sans litige.",
       },
-      { etape: "Commission", texte: "Arija prélève une commission de 2 % à la libération." },
+      {
+        etape: "Commission",
+        texte: "Arija Connect prélève une commission de 2 % à la libération.",
+      },
     ],
     contactTitre: "Contact et support",
     contact:
       "Pour toute question, utilisez la rubrique support ou les coordonnées officielles de l'ONG.",
   },
   rn: {
-    titre: "Ibijanye na Arija",
+    titre: "Ibijanye na Arija Connect",
     introduction:
-      "Arija ni urwanda rwa Burundi ruhuzanya abatenguzi, abaguzi n'abakozi, hakoreshejwe Pi.",
+      "Arija Connect ni urwanda rwa Burundi ruhuzanya abatenguzi, abaguzi n'abakozi, hakoreshejwe Pi.",
     missionTitre: "Intego y'Umuco",
     mission: `${NOM_ONG}. Umuco ukora ku kuzamura indangagaciro z'integrite n'ubuhuza bw'ubukungu, no guhanga uruhana hagati y'abantu b'Aburundi n'abakurikira.`,
     valeursTitre: "Indangagaciro zacu",
@@ -111,9 +114,9 @@ const contenus: Record<Langue, Contenu> = {
         texte: "Ubufatanye hagati y'abanyamuryango, abaturage n'ibirwa byo mu mpahanya.",
       },
     ],
-    plateformeTitre: "Arija ni iki",
+    plateformeTitre: "Arija Connect ni iki",
     plateforme:
-      "Arija ihuza isoko ry'ibicuruzwa n'ibikorwa, hamwe n'umwanya w'akazi. Ihuriro rihindurwa na Pi (Pi Network), ntamafaranga y'ibanze.",
+      "Arija Connect ihuza isoko ry'ibicuruzwa n'ibikorwa, hamwe n'umwanya w'akazi. Ihuriro rihindurwa na Pi (Pi Network), ntamafaranga y'ibanze.",
     vendeursTitre: "Ni ubuhe uburyo bwo gutengurako",
     vendeurs:
       "Buri muntu ufite konti ya Pi ikora ashobora gutangira urwanda rwe mu mwanya we. Buri koko iruhukijwe n'umutenguzi.",
@@ -122,22 +125,22 @@ const contenus: Record<Langue, Contenu> = {
       { etape: "Kwishyura", texte: "Umuguzi aishyura na Pi ; Pi Network ikora ubwishyura." },
       {
         etape: "Amafaranga akwirengwa",
-        texte: "Arija ibikira amafaranga gihe gito, nk'umwanzo w'umuguzi.",
+        texte: "Arija Connect ibikira amafaranga gihe gito, nk'umwanzo w'umuguzi.",
       },
       {
         etape: "Kutanga",
         texte:
           "Amafaranga atangwa umutenguzi nyuma yo kwemera kw'ubwonyine, cyangwa hejuru y'ibisa myanya 72 guhera ku gutwara utarimo urujijo.",
       },
-      { etape: "Umugabane", texte: "Arija ifata umugabane wa 2 % igihe atangwa." },
+      { etape: "Umugabane", texte: "Arija Connect ifata umugabane wa 2 % igihe atangwa." },
     ],
     contactTitre: "Ubutumwa n'ufasha",
     contact: "Kubw'ibibazo, koresha umwanya w'ufasha cyangwa aderesi ofisiyeli y'Umuco.",
   },
   sw: {
-    titre: "Kuhusu Arija",
+    titre: "Kuhusu Arija Connect",
     introduction:
-      "Arija ni jukwaa la Burundi linalounganisha wauzaji, wanunuzi na wafanyikazi, kwa malipo ya Pi.",
+      "Arija Connect ni jukwaa la Burundi linalounganisha wauzaji, wanunuzi na wafanyikazi, kwa malipo ya Pi.",
     missionTitre: "Dhamira ya shirika",
     mission: `${NOM_ONG}. Shirika hufanya kazi kukuza thamani za uadilifu na haki ya kijamii-uchumi, na kukuza urafiki kati ya watu wa Burundi na nchi jirani.`,
     valeursTitre: "Thamani zetu",
@@ -155,9 +158,9 @@ const contenus: Record<Langue, Contenu> = {
         texte: "Ushirikiano kati ya wanachama, jamii na nchi za kanda.",
       },
     ],
-    plateformeTitre: "Arija ni nini",
+    plateformeTitre: "Arija Connect ni nini",
     plateforme:
-      "Arija inaunganisha soko la bidhaa na huduma pamoja na nafasi za kazi. Malipo hufanyika kwa Pi (Pi Network), bila fedha za mkono wala benki.",
+      "Arija Connect inaunganisha soko la bidhaa na huduma pamoja na nafasi za kazi. Malipo hufanyika kwa Pi (Pi Network), bila fedha za mkono wala benki.",
     vendeursTitre: "Nani anaweza kuuza",
     vendeurs:
       "Kila mwenye akaunti inayotumika ya Pi anaweza kuanzisha eneo lake la kuuza kutoka wasifu wake. Kila tangazo linaabirika na mwandishi wake.",
@@ -166,22 +169,25 @@ const contenus: Record<Langue, Contenu> = {
       { etape: "Malipo", texte: "Mnunuzi analipa kwa Pi; Pi Network inathibitisha malipo." },
       {
         etape: "Fedha zinashikiliwa",
-        texte: "Arija inashikilia fedha kwa muda, kama dhamana kwa mnunuzi.",
+        texte: "Arija Connect inashikilia fedha kwa muda, kama dhamana kwa mnunuzi.",
       },
       {
         etape: "Kuachiliwa",
         texte:
           "Fedwa huachiliwa kwa muuzaji baada ya kuthibitishwa kupokelewa, au saa 72 baada ya kuletwa kwa kauli bila mgogoro.",
       },
-      { etape: "Kamisheni", texte: "Arija huchukua kamisheni ya 2 % wakati wa kuachiliwa." },
+      {
+        etape: "Kamisheni",
+        texte: "Arija Connect huchukua kamisheni ya 2 % wakati wa kuachiliwa.",
+      },
     ],
     contactTitre: "Mawasiliano na msaada",
     contact: "Kwa swali lolote, tumia sehemu ya msaada au mawasiliano rasmi ya shirika.",
   },
   en: {
-    titre: "About Arija",
+    titre: "About Arija Connect",
     introduction:
-      "Arija is a Burundian platform connecting sellers, buyers and workers, with payments in Pi.",
+      "Arija Connect is a Burundian platform connecting sellers, buyers and workers, with payments in Pi.",
     missionTitre: "The NGO's mission",
     mission: `${NOM_ONG}. The NGO works to strengthen the values of integrity and socio-economic justice, and to promote friendship between the peoples of Burundi and the region.`,
     valeursTitre: "Our values",
@@ -199,9 +205,9 @@ const contenus: Record<Langue, Contenu> = {
         texte: "Cooperation between members, communities and countries of the region.",
       },
     ],
-    plateformeTitre: "What Arija is",
+    plateformeTitre: "What Arija Connect is",
     plateforme:
-      "Arija combines a marketplace for products and services with a job board. Payments are made in Pi (Pi Network), with no cash or bank account.",
+      "Arija Connect combines a marketplace for products and services with a job board. Payments are made in Pi (Pi Network), with no cash or bank account.",
     vendeursTitre: "Who can sell",
     vendeurs:
       "Any member with an active Pi account can open a seller space from their profile. Each listing remains the responsibility of its author.",
@@ -210,14 +216,14 @@ const contenus: Record<Langue, Contenu> = {
       { etape: "Payment", texte: "The buyer pays in Pi; the payment is confirmed by Pi Network." },
       {
         etape: "Funds held",
-        texte: "Arija temporarily holds the funds as a guarantee for the buyer.",
+        texte: "Arija Connect temporarily holds the funds as a guarantee for the buyer.",
       },
       {
         etape: "Release",
         texte:
           "Funds are released to the seller after receipt is confirmed, or 72 hours after the declared delivery with no dispute.",
       },
-      { etape: "Commission", texte: "Arija takes a 2 % commission on release." },
+      { etape: "Commission", texte: "Arija Connect takes a 2 % commission on release." },
     ],
     contactTitre: "Contact and support",
     contact: "For any question, use the support section or the NGO's official details.",
@@ -234,6 +240,7 @@ function APropos() {
       <div>
         <h1 className="text-2xl font-semibold text-foreground">{c.titre}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{c.introduction}</p>
+        <p className="mt-2 text-sm font-medium text-foreground">{t("initiativeOng")}</p>
       </div>
 
       <Carte className="space-y-3 text-sm leading-relaxed">

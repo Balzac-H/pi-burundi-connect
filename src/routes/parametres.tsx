@@ -12,9 +12,12 @@ import { BoutonTheme } from "@/components/Confiance";
 export const Route = createFileRoute("/parametres")({
   head: () => ({
     meta: [
-      { title: "Paramètres — Arija" },
-      { name: "description", content: "Langue, thème, sécurité et session de votre compte Arija." },
-      { property: "og:title", content: "Paramètres — Arija" },
+      { title: "Paramètres — Arija Connect" },
+      {
+        name: "description",
+        content: "Langue, thème, sécurité et session de votre compte Arija Connect.",
+      },
+      { property: "og:title", content: "Paramètres — Arija Connect" },
       { property: "og:description", content: "Compte, langue, thème et sécurité." },
     ],
   }),
@@ -96,9 +99,9 @@ function Parametres() {
       <Carte className="space-y-3">
         <h2 className="section-label">Sécurité</h2>
         <p className="text-sm text-muted-foreground">
-          Arija n'utilise ni mot de passe ni adresse email de connexion : l'accès au compte passe
-          uniquement par Pi (Pi Browser). En cas de perte d'accès, reconnectez-vous avec Pi pour
-          retrouver vos achats, ventes et messages.
+          Arija Connect n'utilise ni mot de passe ni adresse email de connexion : l'accès au compte
+          passe uniquement par Pi (Pi Browser). En cas de perte d'accès, reconnectez-vous avec Pi
+          pour retrouver vos achats, ventes et messages.
         </p>
       </Carte>
 

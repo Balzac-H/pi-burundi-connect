@@ -7,13 +7,14 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/transparence")({
   head: () => ({
     meta: [
-      { title: "Transparence — Arija" },
+      { title: "Transparence — Arija Connect" },
       {
         name: "description",
-        content: "Commission, traitement des litiges et règles anti-fraude de la plateforme Arija.",
+        content:
+          "Commission, traitement des litiges et règles anti-fraude de la plateforme Arija Connect.",
       },
-      { property: "og:title", content: "Transparence — Arija" },
-      { property: "og:description", content: "Engagements de transparence d'Arija." },
+      { property: "og:title", content: "Transparence — Arija Connect" },
+      { property: "og:description", content: "Engagements de transparence d'Arija Connect." },
     ],
   }),
   component: Transparence,
@@ -41,10 +42,10 @@ const contenus: Record<Langue, Contenu> = {
   fr: {
     titre: "Transparence",
     introduction:
-      "Ce que Arija prélève, ce que Arija fait des revenus et comment les différends sont traités.",
+      "Ce que Arija Connect prélève, ce que Arija Connect fait des revenus et comment les différends sont traités.",
     commissionTitre: "Taux de commission",
     commission: [
-      `Arija prélève une commission de ${COMMISSION} sur chaque paiement libéré au vendeur.`,
+      `Arija Connect prélève une commission de ${COMMISSION} sur chaque paiement libéré au vendeur.`,
       "Aucune autre commission n'est prélevée par la plateforme.",
       "Aucun montant n'est prélevé tant que les fonds sont retenus.",
     ],
@@ -74,10 +75,11 @@ const contenus: Record<Langue, Contenu> = {
   },
   rn: {
     titre: "Ukusobanura",
-    introduction: "Ico Arija ifata, icyo Arija ikora n'amafaranga no uko amakorero atunganywa.",
+    introduction:
+      "Ico Arija Connect ifata, icyo Arija Connect ikora n'amafaranga no uko amakorero atunganywa.",
     commissionTitre: "Urwego rw'umugabane",
     commission: [
-      `Arija ifata umugabane wa ${COMMISSION} kuri buri wishyuro atangwa umutenguzi.`,
+      `Arija Connect ifata umugabane wa ${COMMISSION} kuri buri wishyuro atangwa umutenguzi.`,
       "Uwundi mugabase ntawufatwa na urwanda.",
       "Ubwoba ntibufatwa igihe amafaranga akwirengwa.",
     ],
@@ -108,10 +110,10 @@ const contenus: Record<Langue, Contenu> = {
   sw: {
     titre: "Uwazi",
     introduction:
-      "Kile Arija kinachukua, jinsi fedha zinavyotumika na jinsi migogoro inavyoshughulikiwa.",
+      "Kile Arija Connect kinachukua, jinsi fedha zinavyotumika na jinsi migogoro inavyoshughulikiwa.",
     commissionTitre: "Kiwango cha kamisheni",
     commission: [
-      `Arija huchukua kamisheni ya ${COMMISSION} kwa kila malipo linaloachiliwa kwa muuzaji.`,
+      `Arija Connect huchukua kamisheni ya ${COMMISSION} kwa kila malipo linaloachiliwa kwa muuzaji.`,
       "Hakuna kamisheni nyingine inayochukuliwa na jukwaa.",
       "Hakuna kiasi kinachochukuliwa wakati fedwa zimeshikiliwa.",
     ],
@@ -142,10 +144,10 @@ const contenus: Record<Langue, Contenu> = {
   en: {
     titre: "Transparency",
     introduction:
-      "What Arija takes, what Arija does with the revenue and how disputes are handled.",
+      "What Arija Connect takes, what Arija Connect does with the revenue and how disputes are handled.",
     commissionTitre: "Commission rate",
     commission: [
-      `Arija takes a ${COMMISSION} commission on every payment released to the seller.`,
+      `Arija Connect takes a ${COMMISSION} commission on every payment released to the seller.`,
       "No other commission is taken by the platform.",
       "Nothing is taken while funds are held.",
     ],

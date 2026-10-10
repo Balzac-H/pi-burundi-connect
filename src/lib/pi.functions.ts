@@ -10,7 +10,7 @@ import {
 import { DOMAINE_EMAIL_COMPTE } from "@/lib/env";
 
 const PI_API = "https://api.minepi.com/v2";
-/** Commission Arija : 2 %, calculés et enregistrés à la libération des fonds. */
+/** Commission Arija Connect : 2 %, calculés et enregistrés à la libération des fonds. */
 export const TAUX_COMMISSION = 0.02;
 
 /** Journal serveur pour approve/complete/cancel. Ne contient JAMAIS la clé API. */
@@ -106,7 +106,7 @@ export const piAuth = createServerFn({ method: "POST" })
         .eq("id", sessionUserId);
       if (error) {
         if (error.code === "23505")
-          throw new Error("Ce compte Pi est déjà lié à un autre compte Arija.");
+          throw new Error("Ce compte Pi est déjà lié à un autre compte Arija Connect.");
         throw new Error("Liaison du compte Pi impossible.");
       }
       return { tokenHash: null, username: moi.username };
@@ -309,11 +309,15 @@ export const piComplete = createServerFn({ method: "POST" })
         else lignesParCommande.set(i.order_id, [i]);
       }
 
+      // Transition atomique : seul le premier appel réussit. Le stock n'est
+      // décrémenté qu'APRÈS avoir gagné cette transition, afin qu'un nouvel
+      // appel (retry réseau) ne puisse pas décrémenter deux fois.
       const maj = await supabaseAdmin
         .from("payments")
         .update({
           statut: "paid_held",
           txid: data.txid,
+          paid_held_at: new Date().toISOString(),
           facture: construireFacture(commandes, data.txid, lignesFacture ?? []),
         })
         .eq("id", pay.id)
@@ -321,26 +325,72 @@ export const piComplete = createServerFn({ method: "POST" })
         .select("id");
 
       if (!maj.error && maj.data?.length) {
+        // Décrément de stock ATOMIQUE. Si une annonce s'est épuisée entre la
+        // réservation du panier et la finalisation, la commande concernée part
+        // en litige et le paiement entre dans la file « Remboursements à
+        // effectuer » : un paiement reçu n'est jamais perdu.
+        const commandesEnLitige = new Set<string>();
         for (const cmd of commandes) {
+          for (const l of lignesDuCommande(lignesParCommande, cmd)) {
+            if (!l.produit_id) continue;
+            const { data: stockOk, error: erreurStock } = await supabaseAdmin.rpc(
+              "decrementer_stock",
+              { _produit: l.produit_id, _qte: l.quantite },
+            );
+            if (erreurStock) throw new Error("Mise à jour du stock impossible.");
+            if (stockOk !== true) commandesEnLitige.add(cmd.id);
+          }
+        }
+
+        const aRembourser = commandesEnLitige.size > 0;
+        if (aRembourser) {
+          await supabaseAdmin.from("payments").update({ a_rembourser: true }).eq("id", pay.id);
+        }
+        // Responsables à prévenir en cas de remboursement nécessaire.
+        let admins: { user_id: string }[] = [];
+        if (aRembourser) {
+          const { data: roles } = await supabaseAdmin
+            .from("user_roles")
+            .select("user_id")
+            .eq("role", "admin");
+          admins = (roles as { user_id: string }[] | null) ?? [];
+        }
+        for (const cmd of commandes) {
+          if (commandesEnLitige.has(cmd.id)) {
+            const description =
+              "Stock épuisé à la finalisation du paiement. Remboursement de l'acheteur à effectuer (fonds reçus, non renvoyés automatiquement).";
+            await supabaseAdmin
+              .from("orders")
+              .update({ statut: "litige" })
+              .eq("id", cmd.id)
+              .eq("statut", "en_attente_paiement");
+            await supabaseAdmin.from("litiges").insert({
+              order_id: cmd.id,
+              auteur_id: context.userId,
+              description,
+              statut: "ouvert",
+            });
+            await supabaseAdmin.from("notifications").insert([
+              {
+                user_id: cmd.acheteur_id,
+                titre: "Remboursement nécessaire",
+                contenu: `${resumeCommande(lignesParCommande, cmd)} — annonce épuisée au paiement. Les fonds seront remboursés.`,
+                lien: "/portefeuille",
+              },
+              ...admins.map((a) => ({
+                user_id: a.user_id,
+                titre: "Remboursement à effectuer",
+                contenu: `Commande ${cmd.id.slice(0, 8)}… : stock épuisé, remboursement manuel requis.`,
+                lien: "/admin",
+              })),
+            ]);
+            continue;
+          }
           await supabaseAdmin
             .from("orders")
             .update({ statut: "payee" })
             .eq("id", cmd.id)
             .eq("statut", "en_attente_paiement");
-          for (const l of lignesDuCommande(lignesParCommande, cmd)) {
-            if (!l.produit_id) continue;
-            const { data: prod } = await supabaseAdmin
-              .from("produits")
-              .select("stock")
-              .eq("id", l.produit_id)
-              .maybeSingle();
-            if (prod) {
-              await supabaseAdmin
-                .from("produits")
-                .update({ stock: Math.max(0, prod.stock - l.quantite) })
-                .eq("id", l.produit_id);
-            }
-          }
           const resume = resumeCommande(lignesParCommande, cmd);
           await supabaseAdmin.from("notifications").insert({
             user_id: cmd.vendeur_id,
@@ -352,6 +402,7 @@ export const piComplete = createServerFn({ method: "POST" })
         journal("complete", {
           paymentId: data.paymentId,
           commandes: ids.length,
+          remboursements: commandesEnLitige.size,
           txid: data.txid.slice(0, 12) + "…",
         });
       }
@@ -513,10 +564,15 @@ export const piRelease = createServerFn({ method: "POST" })
     });
     verifierConflit(conflit);
 
-    // 2. Sortie d'escrow : réception confirmée, ou paiement âgé de 72 h sans litige.
-    const depuis = new Date(cmd.livre_declare_at ?? cmd.updated_at).getTime();
+    // 2. Sortie d'escrow : réception confirmée, ou paiement âgé de 72 h sans
+    // litige. Horloge explicite : livraison déclarée par le vendeur, sinon
+    // date de retenue des fonds — jamais updated_at.
+    const reference = cmd.livre_declare_at ?? pay.paid_held_at;
     const recue = cmd.statut === "recue";
-    const perime = cmd.statut === "payee" && Date.now() - depuis > 72 * 3600 * 1000;
+    const perime =
+      cmd.statut === "payee" &&
+      reference !== null &&
+      Date.now() - new Date(reference).getTime() > 72 * 3600 * 1000;
     if (cmd.statut === "litige") throw new Error("Libération impossible : litige ouvert.");
     if (!recue && !perime)
       throw new Error("Libération impossible : réception confirmée ou délai de 72 h requis.");
@@ -591,7 +647,17 @@ export const piRelease = createServerFn({ method: "POST" })
 
 export const piRefund = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .validator((d) => z.object({ paymentId: z.string().uuid() }).parse(d))
+  .validator((d) =>
+    z
+      .object({
+        paymentId: z.string().uuid(),
+        /** L'admin certifie avoir effectué le remboursement DANS Pi. */
+        confirme: z.boolean().default(false),
+        /** Numéro de transaction Pi du remboursement (facultatif). */
+        txid: z.string().max(200).optional(),
+      })
+      .parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { data: admin } = await context.supabase.rpc("has_role", {
       _user_id: context.userId,
@@ -605,7 +671,8 @@ export const piRefund = createServerFn({ method: "POST" })
       .eq("id", data.paymentId)
       .maybeSingle();
     if (!pay) throw new Error("Paiement introuvable.");
-    if (pay.statut !== "paid_held")
+    if (pay.statut === "refunded") return { ok: true, deja: true };
+    if (pay.statut !== "paid_held" && !pay.a_rembourser)
       throw new Error("Fonds non retenus : remboursement impossible.");
 
     const { data: cmd } = await supabaseAdmin
@@ -621,11 +688,42 @@ export const piRefund = createServerFn({ method: "POST" })
     });
     verifierConflit(conflitRefund);
 
+    // Remboursement NON effectué : on le place dans la file « Remboursements
+    // à effectuer ». L'argent n'est PAS renvoyé automatiquement.
+    if (!data.confirme) {
+      await supabaseAdmin
+        .from("payments")
+        .update({ a_rembourser: true })
+        .eq("id", pay.id)
+        .in("statut", ["paid_held", "released"]);
+      await supabaseAdmin.from("notifications").insert({
+        user_id: cmd.acheteur_id,
+        titre: "Remboursement en attente",
+        contenu: `${cmd.titre} — ${Number(pay.montant)} π. Le remboursement sera effectué manuellement dans Pi.`,
+        lien: "/portefeuille",
+      });
+      await supabaseAdmin.rpc("ecrire_audit", {
+        _acteur: context.userId,
+        _action: "remboursement_a_effectuer",
+        _cible: pay.id,
+        _detail: { montant: Number(pay.montant), order_id: cmd.id },
+      });
+      journal("refund", { paymentId: pay.id, order: cmd.id, confirme: false });
+      return { ok: true, enAttente: true };
+    }
+
+    // Confirmé : l'admin a effectué le remboursement dans Pi.
     const { error } = await supabaseAdmin
       .from("payments")
-      .update({ statut: "refunded" })
+      .update({
+        statut: "refunded",
+        a_rembourser: false,
+        rembourse_le: new Date().toISOString(),
+        rembourse_par: context.userId,
+        ...(data.txid ? { txid: data.txid } : {}),
+      })
       .eq("id", pay.id)
-      .eq("statut", "paid_held");
+      .in("statut", ["paid_held", "released"]);
     if (error) throw new Error("Remboursement impossible.");
     await supabaseAdmin
       .from("orders")
@@ -642,9 +740,14 @@ export const piRefund = createServerFn({ method: "POST" })
       _acteur: context.userId,
       _action: "fonds_rembourses",
       _cible: pay.id,
-      _detail: { montant: Number(pay.montant), order_id: cmd.id },
+      _detail: {
+        montant: Number(pay.montant),
+        order_id: cmd.id,
+        txid: data.txid ?? null,
+        confirme: true,
+      },
     });
-    journal("refund", { paymentId: pay.id, order: cmd.id });
+    journal("refund", { paymentId: pay.id, order: cmd.id, confirme: true });
     return { ok: true };
   });
 

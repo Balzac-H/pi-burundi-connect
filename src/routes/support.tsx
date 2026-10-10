@@ -5,15 +5,16 @@ import { useLangue, useT, type Cle, type Langue } from "@/lib/i18n";
 export const Route = createFileRoute("/support")({
   head: () => ({
     meta: [
-      { title: "Support — Arija" },
+      { title: "Support — Arija Connect" },
       {
         name: "description",
-        content: "Contacter le support Arija, délai de réponse, aides en ligne et signalements.",
+        content:
+          "Contacter le support Arija Connect, délai de réponse, aides en ligne et signalements.",
       },
-      { property: "og:title", content: "Support — Arija" },
+      { property: "og:title", content: "Support — Arija Connect" },
       {
         property: "og:description",
-        content: "Aide, contact et signalements de la plateforme Arija.",
+        content: "Aide, contact et signalements de la plateforme Arija Connect.",
       },
     ],
   }),
@@ -68,7 +69,7 @@ const contenus: Record<Langue, Contenu> = {
       },
     ],
     signalementTexte:
-      "Ouvrez l'annonce, l'offre ou le profil concerné, puis choisissez « Signaler » : votre signalement est transmis à l'équipe Arija.",
+      "Ouvrez l'annonce, l'offre ou le profil concerné, puis choisissez « Signaler » : votre signalement est transmis à l'équipe Arija Connect.",
     signalementLiens: [
       { vers: "/market", cle: "market" },
       { vers: "/jobs", cle: "jobs" },
@@ -103,7 +104,7 @@ const contenus: Record<Langue, Contenu> = {
       },
     ],
     signalementTexte:
-      "Fungura koko, akazi cyangwa urwanda rufite icyo cabi, hanyuma uhitemo « Menyesha » : ubutumwa bwoherejwa ikigo cya Arija.",
+      "Fungura koko, akazi cyangwa urwanda rufite icyo cabi, hanyuma uhitemo « Menyesha » : ubutumwa bwoherejwa ikigo cya Arija Connect.",
     signalementLiens: [
       { vers: "/market", cle: "market" },
       { vers: "/jobs", cle: "jobs" },
@@ -139,7 +140,7 @@ const contenus: Record<Langue, Contenu> = {
       },
     ],
     signalementTexte:
-      "Fungua tangazo, nafasi au wasifu husika, kisha chagua « Ripoti »: ripoti yako humfikishia timu ya Arija.",
+      "Fungua tangazo, nafasi au wasifu husika, kisha chagua « Ripoti »: ripoti yako humfikishia timu ya Arija Connect.",
     signalementLiens: [
       { vers: "/market", cle: "market" },
       { vers: "/jobs", cle: "jobs" },
@@ -175,7 +176,7 @@ const contenus: Record<Langue, Contenu> = {
       },
     ],
     signalementTexte:
-      "Open the listing, job or profile concerned, then choose \u00ab Report \u00bb: your report is sent to the Arija team.",
+      "Open the listing, job or profile concerned, then choose \u00ab Report \u00bb: your report is sent to the Arija Connect team.",
     signalementLiens: [
       { vers: "/market", cle: "market" },
       { vers: "/jobs", cle: "jobs" },

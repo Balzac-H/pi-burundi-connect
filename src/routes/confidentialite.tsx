@@ -5,8 +5,11 @@ import { useT } from "@/lib/i18n";
 export const Route = createFileRoute("/confidentialite")({
   head: () => ({
     meta: [
-      { title: "Politique de confidentialité — Arija" },
-      { name: "description", content: "Politique de confidentialité de la plateforme Arija." },
+      { title: "Politique de confidentialité — Arija Connect" },
+      {
+        name: "description",
+        content: "Politique de confidentialité de la plateforme Arija Connect.",
+      },
     ],
   }),
   component: Confidentialite,
@@ -23,10 +26,10 @@ function Confidentialite() {
 
         <h3 className="font-semibold">1. Données collectées</h3>
         <p>
-          Arija collecte uniquement les données strictement nécessaires au service : identifiant et
-          nom d'utilisateur Pi, nom affiché, ville (facultative), photo de profil (facultative),
-          annonces publiées, offres d'emploi, messages échangés, commandes, paiements, notifications
-          et signalements.
+          Arija Connect collecte uniquement les données strictement nécessaires au service :
+          identifiant et nom d'utilisateur Pi, nom affiché, ville (facultative), photo de profil
+          (facultative), annonces publiées, offres d'emploi, messages échangés, commandes,
+          paiements, notifications et signalements.
         </p>
         <p>
           Le numéro de téléphone et le numéro WhatsApp ne sont collectés et affichés que si le
@@ -55,7 +58,7 @@ function Confidentialite() {
 
         <h3 className="font-semibold">3. Paiements</h3>
         <p>
-          Les paiements sont traités par Pi Network selon leurs propres conditions. Arija ne
+          Les paiements sont traités par Pi Network selon leurs propres conditions. Arija Connect ne
           conserve aucune clé privée de portefeuille et n'a pas accès à vos fonds Pi hors du
           mécanisme de paiement décrit aux conditions d'utilisation. Les commandes et paiements déjà
           effectués restent enregistrés à des fins comptables et légales.

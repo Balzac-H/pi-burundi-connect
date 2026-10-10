@@ -18,9 +18,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/jobs/$id")({
   head: () => ({
     meta: [
-      { title: "Offre d'emploi — Arija" },
+      { title: "Offre d'emploi — Arija Connect" },
       { name: "description", content: "Détail d'une offre d'emploi au Burundi, payée en Pi." },
-      { property: "og:title", content: "Offre d'emploi — Arija" },
+      { property: "og:title", content: "Offre d'emploi — Arija Connect" },
       { property: "og:description", content: "Postulez en un clic et soyez payé en Pi." },
     ],
   }),

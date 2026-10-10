@@ -17,13 +17,13 @@ import { useSession } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Accueil — Arija" },
+      { title: "Accueil — Arija Connect" },
       {
         name: "description",
         content:
           "Recherchez produits, services et emplois près de chez vous au Burundi. Paiements en Pi, messagerie intégrée.",
       },
-      { property: "og:title", content: "Accueil — Arija" },
+      { property: "og:title", content: "Accueil — Arija Connect" },
       {
         property: "og:description",
         content:
@@ -85,7 +85,7 @@ function Accueil() {
             {utilisateur?.email?.split("@")[0] ?? t("invite")}
           </span>
         </p>
-        <h1 className="mt-1 text-2xl font-semibold text-foreground sm:text-3xl">Arija</h1>
+        <h1 className="mt-1 text-2xl font-semibold text-foreground sm:text-3xl">Arija Connect</h1>
         <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("sousTitre")}</p>
 
         <form

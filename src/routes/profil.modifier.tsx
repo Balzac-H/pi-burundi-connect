@@ -20,13 +20,13 @@ import {
 export const Route = createFileRoute("/profil/modifier")({
   head: () => ({
     meta: [
-      { title: "Modifier mon profil — Arija" },
+      { title: "Modifier mon profil — Arija Connect" },
       {
         name: "description",
         content:
           "Mettez à jour votre photo, votre localisation, votre type de compte et vos coordonnées.",
       },
-      { property: "og:title", content: "Modifier mon profil — Arija" },
+      { property: "og:title", content: "Modifier mon profil — Arija Connect" },
       {
         property: "og:description",
         content: "Gérez vos informations publiques sur la plateforme.",

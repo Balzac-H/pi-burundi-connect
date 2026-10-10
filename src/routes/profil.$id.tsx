@@ -4,15 +4,15 @@ import { ProfilComplet } from "@/components/ProfilComplet";
 export const Route = createFileRoute("/profil/$id")({
   head: () => ({
     meta: [
-      { title: "Profil — Arija" },
+      { title: "Profil — Arija Connect" },
       {
         name: "description",
-        content: "Profil d'un membre Arija : avis, offres et ventes vérifiées.",
+        content: "Profil d'un membre Arija Connect : avis, offres et ventes vérifiées.",
       },
-      { property: "og:title", content: "Profil — Arija" },
+      { property: "og:title", content: "Profil — Arija Connect" },
       {
         property: "og:description",
-        content: "Vérifiez la réputation d'un vendeur ou employeur sur Arija.",
+        content: "Vérifiez la réputation d'un vendeur ou employeur sur Arija Connect.",
       },
     ],
   }),

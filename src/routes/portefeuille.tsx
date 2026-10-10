@@ -25,12 +25,13 @@ import { BesoinCompte } from "@/components/BesoinCompte";
 export const Route = createFileRoute("/portefeuille")({
   head: () => ({
     meta: [
-      { title: "Mes commandes — Arija" },
+      { title: "Mes commandes — Arija Connect" },
       {
         name: "description",
-        content: "Suivez vos commandes, vos paiements en Pi et la libération des fonds sur Arija.",
+        content:
+          "Suivez vos commandes, vos paiements en Pi et la libération des fonds sur Arija Connect.",
       },
-      { property: "og:title", content: "Mes commandes — Arija" },
+      { property: "og:title", content: "Mes commandes — Arija Connect" },
       {
         property: "og:description",
         content: "Commandes, paiements Pi et escrow en un coup d'œil.",

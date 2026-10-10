@@ -53,11 +53,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-3">
           <Link to="/" className="flex shrink-0 items-center gap-2">
             {logoAbsent ? (
-              <span className="text-lg leading-none font-bold text-primary">Arija</span>
+              <span className="text-lg leading-none font-bold text-primary">Arija Connect</span>
             ) : (
               <img
                 src="/logo-arija.svg"
-                alt="Arija"
+                alt="Arija Connect"
                 className="h-7 w-auto"
                 onError={() => setLogoAbsent(true)}
               />
@@ -188,7 +188,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {t("support")}
           </Link>
         </nav>
-        <p className="mx-auto mt-4 max-w-3xl leading-relaxed">{t("nomCompletOng")}</p>
+        <p className="mx-auto mt-4 max-w-3xl leading-relaxed">{t("initiativeOng")}</p>
         <p className="mt-1">{t("sousTitre")}</p>
         <p className="mx-auto mt-3 max-w-3xl text-xs text-muted-foreground">
           {t("mentionIndependante")}

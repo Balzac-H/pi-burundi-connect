@@ -31,13 +31,13 @@ export const Route = createFileRoute("/market/vendre")({
   }),
   head: () => ({
     meta: [
-      { title: "Vendre un produit — Arija" },
+      { title: "Vendre un produit — Arija Connect" },
       {
         name: "description",
         content:
           "Publiez votre annonce avec photos en quelques minutes et vendez vos produits en Pi partout au Burundi.",
       },
-      { property: "og:title", content: "Vendre un produit — Arija" },
+      { property: "og:title", content: "Vendre un produit — Arija Connect" },
       {
         property: "og:description",
         content: "Publiez une annonce avec photo et recevez vos paiements en Pi.",

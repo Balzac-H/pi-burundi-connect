@@ -31,12 +31,12 @@ export const Route = createFileRoute("/paiement")({
   }),
   head: () => ({
     meta: [
-      { title: "Confirmer l'achat — Arija" },
+      { title: "Confirmer l'achat — Arija Connect" },
       {
         name: "description",
         content: "Récapitulatif de commande et paiement sécurisé en Pi via Pi Network.",
       },
-      { property: "og:title", content: "Confirmer l'achat — Arija" },
+      { property: "og:title", content: "Confirmer l'achat — Arija Connect" },
       { property: "og:description", content: "Paiement sécurisé en Pi, livraison au Burundi." },
     ],
   }),
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/paiement")({
 });
 
 const MESSAGES: Record<CodeAchat, string> = {
-  PI_ABSENT: "Ouvrez Arija dans le Pi Browser pour payer en Pi.",
+  PI_ABSENT: "Ouvrez Arija Connect dans le Pi Browser pour payer en Pi.",
   NON_CONNECTE: "Connexion Pi requise.",
   ANNULE: "Paiement annulé.",
   ERREUR: "Le paiement a échoué.",

@@ -131,7 +131,7 @@ export function useStore<T>(selecteur: (s: AppState) => T): T {
 export const formatPi = (n: number) =>
   `${n.toLocaleString("fr-FR", { minimumFractionDigits: n < 0.01 ? 3 : 2, maximumFractionDigits: 4 })} π`;
 
-/** Arrondi monétaire Arija : 7 décimales (même précision que la base). */
+/** Arrondi monétaire Arija Connect : 7 décimales (même précision que la base). */
 export const arrondi7 = (n: number) => Math.round((n + Number.EPSILON) * 1e7) / 1e7;
 
 /** Prix en π affiché avec la précision complète (7 décimales). */

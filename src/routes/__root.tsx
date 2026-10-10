@@ -96,22 +96,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Arija — Marché et emplois solidaires au Burundi" },
+      { title: "Arija Connect — Marché et emplois solidaires au Burundi" },
       {
         name: "description",
         content:
           "Fil d'actualité : nouvelles offres d'emploi, produits tendance et activité de vos suivis, payés en Pi.",
       },
-      { name: "author", content: "Arija" },
+      { name: "author", content: "Arija Connect" },
       { name: "theme-color", content: "#1F4E3D" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "Arija" },
+      { name: "apple-mobile-web-app-title", content: "Arija Connect" },
       { property: "og:type", content: "website" },
       ...(BASE_URL ? [{ property: "og:url", content: BASE_URL }] : []),
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "Arija — Marché et emplois solidaires au Burundi" },
-      { name: "twitter:title", content: "Arija — Marché et emplois solidaires au Burundi" },
+      { property: "og:title", content: "Arija Connect — Marché et emplois solidaires au Burundi" },
+      { name: "twitter:title", content: "Arija Connect — Marché et emplois solidaires au Burundi" },
       {
         property: "og:description",
         content:

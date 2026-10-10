@@ -14,7 +14,7 @@ export const Route = createFileRoute("/vendeurs")({
         content:
           "Trouvez des vendeurs, artisans et prestataires près de chez vous : photo, ville et messagerie intégrée.",
       },
-      { property: "og:title", content: "Rechercher des vendeurs — Arija" },
+      { property: "og:title", content: "Rechercher des vendeurs — Arija Connect" },
       {
         property: "og:description",
         content: "Annuaire des vendeurs et prestataires de la communauté Pi au Burundi.",

@@ -337,39 +337,51 @@ export type Database = {
       };
       payments: {
         Row: {
+          a_rembourser: boolean;
           commission: number | null;
           created_at: string;
           facture: Json | null;
           id: string;
           montant: number;
           order_id: string;
+          paid_held_at: string | null;
           pi_payment_id: string;
+          rembourse_le: string | null;
+          rembourse_par: string | null;
           statut: string;
           txid: string | null;
           updated_at: string;
           user_id: string;
         };
         Insert: {
+          a_rembourser?: boolean;
           commission?: number | null;
           created_at?: string;
           facture?: Json | null;
           id?: string;
           montant: number;
           order_id: string;
+          paid_held_at?: string | null;
           pi_payment_id: string;
+          rembourse_le?: string | null;
+          rembourse_par?: string | null;
           statut?: string;
           txid?: string | null;
           updated_at?: string;
           user_id: string;
         };
         Update: {
+          a_rembourser?: boolean;
           commission?: number | null;
           created_at?: string;
           facture?: Json | null;
           id?: string;
           montant?: number;
           order_id?: string;
+          paid_held_at?: string | null;
           pi_payment_id?: string;
+          rembourse_le?: string | null;
+          rembourse_par?: string | null;
           statut?: string;
           txid?: string | null;
           updated_at?: string;
@@ -720,6 +732,7 @@ export type Database = {
     Functions: {
       annuler_commandes_perimees: { Args: Record<string, never>; Returns: number };
       commande_a_litige: { Args: { _order: string }; Returns: boolean };
+      decrementer_stock: { Args: { _produit: string; _qte: number }; Returns: boolean };
       declarer_livraison: { Args: { _order: string }; Returns: undefined };
       ecrire_audit: {
         Args: {

@@ -31,9 +31,12 @@ type Produit = ProduitDb & { quantite_min: number };
 export const Route = createFileRoute("/market/$id")({
   head: () => ({
     meta: [
-      { title: "Annonce — Market Arija" },
-      { name: "description", content: "Détail d'une annonce du Market Arija, payable en Pi." },
-      { property: "og:title", content: "Annonce — Market Arija" },
+      { title: "Annonce — Market Arija Connect" },
+      {
+        name: "description",
+        content: "Détail d'une annonce du Market Arija Connect, payable en Pi.",
+      },
+      { property: "og:title", content: "Annonce — Market Arija Connect" },
       { property: "og:description", content: "Achetez près de chez vous, payez en Pi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

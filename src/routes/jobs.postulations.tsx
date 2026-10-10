@@ -9,9 +9,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/jobs/postulations")({
   head: () => ({
     meta: [
-      { title: "Mes postulations — Arija" },
+      { title: "Mes postulations — Arija Connect" },
       { name: "description", content: "Suivez vos candidatures et annulez-les en un clic." },
-      { property: "og:title", content: "Mes postulations — Arija" },
+      { property: "og:title", content: "Mes postulations — Arija Connect" },
       {
         property: "og:description",
         content: "Gérez toutes vos candidatures d'emploi en un endroit.",

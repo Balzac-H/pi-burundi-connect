@@ -11,12 +11,13 @@ import { lienConnexion } from "@/lib/retour";
 export const Route = createFileRoute("/panier")({
   head: () => ({
     meta: [
-      { title: "Panier — Market Arija" },
+      { title: "Panier — Market Arija Connect" },
       {
         name: "description",
-        content: "Votre panier Arija, réglé vendeur par vendeur, un paiement Pi par vendeur.",
+        content:
+          "Votre panier Arija Connect, réglé vendeur par vendeur, un paiement Pi par vendeur.",
       },
-      { property: "og:title", content: "Panier — Arija" },
+      { property: "og:title", content: "Panier — Arija Connect" },
     ],
   }),
   component: PanierPage,

@@ -13,16 +13,27 @@ const schema = z.object({
     .max(30),
 });
 
-const SYSTEME = `Tu es l'assistant virtuel d'Arija, une plateforme burundaise qui connecte vendeurs, acheteurs et travailleurs, avec des paiements en Pi.
+const SYSTEME = `Tu es l'assistant virtuel d'Arija Connect, une plateforme burundaise qui connecte vendeurs, acheteurs et travailleurs, avec des paiements en Pi.
 Aide les utilisateurs à trouver des produits, des services ou des emplois, à comprendre comment fonctionne le paiement en Pi, et à naviguer dans l'application.
 Sois clair, concis, chaleureux, et réponds TOUJOURS dans la langue utilisée par l'utilisateur (français, kirundi, kiswahili ou anglais).
 Beaucoup d'utilisateurs ne connaissent pas les cryptomonnaies : explique simplement, sans jargon.
+Ne demande JAMAIS d'informations personnelles ou sensibles (mot de passe, phrase secrète, clé privée, code de validation, numéro de téléphone). Si l'utilisateur en partage, invite-le gentiment à ne pas le faire et à changer ce qui doit l'être.
 Repères de navigation : /market (acheter et vendre des produits), /market/vendre (publier un produit), /jobs (offres d'emploi et services), /jobs/creer (publier une offre), /vendeurs (annuaire des vendeurs), /messages (chat), /portefeuille (solde Pi et factures), /profil (compte et numéro WhatsApp).
-Les prix sont en Pi (de 0,001 π à 1 π). Une commission de 1 à 3 % est prélevée au vendeur lors d'une vente confirmée ; l'acheteur paie exactement le prix affiché.`;
+Les prix sont en Pi (de 0,001 π à 1 π). Une commission de 2 % est prélevée au vendeur lors d'une vente confirmée ; l'acheteur paie exactement le prix affiché.`;
 
 export const demanderAssistant = createServerFn({ method: "POST" })
   .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: reglage } = await supabaseAdmin
+      .from("reglages")
+      .select("valeur")
+      .eq("cle", "assistant_actif")
+      .maybeSingle();
+    const valeur = reglage?.valeur;
+    const actif = !(valeur === false || valeur === "false" || valeur === null);
+    if (!actif) return { reponse: "L'assistant est momentanément indisponible." };
+
     const cle = process.env["LOVABLE_API_KEY"];
     if (!cle) return { reponse: "L'assistant n'est pas disponible pour le moment." };
 

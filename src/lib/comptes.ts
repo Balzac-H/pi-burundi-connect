@@ -229,8 +229,10 @@ export function normaliserNumero(numero: string): string {
 
 export const numeroValide = (numero: string) => normaliserNumero(numero).length >= 11;
 
-export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via Arija") =>
-  `https://wa.me/${normaliserNumero(numero)}?text=${encodeURIComponent(texte)}`;
+export const lienWhatsApp = (
+  numero: string,
+  texte = "Bonjour, je vous contacte via Arija Connect",
+) => `https://wa.me/${normaliserNumero(numero)}?text=${encodeURIComponent(texte)}`;
 
 /** Ouvre WhatsApp de façon fiable (nouvel onglet, avec repli si bloqué : iframe/preview). */
 export function ouvrirWhatsApp(numero: string, texte?: string): boolean {

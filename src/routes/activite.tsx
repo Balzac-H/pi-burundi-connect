@@ -25,12 +25,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/activite")({
   head: () => ({
     meta: [
-      { title: "Mon activité — Arija" },
+      { title: "Mon activité — Arija Connect" },
       {
         name: "description",
-        content: "Annonces, commandes reçues, clients et gains de votre espace vendeur Arija.",
+        content:
+          "Annonces, commandes reçues, clients et gains de votre espace vendeur Arija Connect.",
       },
-      { property: "og:title", content: "Mon activité — Arija" },
+      { property: "og:title", content: "Mon activité — Arija Connect" },
       { property: "og:description", content: "Votre espace vendeur en un coup d'œil." },
     ],
   }),

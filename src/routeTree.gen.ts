@@ -28,6 +28,8 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TransparenceRouteImport } from './routes/transparence'
 import { Route as VendeursRouteImport } from './routes/vendeurs'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminDonneesRouteImport } from './routes/admin.donnees'
 import { Route as JobsIndexRouteImport } from './routes/jobs.index'
 import { Route as JobsIdRouteImport } from './routes/jobs.$id'
 import { Route as JobsCreerRouteImport } from './routes/jobs.creer'
@@ -137,6 +139,16 @@ const VendeursRoute = VendeursRouteImport.update({
   path: '/vendeurs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDonneesRoute = AdminDonneesRouteImport.update({
+  id: '/donnees',
+  path: '/donnees',
+  getParentRoute: () => AdminRoute,
+} as any)
 const JobsIndexRoute = JobsIndexRouteImport.update({
   id: '/jobs/',
   path: '/jobs/',
@@ -207,7 +219,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/activite': typeof ActiviteRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
@@ -223,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
+  '/admin/donnees': typeof AdminDonneesRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -232,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/messages/$id': typeof MessagesIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profil/modifier': typeof ProfilModifierRoute
+  '/admin/': typeof AdminIndexRoute
   '/jobs/': typeof JobsIndexRoute
   '/market/': typeof MarketIndexRoute
   '/messages/': typeof MessagesIndexRoute
@@ -241,7 +255,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/activite': typeof ActiviteRoute
-  '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
@@ -257,6 +270,7 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
+  '/admin/donnees': typeof AdminDonneesRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -266,6 +280,7 @@ export interface FileRoutesByTo {
   '/messages/$id': typeof MessagesIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profil/modifier': typeof ProfilModifierRoute
+  '/admin': typeof AdminIndexRoute
   '/jobs': typeof JobsIndexRoute
   '/market': typeof MarketIndexRoute
   '/messages': typeof MessagesIndexRoute
@@ -276,7 +291,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/activite': typeof ActiviteRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
@@ -292,6 +307,7 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
+  '/admin/donnees': typeof AdminDonneesRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
   '/jobs/postulations': typeof JobsPostulationsRoute
@@ -301,6 +317,7 @@ export interface FileRoutesById {
   '/messages/$id': typeof MessagesIdRoute
   '/profil/$id': typeof ProfilIdRoute
   '/profil/modifier': typeof ProfilModifierRoute
+  '/admin/': typeof AdminIndexRoute
   '/jobs/': typeof JobsIndexRoute
   '/market/': typeof MarketIndexRoute
   '/messages/': typeof MessagesIndexRoute
@@ -328,6 +345,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/transparence'
     | '/vendeurs'
+    | '/admin/donnees'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -337,6 +355,7 @@ export interface FileRouteTypes {
     | '/messages/$id'
     | '/profil/$id'
     | '/profil/modifier'
+    | '/admin/'
     | '/jobs/'
     | '/market/'
     | '/messages/'
@@ -346,7 +365,6 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/activite'
-    | '/admin'
     | '/conditions'
     | '/confidentialite'
     | '/connexion'
@@ -362,6 +380,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/transparence'
     | '/vendeurs'
+    | '/admin/donnees'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -371,6 +390,7 @@ export interface FileRouteTypes {
     | '/messages/$id'
     | '/profil/$id'
     | '/profil/modifier'
+    | '/admin'
     | '/jobs'
     | '/market'
     | '/messages'
@@ -396,6 +416,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/transparence'
     | '/vendeurs'
+    | '/admin/donnees'
     | '/jobs/$id'
     | '/jobs/creer'
     | '/jobs/postulations'
@@ -405,6 +426,7 @@ export interface FileRouteTypes {
     | '/messages/$id'
     | '/profil/$id'
     | '/profil/modifier'
+    | '/admin/'
     | '/jobs/'
     | '/market/'
     | '/messages/'
@@ -415,7 +437,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
   ActiviteRoute: typeof ActiviteRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ConditionsRoute: typeof ConditionsRoute
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConnexionRoute: typeof ConnexionRoute
@@ -581,6 +603,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendeursRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/donnees': {
+      id: '/admin/donnees'
+      path: '/donnees'
+      fullPath: '/admin/donnees'
+      preLoaderRoute: typeof AdminDonneesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/jobs/': {
       id: '/jobs/'
       path: '/jobs'
@@ -675,11 +711,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminDonneesRoute: typeof AdminDonneesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminDonneesRoute: AdminDonneesRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
   ActiviteRoute: ActiviteRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   ConditionsRoute: ConditionsRoute,
   ConfidentialiteRoute: ConfidentialiteRoute,
   ConnexionRoute: ConnexionRoute,

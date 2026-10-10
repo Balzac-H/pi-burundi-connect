@@ -10,12 +10,13 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/favoris")({
   head: () => ({
     meta: [
-      { title: "Mes favoris — Arija" },
+      { title: "Mes favoris — Arija Connect" },
       {
         name: "description",
-        content: "Retrouvez les produits sauvegardés et les vendeurs que vous suivez sur Arija.",
+        content:
+          "Retrouvez les produits sauvegardés et les vendeurs que vous suivez sur Arija Connect.",
       },
-      { property: "og:title", content: "Mes favoris — Arija" },
+      { property: "og:title", content: "Mes favoris — Arija Connect" },
       { property: "og:description", content: "Produits sauvegardés et profils suivis." },
     ],
   }),

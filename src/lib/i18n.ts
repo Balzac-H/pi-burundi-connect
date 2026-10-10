@@ -167,17 +167,79 @@ export type Cle =
   | "ajouteAuPanier"
   | "sousTitre"
   | "nomCompletOng"
+  | "initiativeOng"
   | "aPropos"
   | "transparence"
-  | "support";
+  | "support"
+  | "donnees"
+  | "espaceDonnees"
+  | "donneesVueEnsemble"
+  | "donneesTables"
+  | "donneesCoherence"
+  | "donneesExport"
+  | "donneesLectureSeule"
+  | "donneesRecherche"
+  | "donneesChargement"
+  | "donneesAucun"
+  | "donneesPrecedent"
+  | "donneesSuivant"
+  | "donneesAfficherSensible"
+  | "donneesMasque"
+  | "donneesExporterCsv"
+  | "donneesRafraichir"
+  | "donneesProblemes"
+  | "donneesAucunProbleme"
+  | "donneesColonne"
+  | "donneesValeur"
+  | "donneesTotal"
+  | "donneesTropDeLignes"
+  | "donneesAssistant"
+  | "donneesAssistantActif"
+  | "cohPaidHeldSansDate"
+  | "cohRembourseIncoherent"
+  | "cohStockNegatif"
+  | "cohPayeeSansPaiement"
+  | "cohLitigeSansLitige";
 
 const fr: Record<Cle, string> = {
   sousTitre: "Marché et emplois solidaires au Burundi",
   nomCompletOng:
-    "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
+    "ARIJA : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
+  initiativeOng:
+    "Arija Connect est une initiative de l'ONG ARIJA : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples.",
   aPropos: "À propos",
   transparence: "Transparence",
   support: "Support",
+  donnees: "Données",
+  espaceDonnees: "Espace données",
+  donneesVueEnsemble: "Vue d'ensemble",
+  donneesTables: "Tables",
+  donneesCoherence: "Contrôle de cohérence",
+  donneesExport: "Export CSV",
+  donneesLectureSeule:
+    "Espace administrateur en lecture seule. Aucune donnée n'est modifiée depuis cette page.",
+  donneesRecherche: "Rechercher dans cette table…",
+  donneesChargement: "Chargement…",
+  donneesAucun: "Aucune ligne.",
+  donneesPrecedent: "Précédent",
+  donneesSuivant: "Suivant",
+  donneesAfficherSensible: "Afficher les données sensibles",
+  donneesMasque: "Masqué",
+  donneesExporterCsv: "Exporter en CSV",
+  donneesRafraichir: "Rafraîchir",
+  donneesProblemes: "Anomalies détectées",
+  donneesAucunProbleme: "Aucune anomalie détectée.",
+  donneesColonne: "Colonne",
+  donneesValeur: "Valeur",
+  donneesTotal: "Total",
+  donneesTropDeLignes: "Export limité à 5000 lignes.",
+  donneesAssistant: "Assistant virtuel activé",
+  donneesAssistantActif: "L'assistant répond aux utilisateurs.",
+  cohPaidHeldSansDate: "Fonds retenus sans date de retenue (paid_held_at manquant).",
+  cohRembourseIncoherent: "Paiements marqués à rembourser mais déjà remboursés.",
+  cohStockNegatif: "Annonces avec un stock négatif.",
+  cohPayeeSansPaiement: "Commandes payées sans paiement retenu correspondant.",
+  cohLitigeSansLitige: "Commandes en litige sans dossier de litige.",
 
   accueil: "Accueil",
   jobs: "Emplois",
@@ -210,7 +272,7 @@ const fr: Record<Cle, string> = {
   creerCompte: "Créer un compte",
   langue: "Langue",
   inscriptionRequise: "Inscription requise",
-  inscriptionRequiseTexte: "Créez un compte gratuit pour utiliser Arija.",
+  inscriptionRequiseTexte: "Créez un compte gratuit pour utiliser Arija Connect.",
   tout: "Tout",
   aucunResultat: "Aucun résultat",
   produitsCommunaute: "Produits de la communauté",
@@ -219,7 +281,7 @@ const fr: Record<Cle, string> = {
   categories: "Catégories",
   trouverVendeur: "Trouver un vendeur",
   seConnecterPi: "Se connecter avec Pi",
-  piBrowserRequis: "Ouvrez Arija dans le Pi Browser pour payer en Pi.",
+  piBrowserRequis: "Ouvrez Arija Connect dans le Pi Browser pour payer en Pi.",
   explorerSansCompte: "Explorer sans compte",
   mesCommandes: "Mes commandes",
   aucuneAnnonce: "Aucune annonce pour le moment.",
@@ -289,7 +351,7 @@ const fr: Record<Cle, string> = {
   litige: "Litige",
   retenuEscrow: "Retenu en escrow",
   libereNet: "Libéré net",
-  commissionArija: "Commission Arija (2 %)",
+  commissionArija: "Commission Arija Connect (2 %)",
   montantBrut: "Montant brut",
   net: "Net",
   aucunClient: "Aucun client pour le moment.",
@@ -341,10 +403,41 @@ const fr: Record<Cle, string> = {
 const rn: Record<Cle, string> = {
   sousTitre: "Isoko n'akazi mu Burundi",
   nomCompletOng:
-    "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
-  aPropos: "Ibijanye na Arija",
+    "ARIJA : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
+  initiativeOng:
+    "Arija Connect ni umushinga w'Umuco ARIJA : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples.",
+  aPropos: "Ibijanye na Arija Connect",
   transparence: "Transparence",
   support: "Ubufasha",
+  donnees: "Amakuru",
+  espaceDonnees: "Umwanya w'amakuru",
+  donneesVueEnsemble: "Incamake",
+  donneesTables: "Imbonerahamwe",
+  donneesCoherence: "Igenzura ry'ubwuzuzane",
+  donneesExport: "Kohereza CSV",
+  donneesLectureSeule: "Umwanya w'abayobozi ugereranywa gusa. Nta makuru ahindurwa kuri iyi paji.",
+  donneesRecherche: "Shakisha muri iyi mbonerahamwe…",
+  donneesChargement: "Biratwarwa…",
+  donneesAucun: "Nta murongo.",
+  donneesPrecedent: "Ibibanza",
+  donneesSuivant: "Ibikurikira",
+  donneesAfficherSensible: "Erekana amakuru y'agaciro",
+  donneesMasque: "Yahishe",
+  donneesExporterCsv: "Kohereza muri CSV",
+  donneesRafraichir: "Vugurura",
+  donneesProblemes: "Ubudahuye bwabonetse",
+  donneesAucunProbleme: "Nta budahuye bwabonetse.",
+  donneesColonne: "Ikibanza",
+  donneesValeur: "Agaciro",
+  donneesTotal: "Igiteranyo",
+  donneesTropDeLignes: "Kohereza bigarukira ku mirongo 5000.",
+  donneesAssistant: "Umufasha w'ikirundo arakora",
+  donneesAssistantActif: "Umufasha yishura abakoresha.",
+  cohPaidHeldSansDate: "Amafaranga afashwe nta itariki (paid_held_at ibura).",
+  cohRembourseIncoherent: "Amafaranga yashizwe ku kurihwa ariko yaramaze kurihwa.",
+  cohStockNegatif: "Amatangazo afise stock mbi.",
+  cohPayeeSansPaiement: "Ibisabwa vyishyuwe nta kwishyura gufashwe bihuye.",
+  cohLitigeSansLitige: "Ibisabwa biri mu manza nta dosiye y'urubanza.",
 
   accueil: "Ahabanza",
   jobs: "Akazi",
@@ -377,7 +470,7 @@ const rn: Record<Cle, string> = {
   creerCompte: "Iyandikishe",
   langue: "Ururimi",
   inscriptionRequise: "Kwiyandikisha birakenewe",
-  inscriptionRequiseTexte: "Iyandikishe ku buntu kugira ukoreshe Arija.",
+  inscriptionRequiseTexte: "Iyandikishe ku buntu kugira ukoreshe Arija Connect.",
   tout: "Vyose",
   aucunResultat: "Nta co vyabonetse",
   produitsCommunaute: "Ibicuruzwa vy'abanyagihugu",
@@ -386,7 +479,7 @@ const rn: Record<Cle, string> = {
   categories: "Ubwoko",
   trouverVendeur: "Rondera umudandaza",
   seConnecterPi: "Injira na Pi",
-  piBrowserRequis: "Fungura Arija muri Pi Browser kugira ukore ukwishyura na Pi.",
+  piBrowserRequis: "Fungura Arija Connect muri Pi Browser kugira ukore ukwishyura na Pi.",
   explorerSansCompte: "Shakisha nta konti",
   mesCommandes: "Amabwiriza yange",
   aucuneAnnonce: "Nta tandukiriza ine ubu.",
@@ -455,7 +548,7 @@ const rn: Record<Cle, string> = {
   litige: "Ibazo",
   retenuEscrow: "Bibitswe mu gipfuko",
   libereNet: "Byakurwemo buteparo",
-  commissionArija: "Umugabane wa Arija (2 %)",
+  commissionArija: "Umugabane wa Arija Connect (2 %)",
   montantBrut: "Igiciro gihari",
   net: "Buteparo",
   aucunClient: "Nta bakiriya ubu.",
@@ -507,10 +600,42 @@ const rn: Record<Cle, string> = {
 const sw: Record<Cle, string> = {
   sousTitre: "Soko na kazi za ushirikiano Burundi",
   nomCompletOng:
-    "Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
-  aPropos: "Kuhusu Arija",
+    "ARIJA : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples",
+  initiativeOng:
+    "Arija Connect ni mradi wa shirika ARIJA : Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples.",
+  aPropos: "Kuhusu Arija Connect",
   transparence: "Uwazi",
   support: "Msaada",
+  donnees: "Data",
+  espaceDonnees: "Eneo la data",
+  donneesVueEnsemble: "Muhtasari",
+  donneesTables: "Majedwali",
+  donneesCoherence: "Ukaguzi wa uwiano",
+  donneesExport: "Hamisha CSV",
+  donneesLectureSeule:
+    "Eneo la msimamizi la kusoma tu. Hakuna data inayobadilishwa kwenye ukurasa huu.",
+  donneesRecherche: "Tafuta katika jedwali hili…",
+  donneesChargement: "Inapakia…",
+  donneesAucun: "Hakuna safu.",
+  donneesPrecedent: "Iliyotangulia",
+  donneesSuivant: "Inayofuata",
+  donneesAfficherSensible: "Onyesha data nyeti",
+  donneesMasque: "Imefichwa",
+  donneesExporterCsv: "Hamisha kama CSV",
+  donneesRafraichir: "Onyesha upya",
+  donneesProblemes: "Hitilafu zilizogunduliwa",
+  donneesAucunProbleme: "Hakuna hitilafu iliyogunduliwa.",
+  donneesColonne: "Safu wima",
+  donneesValeur: "Thamani",
+  donneesTotal: "Jumla",
+  donneesTropDeLignes: "Uhamishaji umezuiwa kwa safu 5000.",
+  donneesAssistant: "Msaidizi amewashwa",
+  donneesAssistantActif: "Msaidizi hujibu watumiaji.",
+  cohPaidHeldSansDate: "Fedha zilizoshikiliwa bila tarehe (paid_held_at haipo).",
+  cohRembourseIncoherent: "Malipo yaliyowekwa kwa kurejeshwa lakini tayari yamerejeshwa.",
+  cohStockNegatif: "Matangazo yenye stock hasi.",
+  cohPayeeSansPaiement: "Oda zilizolipiwa bila malipo yaliyoshikiliwa yanayolingana.",
+  cohLitigeSansLitige: "Oda zenye mgogoro bila faili ya mgogoro.",
 
   accueil: "Mwanzo",
   jobs: "Kazi",
@@ -543,7 +668,7 @@ const sw: Record<Cle, string> = {
   creerCompte: "Fungua akaunti",
   langue: "Lugha",
   inscriptionRequise: "Usajili unahitajika",
-  inscriptionRequiseTexte: "Fungua akaunti bure ili kutumia Arija.",
+  inscriptionRequiseTexte: "Fungua akaunti bure ili kutumia Arija Connect.",
   tout: "Zote",
   aucunResultat: "Hakuna matokeo",
   produitsCommunaute: "Bidhaa za jamii",
@@ -552,7 +677,7 @@ const sw: Record<Cle, string> = {
   categories: "Makundi",
   trouverVendeur: "Tafuta muuzaji",
   seConnecterPi: "Ingia kwa Pi",
-  piBrowserRequis: "Fungua Arija kwenye Pi Browser ili kulipa kwa Pi.",
+  piBrowserRequis: "Fungua Arija Connect kwenye Pi Browser ili kulipa kwa Pi.",
   explorerSansCompte: "Vinjiri bila akaunti",
   mesCommandes: "Maagizo yangu",
   aucuneAnnonce: "Hakuna matangazo kwa sasa.",
@@ -621,7 +746,7 @@ const sw: Record<Cle, string> = {
   litige: "Mgogoro",
   retenuEscrow: "Imeshikwa kwenye escrow",
   libereNet: "Iliyotolewa halisi",
-  commissionArija: "Kamisheni ya Arija (2%)",
+  commissionArija: "Kamisheni ya Arija Connect (2%)",
   montantBrut: "Kiasi ghafi",
   net: "Halisi",
   aucunClient: "Hakuna mteja kwa sasa.",
@@ -673,10 +798,41 @@ const sw: Record<Cle, string> = {
 const en: Record<Cle, string> = {
   sousTitre: "Solidarity marketplace and jobs in Burundi",
   nomCompletOng:
-    "Arija: Alliance for the Reinforcement of the values of Integrity, Socio-economic Justice and Friendship between Peoples",
+    "ARIJA: Alliance for the Reinforcement of the values of Integrity, Socio-economic Justice and Friendship between Peoples",
+  initiativeOng:
+    "Arija Connect is an initiative of the NGO ARIJA: Alliance pour le Renforcement des valeurs d'Intégrité de Justice Socio-économique et d'amitié entre les peuples.",
   aPropos: "About",
   transparence: "Transparency",
   support: "Support",
+  donnees: "Data",
+  espaceDonnees: "Data space",
+  donneesVueEnsemble: "Overview",
+  donneesTables: "Tables",
+  donneesCoherence: "Consistency check",
+  donneesExport: "CSV export",
+  donneesLectureSeule: "Administrator area, read-only. No data is modified from this page.",
+  donneesRecherche: "Search within this table…",
+  donneesChargement: "Loading…",
+  donneesAucun: "No rows.",
+  donneesPrecedent: "Previous",
+  donneesSuivant: "Next",
+  donneesAfficherSensible: "Reveal sensitive data",
+  donneesMasque: "Hidden",
+  donneesExporterCsv: "Export as CSV",
+  donneesRafraichir: "Refresh",
+  donneesProblemes: "Anomalies detected",
+  donneesAucunProbleme: "No anomaly detected.",
+  donneesColonne: "Column",
+  donneesValeur: "Value",
+  donneesTotal: "Total",
+  donneesTropDeLignes: "Export limited to 5000 rows.",
+  donneesAssistant: "Virtual assistant enabled",
+  donneesAssistantActif: "The assistant answers users.",
+  cohPaidHeldSansDate: "Held funds without a hold date (paid_held_at missing).",
+  cohRembourseIncoherent: "Payments flagged for refund but already refunded.",
+  cohStockNegatif: "Listings with negative stock.",
+  cohPayeeSansPaiement: "Paid orders without a matching held payment.",
+  cohLitigeSansLitige: "Orders in dispute without a dispute file.",
 
   accueil: "Home",
   jobs: "Jobs",
@@ -709,7 +865,7 @@ const en: Record<Cle, string> = {
   creerCompte: "Create account",
   langue: "Language",
   inscriptionRequise: "Sign-up required",
-  inscriptionRequiseTexte: "Create a free account to use Arija.",
+  inscriptionRequiseTexte: "Create a free account to use Arija Connect.",
   tout: "All",
   aucunResultat: "No results",
   produitsCommunaute: "Community products",
@@ -718,7 +874,7 @@ const en: Record<Cle, string> = {
   categories: "Categories",
   trouverVendeur: "Find a seller",
   seConnecterPi: "Sign in with Pi",
-  piBrowserRequis: "Open Arija in the Pi Browser to pay with Pi.",
+  piBrowserRequis: "Open Arija Connect in the Pi Browser to pay with Pi.",
   explorerSansCompte: "Browse without an account",
   mesCommandes: "My orders",
   aucuneAnnonce: "No listings yet.",
@@ -788,7 +944,7 @@ const en: Record<Cle, string> = {
   litige: "Dispute",
   retenuEscrow: "Held in escrow",
   libereNet: "Net released",
-  commissionArija: "Arija commission (2%)",
+  commissionArija: "Arija Connect commission (2%)",
   montantBrut: "Gross amount",
   net: "Net",
   aucunClient: "No customers yet.",
