@@ -24,11 +24,6 @@ export async function listerJobs(employeurId?: string): Promise<JobDb[]> {
   return (data as JobDb[] | null) ?? [];
 }
 
-export async function chargerJob(id: string): Promise<JobDb | null> {
-  const { data } = await db().from("jobs").select("*").eq("id", id).maybeSingle();
-  return (data as JobDb | null) ?? null;
-}
-
 export async function creerJob(valeurs: Omit<JobDb, "id" | "created_at">) {
   const { error } = await db().from("jobs").insert(valeurs);
   if (error) throw error;
@@ -39,11 +34,9 @@ export async function idsVerifies(ids: string[]): Promise<Set<string>> {
   const uniques = [...new Set(ids)].filter(Boolean);
   if (!uniques.length) return new Set();
   const { data } = await db().rpc("utilisateurs_verifies", { _ids: uniques });
-  return new Set(
-    ((data as unknown as (string | { utilisateurs_verifies: string })[]) ?? []).map((d) =>
-      typeof d === "string" ? d : d.utilisateurs_verifies,
-    ),
-  );
+  return new Set(((data as unknown as (string | { utilisateurs_verifies: string })[]) ?? []).map((d) =>
+    typeof d === "string" ? d : d.utilisateurs_verifies,
+  ));
 }
 
 export const raisonsSignalement = [
@@ -64,9 +57,7 @@ export async function signaler(v: {
   raison: Raison;
   details?: string;
 }) {
-  const { error } = await db()
-    .from("signalements")
-    .insert({ ...v, details: v.details?.slice(0, 500) || null });
+  const { error } = await db().from("signalements").insert({ ...v, details: v.details?.slice(0, 500) || null });
   if (error) {
     if (error.code === "23505") throw new Error("Vous avez déjà signalé ce contenu.");
     throw error;
@@ -86,11 +77,7 @@ export type SignalementDb = {
 };
 
 export async function listerSignalements(): Promise<SignalementDb[]> {
-  const { data, error } = await db()
-    .from("signalements")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  const { data, error } = await db().from("signalements").select("*").order("created_at", { ascending: false }).limit(500);
   if (error) throw error;
   return (data as SignalementDb[]) ?? [];
 }
@@ -105,24 +92,10 @@ export async function estAdmin(userId: string): Promise<boolean> {
   return data === true;
 }
 
-export async function estModerateur(userId: string): Promise<boolean> {
-  const { data } = await db().rpc("has_role", { _user_id: userId, _role: "moderator" });
-  return data === true;
-}
-
-/** Responsable = admin ou moderator (litiges, signalements, messages de litige). */
-export type Responsable = "admin" | "moderator" | null;
-
-export async function roleResponsable(userId: string): Promise<Responsable> {
-  const [admin, mod] = await Promise.all([estAdmin(userId), estModerateur(userId)]);
-  return admin ? "admin" : mod ? "moderator" : null;
-}
-
 export const typesCompte = [
   { code: "vendeur", nom: "Vendeur" },
   { code: "employeur", nom: "Employeur" },
   { code: "chercheur", nom: "Chercheur d'emploi" },
 ] as const;
 
-export const nomTypeCompte = (c?: string | null) =>
-  typesCompte.find((t) => t.code === c)?.nom ?? "Membre";
+export const nomTypeCompte = (c?: string | null) => typesCompte.find((t) => t.code === c)?.nom ?? "Membre";

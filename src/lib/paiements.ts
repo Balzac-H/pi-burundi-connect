@@ -1,9 +1,4 @@
-import {
-  calculerFacture,
-  enregistrerFacture,
-  type Facture,
-  type LigneFacture,
-} from "@/lib/facturation";
+import { calculerFacture, enregistrerFacture, type Facture, type LigneFacture } from "@/lib/facturation";
 
 export type DemandePaiement = {
   acheteur: string;
@@ -13,7 +8,8 @@ export type DemandePaiement = {
 };
 
 export type ResultatPaiement =
-  { ok: true; reference: string; facture: Facture } | { ok: false; erreur: string };
+  | { ok: true; reference: string; facture: Facture }
+  | { ok: false; erreur: string };
 
 /**
  * Point d'entrée UNIQUE du paiement.
@@ -22,7 +18,8 @@ export type ResultatPaiement =
  * la signature et la facturation restent identiques.
  */
 export async function processPayment(demande: DemandePaiement): Promise<ResultatPaiement> {
-  const total = demande.lignes.reduce((s, l) => s + l.montant, 0) + (demande.livraison ?? 0);
+  const total =
+    demande.lignes.reduce((s, l) => s + l.montant, 0) + (demande.livraison ?? 0);
   if (total <= 0) return { ok: false, erreur: "Montant invalide." };
 
   const facture = calculerFacture(demande);

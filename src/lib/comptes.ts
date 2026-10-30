@@ -4,61 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 /** Accès à la vue publique `profils_publics` (sans coordonnées téléphoniques). */
 const vuePublique = () => (supabase as unknown as SupabaseClient).from("profils_publics");
 
+
 export type Profil = {
   id: string;
   nom: string;
   photo_url: string | null;
+  bio: string | null;
   ville: string | null;
+  competences: string[];
   whatsapp: string | null;
   telephone: string | null;
+  prix_horaire: number | null;
   statut: string;
   type_compte?: string;
-  pi_uid?: string | null;
-  pi_username?: string | null;
-  vendeur_actif?: boolean;
-  bio?: string | null;
-  afficher_whatsapp?: boolean;
 };
-
-const JETON_WHATSAPP = "whatsapp";
-
-export function roleStatut(statut: unknown): string {
-  const s = typeof statut === "string" && statut ? statut : "prestataire";
-  return s.split("|")[0] || "prestataire";
-}
-
-export function whatsappAutorise(statut: unknown): boolean {
-  return typeof statut === "string" && statut.split("|").slice(1).includes(JETON_WHATSAPP);
-}
-
-export function statutAvecWhatsapp(role: string, afficher: boolean): string {
-  const base = role || "prestataire";
-  return afficher ? `${base}|${JETON_WHATSAPP}` : base;
-}
-
-const COLONNES_PROFIL =
-  "id, nom, photo_url, ville, whatsapp, telephone, statut, type_compte, pi_uid, pi_username, vendeur_actif";
-const COLONNES_PUBLIQUES = "id, nom, photo_url, ville, statut, type_compte";
-
-function versProfil(ligne: unknown, publique: boolean): Profil {
-  const l = (ligne ?? {}) as Record<string, unknown>;
-  const texte = (v: unknown) => (typeof v === "string" ? v : null);
-  const visible = !publique && whatsappAutorise(l.statut);
-  return {
-    id: texte(l.id) ?? "",
-    nom: texte(l.nom) ?? "",
-    photo_url: texte(l.photo_url),
-    ville: texte(l.ville),
-    statut: roleStatut(l.statut),
-    type_compte: texte(l.type_compte) ?? undefined,
-    pi_uid: texte(l.pi_uid),
-    pi_username: texte(l.pi_username),
-    vendeur_actif: publique ? undefined : l.vendeur_actif === true,
-    whatsapp: visible ? texte(l.whatsapp) : null,
-    telephone: visible ? texte(l.telephone) : null,
-    afficher_whatsapp: visible,
-  };
-}
 
 export type ProduitDb = {
   id: string;
@@ -69,8 +28,6 @@ export type ProduitDb = {
   prix: number;
   unite: string;
   stock: number;
-  quantite_min: number;
-  publie: boolean;
   lieu: string | null;
   livraison: string | null;
   photo_url: string | null;
@@ -79,64 +36,37 @@ export type ProduitDb = {
 
 const DIX_ANS = 60 * 60 * 24 * 365 * 10;
 
-const cacheProfils = new Map<string, { expire: number; profil: Profil | null }>();
-
-/** Profil mis en cache 60 s (les listes en affichent plusieurs à la suite). */
-export async function chargerProfilCache(id: string): Promise<Profil | null> {
-  const enCache = cacheProfils.get(id);
-  if (enCache && enCache.expire > Date.now()) return enCache.profil;
-  const profil = await chargerProfil(id);
-  cacheProfils.set(id, { expire: Date.now() + 60_000, profil });
-  return profil;
-}
-
-export function oublierProfil(id: string) {
-  cacheProfils.delete(id);
-}
-
 export async function chargerProfil(id: string): Promise<Profil | null> {
-  const { data } = await supabase
-    .from("profils")
-    .select(COLONNES_PROFIL)
-    .eq("id", id)
-    .maybeSingle();
-  if (data) return versProfil(data, false);
-  // Visiteur non connecté : lecture de la vue publique (sans coordonnées téléphoniques).
-  const { data: pub } = await vuePublique().select(COLONNES_PUBLIQUES).eq("id", id).maybeSingle();
-  return pub ? versProfil(pub, true) : null;
+  const { data } = await supabase.from("profils").select("*").eq("id", id).maybeSingle();
+  if (data) return data as Profil;
+  // Visiteur non connecté : lecture de la vue publique (sans numéros de téléphone).
+  const { data: pub } = await vuePublique().select("*").eq("id", id).maybeSingle();
+  return pub ? ({ ...(pub as Profil), whatsapp: null, telephone: null } as Profil) : null;
 }
 
 export async function chercherProfils(recherche: string): Promise<Profil[]> {
   const q = recherche.trim();
   const filtrer = <T extends { or: (f: string) => T }>(r: T) =>
-    q ? r.or(`nom.ilike.%${q}%,ville.ilike.%${q}%`) : r;
+    q ? r.or(`nom.ilike.%${q}%,ville.ilike.%${q}%,bio.ilike.%${q}%`) : r;
 
   const { data } = await filtrer(
-    supabase
-      .from("profils")
-      .select(COLONNES_PROFIL)
-      .order("created_at", { ascending: false })
-      .limit(60),
+    supabase.from("profils").select("*").order("created_at", { ascending: false }).limit(60),
   );
-  if (data && data.length) return data.map((p) => versProfil(p, false));
+  if (data && data.length) return data as Profil[];
 
   const { data: pub } = await filtrer(
-    vuePublique().select(COLONNES_PUBLIQUES).order("created_at", { ascending: false }).limit(60),
+    vuePublique().select("*").order("created_at", { ascending: false }).limit(60),
   );
-  return (pub ?? []).map((p) => versProfil(p, true));
+  return ((pub ?? []) as Profil[]).map((p) => ({ ...p, whatsapp: null, telephone: null }));
 }
 
+
 export async function enregistrerProfil(id: string, valeurs: Partial<Profil>) {
-  const { afficher_whatsapp: _calcule, ...lignes } = valeurs;
-  const { error } = await supabase.from("profils").upsert({ id, ...lignes } as never);
+  const { error } = await supabase.from("profils").upsert({ id, ...valeurs } as never);
   if (error) throw error;
 }
 
-export async function televerserPhoto(
-  bucket: "avatars" | "produits",
-  userId: string,
-  fichier: File,
-) {
+export async function televerserPhoto(bucket: "avatars" | "produits", userId: string, fichier: File) {
   const ext = fichier.name.split(".").pop()?.toLowerCase() ?? "jpg";
   const chemin = `${userId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from(bucket).upload(chemin, fichier, { upsert: true });
@@ -145,40 +75,15 @@ export async function televerserPhoto(
   return data?.signedUrl ?? null;
 }
 
-/** Annonces publiées, visibles par tous (RLS : publie = true). */
-export async function listerProduits(): Promise<ProduitDb[]> {
-  const { data } = await supabase
-    .from("produits")
-    .select("*")
-    .eq("publie", true)
-    .order("created_at", { ascending: false })
-    .limit(60);
+export async function listerProduits(vendeurId?: string): Promise<ProduitDb[]> {
+  let requete = supabase.from("produits").select("*").order("created_at", { ascending: false }).limit(60);
+  if (vendeurId) requete = requete.eq("vendeur_id", vendeurId);
+  const { data } = await requete;
   return (data as ProduitDb[] | null) ?? [];
 }
 
-/** Les annonces d'un vendeur (y compris celles masquées), pour sa boutique. */
-export async function listerMesProduits(vendeurId: string): Promise<ProduitDb[]> {
-  const { data } = await supabase
-    .from("produits")
-    .select("*")
-    .eq("vendeur_id", vendeurId)
-    .order("created_at", { ascending: false })
-    .limit(60);
-  return (data as ProduitDb[] | null) ?? [];
-}
-
-export type NouveauProduit = Omit<ProduitDb, "id" | "created_at" | "quantite_min" | "publie"> & {
-  quantite_min?: number;
-  publie?: boolean;
-};
-
-export async function creerProduit(valeurs: NouveauProduit) {
+export async function creerProduit(valeurs: Omit<ProduitDb, "id" | "created_at">) {
   const { error } = await supabase.from("produits").insert(valeurs);
-  if (error) throw error;
-}
-
-export async function modifierProduit(id: string, valeurs: Partial<NouveauProduit>) {
-  const { error } = await supabase.from("produits").update(valeurs).eq("id", id);
   if (error) throw error;
 }
 
@@ -189,14 +94,14 @@ export async function supprimerProduit(id: string) {
 
 /** Indicatifs proposés dans les formulaires (Burundi par défaut). */
 export const indicatifs = [
-  { code: "257", pays: "Burundi (+257)" },
-  { code: "250", pays: "Rwanda (+250)" },
-  { code: "255", pays: "Tanzanie (+255)" },
-  { code: "256", pays: "Ouganda (+256)" },
-  { code: "254", pays: "Kenya (+254)" },
-  { code: "243", pays: "RD Congo (+243)" },
-  { code: "32", pays: "Belgique (+32)" },
-  { code: "33", pays: "France (+33)" },
+  { code: "257", pays: "🇧🇮 Burundi (+257)" },
+  { code: "250", pays: "🇷🇼 Rwanda (+250)" },
+  { code: "255", pays: "🇹🇿 Tanzanie (+255)" },
+  { code: "256", pays: "🇺🇬 Ouganda (+256)" },
+  { code: "254", pays: "🇰🇪 Kenya (+254)" },
+  { code: "243", pays: "🇨🇩 RD Congo (+243)" },
+  { code: "32", pays: "🇧🇪 Belgique (+32)" },
+  { code: "33", pays: "🇫🇷 France (+33)" },
 ];
 
 /** Assemble indicatif + numéro local en format international sans « + » ni espace. */
@@ -207,10 +112,7 @@ export function composerNumero(indicatif: string, local: string): string {
 }
 
 /** Sépare un numéro enregistré en indicatif connu + partie locale. */
-export function separerNumero(numero: string | null | undefined): {
-  indicatif: string;
-  local: string;
-} {
+export function separerNumero(numero: string | null | undefined): { indicatif: string; local: string } {
   const n = (numero ?? "").replace(/\D/g, "");
   const trouve = indicatifs.find((i) => n.startsWith(i.code));
   if (!trouve) return { indicatif: "257", local: n };
@@ -221,7 +123,7 @@ export function separerNumero(numero: string | null | undefined): {
 export function normaliserNumero(numero: string): string {
   let n = (numero ?? "").replace(/\D/g, "");
   if (!n) return "";
-  n = n.replace(/^0+/, ""); // 079… -> 79…
+  n = n.replace(/^0+/, "");            // 079… -> 79…
   if (n.startsWith("00")) n = n.slice(2);
   if (!n.startsWith("257") && n.length <= 9) n = `257${n}`; // numéro local burundais
   return n;
@@ -229,7 +131,7 @@ export function normaliserNumero(numero: string): string {
 
 export const numeroValide = (numero: string) => normaliserNumero(numero).length >= 11;
 
-export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via Arija") =>
+export const lienWhatsApp = (numero: string, texte = "Bonjour, je vous contacte via WICO") =>
   `https://wa.me/${normaliserNumero(numero)}?text=${encodeURIComponent(texte)}`;
 
 /** Ouvre WhatsApp de façon fiable (nouvel onglet, avec repli si bloqué : iframe/preview). */

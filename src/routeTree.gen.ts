@@ -10,23 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AProposRouteImport } from './routes/a-propos'
-import { Route as ActiviteRouteImport } from './routes/activite'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ConditionsRouteImport } from './routes/conditions'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as FavorisRouteImport } from './routes/favoris'
-import { Route as ManifestDotwebmanifestRouteImport } from './routes/manifest[.]webmanifest'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PaiementRouteImport } from './routes/paiement'
-import { Route as PanierRouteImport } from './routes/panier'
 import { Route as ParametresRouteImport } from './routes/parametres'
 import { Route as PortefeuilleRouteImport } from './routes/portefeuille'
-import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SupportRouteImport } from './routes/support'
-import { Route as TransparenceRouteImport } from './routes/transparence'
 import { Route as VendeursRouteImport } from './routes/vendeurs'
 import { Route as JobsIndexRouteImport } from './routes/jobs.index'
 import { Route as JobsIdRouteImport } from './routes/jobs.$id'
@@ -45,16 +38,6 @@ import { Route as ProfilModifierRouteImport } from './routes/profil.modifier'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AProposRoute = AProposRouteImport.update({
-  id: '/a-propos',
-  path: '/a-propos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActiviteRoute = ActiviteRouteImport.update({
-  id: '/activite',
-  path: '/activite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -82,11 +65,6 @@ const FavorisRoute = FavorisRouteImport.update({
   path: '/favoris',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ManifestDotwebmanifestRoute = ManifestDotwebmanifestRouteImport.update({
-  id: '/manifest.webmanifest',
-  path: '/manifest.webmanifest',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
@@ -95,11 +73,6 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const PaiementRoute = PaiementRouteImport.update({
   id: '/paiement',
   path: '/paiement',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PanierRoute = PanierRouteImport.update({
-  id: '/panier',
-  path: '/panier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ParametresRoute = ParametresRouteImport.update({
@@ -112,24 +85,9 @@ const PortefeuilleRoute = PortefeuilleRouteImport.update({
   path: '/portefeuille',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
-  id: '/robots.txt',
-  path: '/robots.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SupportRoute = SupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransparenceRoute = TransparenceRouteImport.update({
-  id: '/transparence',
-  path: '/transparence',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VendeursRoute = VendeursRouteImport.update({
@@ -205,23 +163,16 @@ const ProfilModifierRoute = ProfilModifierRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/a-propos': typeof AProposRoute
-  '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
-  '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
-  '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/support': typeof SupportRoute
-  '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
@@ -239,23 +190,16 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/a-propos': typeof AProposRoute
-  '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
-  '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
-  '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/support': typeof SupportRoute
-  '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
@@ -274,23 +218,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/a-propos': typeof AProposRoute
-  '/activite': typeof ActiviteRoute
   '/admin': typeof AdminRoute
   '/conditions': typeof ConditionsRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/favoris': typeof FavorisRoute
-  '/manifest.webmanifest': typeof ManifestDotwebmanifestRoute
   '/notifications': typeof NotificationsRoute
   '/paiement': typeof PaiementRoute
-  '/panier': typeof PanierRoute
   '/parametres': typeof ParametresRoute
   '/portefeuille': typeof PortefeuilleRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/support': typeof SupportRoute
-  '/transparence': typeof TransparenceRoute
   '/vendeurs': typeof VendeursRoute
   '/jobs/$id': typeof JobsIdRoute
   '/jobs/creer': typeof JobsCreerRoute
@@ -310,23 +247,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/a-propos'
-    | '/activite'
     | '/admin'
     | '/conditions'
     | '/confidentialite'
     | '/connexion'
     | '/favoris'
-    | '/manifest.webmanifest'
     | '/notifications'
     | '/paiement'
-    | '/panier'
     | '/parametres'
     | '/portefeuille'
-    | '/robots.txt'
     | '/sitemap.xml'
-    | '/support'
-    | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
@@ -344,23 +274,16 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/a-propos'
-    | '/activite'
     | '/admin'
     | '/conditions'
     | '/confidentialite'
     | '/connexion'
     | '/favoris'
-    | '/manifest.webmanifest'
     | '/notifications'
     | '/paiement'
-    | '/panier'
     | '/parametres'
     | '/portefeuille'
-    | '/robots.txt'
     | '/sitemap.xml'
-    | '/support'
-    | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
@@ -378,23 +301,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/a-propos'
-    | '/activite'
     | '/admin'
     | '/conditions'
     | '/confidentialite'
     | '/connexion'
     | '/favoris'
-    | '/manifest.webmanifest'
     | '/notifications'
     | '/paiement'
-    | '/panier'
     | '/parametres'
     | '/portefeuille'
-    | '/robots.txt'
     | '/sitemap.xml'
-    | '/support'
-    | '/transparence'
     | '/vendeurs'
     | '/jobs/$id'
     | '/jobs/creer'
@@ -413,23 +329,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AProposRoute: typeof AProposRoute
-  ActiviteRoute: typeof ActiviteRoute
   AdminRoute: typeof AdminRoute
   ConditionsRoute: typeof ConditionsRoute
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConnexionRoute: typeof ConnexionRoute
   FavorisRoute: typeof FavorisRoute
-  ManifestDotwebmanifestRoute: typeof ManifestDotwebmanifestRoute
   NotificationsRoute: typeof NotificationsRoute
   PaiementRoute: typeof PaiementRoute
-  PanierRoute: typeof PanierRoute
   ParametresRoute: typeof ParametresRoute
   PortefeuilleRoute: typeof PortefeuilleRoute
-  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SupportRoute: typeof SupportRoute
-  TransparenceRoute: typeof TransparenceRoute
   VendeursRoute: typeof VendeursRoute
   JobsIdRoute: typeof JobsIdRoute
   JobsCreerRoute: typeof JobsCreerRoute
@@ -453,20 +362,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/a-propos': {
-      id: '/a-propos'
-      path: '/a-propos'
-      fullPath: '/a-propos'
-      preLoaderRoute: typeof AProposRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/activite': {
-      id: '/activite'
-      path: '/activite'
-      fullPath: '/activite'
-      preLoaderRoute: typeof ActiviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -504,13 +399,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavorisRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/manifest.webmanifest': {
-      id: '/manifest.webmanifest'
-      path: '/manifest.webmanifest'
-      fullPath: '/manifest.webmanifest'
-      preLoaderRoute: typeof ManifestDotwebmanifestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/notifications': {
       id: '/notifications'
       path: '/notifications'
@@ -523,13 +411,6 @@ declare module '@tanstack/react-router' {
       path: '/paiement'
       fullPath: '/paiement'
       preLoaderRoute: typeof PaiementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/panier': {
-      id: '/panier'
-      path: '/panier'
-      fullPath: '/panier'
-      preLoaderRoute: typeof PanierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/parametres': {
@@ -546,32 +427,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortefeuilleRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/robots.txt': {
-      id: '/robots.txt'
-      path: '/robots.txt'
-      fullPath: '/robots.txt'
-      preLoaderRoute: typeof RobotsDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/support': {
-      id: '/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof SupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transparence': {
-      id: '/transparence'
-      path: '/transparence'
-      fullPath: '/transparence'
-      preLoaderRoute: typeof TransparenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vendeurs': {
@@ -677,23 +537,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AProposRoute: AProposRoute,
-  ActiviteRoute: ActiviteRoute,
   AdminRoute: AdminRoute,
   ConditionsRoute: ConditionsRoute,
   ConfidentialiteRoute: ConfidentialiteRoute,
   ConnexionRoute: ConnexionRoute,
   FavorisRoute: FavorisRoute,
-  ManifestDotwebmanifestRoute: ManifestDotwebmanifestRoute,
   NotificationsRoute: NotificationsRoute,
   PaiementRoute: PaiementRoute,
-  PanierRoute: PanierRoute,
   ParametresRoute: ParametresRoute,
   PortefeuilleRoute: PortefeuilleRoute,
-  RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SupportRoute: SupportRoute,
-  TransparenceRoute: TransparenceRoute,
   VendeursRoute: VendeursRoute,
   JobsIdRoute: JobsIdRoute,
   JobsCreerRoute: JobsCreerRoute,

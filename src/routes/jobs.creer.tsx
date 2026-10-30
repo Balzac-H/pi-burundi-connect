@@ -4,21 +4,15 @@ import { Bouton, Carte, Champ, Saisie, Selection, Zone } from "@/components/ui-k
 import { categoriesJobs } from "@/lib/data";
 import { creerJob } from "@/lib/annonces";
 import { useSession } from "@/lib/auth";
-import { chargerProfil } from "@/lib/comptes";
-import { useT } from "@/lib/i18n";
 import { toast } from "sonner";
 import { BesoinCompte } from "@/components/BesoinCompte";
 
 export const Route = createFileRoute("/jobs/creer")({
   head: () => ({
     meta: [
-      { title: "Publier une offre d'emploi — Arija" },
-      {
-        name: "description",
-        content:
-          "Publiez gratuitement une offre d'emploi payée en Pi et recrutez des travailleurs près de chez vous.",
-      },
-      { property: "og:title", content: "Publier une offre d'emploi — Arija" },
+      { title: "Publier une offre d'emploi — WICO" },
+      { name: "description", content: "Publiez gratuitement une offre d'emploi payée en Pi et recrutez des travailleurs près de chez vous." },
+      { property: "og:title", content: "Publier une offre d'emploi — WICO" },
       { property: "og:description", content: "Recrutez rapidement au Burundi, paiement en Pi." },
     ],
   }),
@@ -27,7 +21,6 @@ export const Route = createFileRoute("/jobs/creer")({
 
 function CreerOffre() {
   const navigate = useNavigate();
-  const t = useT();
   const { utilisateur } = useSession();
   const [envoi, setEnvoi] = useState(false);
 
@@ -47,23 +40,12 @@ function CreerOffre() {
         const salaire = Number(f.get("salaire"));
         setEnvoi(true);
         try {
-          const profil = await chargerProfil(utilisateur.id);
-          if (!profil?.pi_uid) {
-            toast.error(t("piRequisPourVendre"));
-            return;
-          }
-          if (!profil.vendeur_actif) {
-            toast.error(t("activerPourPublier"));
-            return;
-          }
           await creerJob({
             employeur_id: utilisateur.id,
             titre: titre.slice(0, 100),
             description: description.slice(0, 1000),
             categorie: String(f.get("categorie") || "Autre"),
-            localisation: String(f.get("localisation") ?? "")
-              .trim()
-              .slice(0, 150),
+            localisation: String(f.get("localisation") ?? "").trim().slice(0, 150),
             salaire: Number.isFinite(salaire) && salaire > 0 ? salaire : null,
             duree: String(f.get("duree") || "") || null,
             urgent: f.get("urgent") === "on",
@@ -77,36 +59,22 @@ function CreerOffre() {
         }
       }}
     >
-      <h1 className="text-2xl font-semibold text-foreground">Créer une offre d'emploi</h1>
+      <h1 className="text-2xl font-extrabold text-primary">Créer une offre d'emploi</h1>
 
       <Carte className="space-y-4">
         <Champ label="Titre du poste" obligatoire>
-          <Saisie
-            name="titre"
-            required
-            maxLength={100}
-            placeholder="Ex. Fabrication de portes en bois"
-          />
+          <Saisie name="titre" required maxLength={100} placeholder="Ex. Fabrication de portes en bois" />
         </Champ>
         <Champ label="Catégorie" obligatoire>
           <Selection name="categorie" required defaultValue="">
-            <option value="" disabled>
-              Choisir une catégorie
-            </option>
+            <option value="" disabled>Choisir une catégorie</option>
             {categoriesJobs.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+              <option key={c} value={c}>{c}</option>
             ))}
           </Selection>
         </Champ>
         <Champ label="Description détaillée" obligatoire aide="Max 1000 caractères">
-          <Zone
-            name="description"
-            required
-            maxLength={1000}
-            placeholder="Décrivez la mission, les conditions, le matériel fourni…"
-          />
+          <Zone name="description" required maxLength={1000} placeholder="Décrivez la mission, les conditions, le matériel fourni…" />
         </Champ>
         <div className="grid gap-4 sm:grid-cols-2">
           <Champ label="Salaire (π)">
@@ -122,21 +90,14 @@ function CreerOffre() {
           </Champ>
         </div>
         <Champ label="Localisation" obligatoire>
-          <Saisie
-            name="localisation"
-            required
-            maxLength={150}
-            placeholder="Quartier Rohero, Bujumbura"
-          />
+          <Saisie name="localisation" required maxLength={150} placeholder="Quartier Rohero, Bujumbura" />
         </Champ>
-        <label className="flex min-h-11 items-center gap-2 text-sm font-semibold">
-          <input name="urgent" type="checkbox" className="size-4" /> Offre urgente
+        <label className="flex items-center gap-2 text-sm font-semibold">
+          <input name="urgent" type="checkbox" className="size-4" /> ⚡ Offre urgente
         </label>
       </Carte>
 
-      <Bouton type="submit" disabled={envoi}>
-        {envoi ? "Publication…" : "Publier l'offre"}
-      </Bouton>
+      <Bouton type="submit" disabled={envoi}>{envoi ? "Publication…" : "Publier l'offre"}</Bouton>
     </form>
   );
 }

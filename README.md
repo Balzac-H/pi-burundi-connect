@@ -1,113 +1,25 @@
-# Arija
+# WICO — Wisdom Connect
 
-**Arija — Marché et emplois solidaires au Burundi.**
+Marketplace et emplois au Burundi, payés en Pi (Pi SDK 2.0).
 
-Arija est une plateforme peer-to-peer où les membres publient des annonces de
-produits et services, diffusent des offres d'emploi et règlent en Pi Network.
-Deux usages sur un seul compte : acheter/vendre sur le marché, et proposer ou
-répondre à des offres de travail.
+## Variables
+| Nom | Où | Rôle |
+|---|---|---|
+| `PI_API_KEY` | Secret serveur | Clé API de l'app (Pi Developer Portal). Sert à approuver/finaliser les paiements. |
+| `VITE_PI_SANDBOX` | Public | `true` (défaut) = Testnet / sandbox ; `false` = Mainnet. |
 
-Nom complet de l'organisation :
+Ne jamais fournir la clé privée d'un portefeuille.
 
-> Arija : Alliance pour le Renforcement des valeurs d'Intégrité de Justice
-> Socio-économique et d'amitié entre les peuples.
+## Tester en sandbox
+1. Pi Developer Portal (dans le Pi Browser) → créer l'app, réseau **Testnet**.
+2. URL de l'app = URL publiée de WICO. Copier la clé de validation du domaine dans `public/validation-key.txt`, publier, puis valider le domaine.
+3. Ajouter `PI_API_KEY` dans les secrets du projet.
+4. Ouvrir l'URL sandbox fournie par le portail, se connecter avec Pi, acheter une annonce.
 
-## Stack
+## Passer en Mainnet
+1. Créer/basculer l'app sur **Mainnet** dans le portail, avec sa propre clé API et sa clé de validation.
+2. Mettre à jour `PI_API_KEY` et `public/validation-key.txt`.
+3. Définir `VITE_PI_SANDBOX=false`, republier.
 
-- React 19, TanStack Start / Router, TypeScript, Tailwind CSS v4
-- Vite, Nitro (build serveur), PWA (service worker généré)
-- Supabase (PostgreSQL, RLS) pour les données
-- Pi Network SDK pour l'identité et les paiements
-- Sonner pour les toasts, `src/lib/i18n.ts` pour 4 langues (fr, rn, sw, en)
-
-## Démarrage
-
-```bash
-npm install
-npm run dev        # serveur de développement
-npm run build      # build de production
-npm run lint       # eslint
-npm run format     # prettier --write
-npx tsc --noEmit   # vérification des types
-```
-
-Variables d'environnement : voir `.env.example`.
-
-## Structure
-
-```
-src/
-  routes/          pages (fichiers = routes, TanStack Start)
-  components/      AppShell, ui-kit, ProfilComplet, AssistantArija, ...
-  components/ui/   composants shadcn (inchangés)
-  lib/             i18n, store, comptes, annonces, achats, pi.*, admin.*
-  styles.css       jetons du design system (couleurs, typos, rayons)
-supabase/
-  migrations/      schéma SQL et règles RLS
-public/            logo-arija.svg, manifest.webmanifest
-```
-
-## Identité
-
-- Nom visible : **Arija**. Sous-titre : « Marché et emplois solidaires au
-  Burundi ».
-- L'ancien nom de plateforme ne doit plus apparaître dans l'interface, les
-  titres, les métadonnées, le manifest, le sitemap, les messages, les factures
-  ni la documentation. Le préfixe de facture est `ARIJA-`.
-- Exceptions volontaires (ne pas « corriger ») : la clé de stockage local du
-  thème, le domaine des comptes techniques `pi-<uid>@pi.wico.app`, les
-  constantes métier `WICO:*` de `src/lib/admin.functions.ts`, et les noms de
-  fichiers de migrations, qui sont historiques.
-
-## Design system
-
-Règles appliquées dans `src/styles.css` et `src/components/ui-kit.tsx` :
-
-- Fond de page `#FBFAF7`, cartes blanches, bordure `#E8E5DC` 1 px, rayon max 12 px
-- Texte `#22251F`, secondaire `#5E625A`, accent unique vert profond `#1F4E3D`
-- L'ocre est réservé au statut « En attente » (`bg-attente-bg text-attente`)
-- Fonte unique Inter : corps 15 px, secondaire 13 px, titres 22/18/16 en 600
-- Grille de 8 px, cibles tactiles ≥ 44 px, boutons coins 8 px, focus visible
-- Pas d'emoji, pas d'icône décorative : les boutons portent un libellé texte
-  (seule exception : le pictogramme panier de l'entête)
-- Pas de dégradé, pas d'ombre portée de carte, pas de `font-extrabold`,
-  pas de capitales sur les boutons, pas de `tracking-*`
-- Le mode sombre reste disponible
-
-## Pages institutionnelles
-
-- `/a-propos` : mission, membres, gouvernance, contact (formulaire), support
-- `/transparence` : commission de 2 %, chiffres réels, règles de gestion
-- `/conditions` : conditions d'utilisation, clause « Paiements, fonds retenus
-  et litiges »
-- `/confidentialite` : politique de confidentialité
-
-## Pi Network
-
-L'authentification passe par le SDK Pi (`src/lib/pi-session.ts`) et le serveur
-(`src/lib/pi.functions.ts`). Les paiements suivent la séquence décrite dans
-`src/lib/achat.ts` : session Pi, commande en base, puis un paiement Pi par
-vendeur. Les fonds sont retenus jusqu'à confirmation de réception.
-
-## Vérifications
-
-Avant de pousser :
-
-```bash
-npx tsc --noEmit
-npm run lint
-npm run build
-```
-
-Recherche de régressions visuelles :
-
-```bash
-grep -rn 'WICO\|Wisdom' src          # doit rester vide hors exceptions métier
-grep -rln 'lucide-react' src | grep -v components/ui
-grep -rn 'gradient-\|shadow-\[var\|font-extrabold' src
-```
-
-## Lovable
-
-Ce projet est connecté à Lovable : ne pas réécrire l'historique déjà poussé
-(force push, rebase, amend, squash), les commits remontent dans l'éditeur.
+## Flux de paiement
+Commande créée en base → `Pi.createPayment` → `piApprove` (vérifie montant, utilisateur, commande) → `piComplete` (idempotent, enregistre le txid, fonds « retenus ») → l'admin « libère » (`piRelease`, commission 2 %). Le reversement A2U au vendeur reste à faire (TODO dans `src/lib/pi.functions.ts`).

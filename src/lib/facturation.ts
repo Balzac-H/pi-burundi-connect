@@ -44,7 +44,7 @@ export function calculerFacture(params: {
   const taux = tauxCommission();
   const commission = arrondi(produits * taux);
   return {
-    id: `ARIJA-${Date.now().toString().slice(-10)}`,
+    id: `WICO-${Date.now().toString().slice(-10)}`,
     date: new Date().toISOString(),
     acheteur: params.acheteur,
     vendeur: params.vendeur,
@@ -97,9 +97,5 @@ const getFactures = () => factures;
 const getFacturesServer = () => VIDE;
 
 export function useFactures(): Facture[] {
-  return useSyncExternalStore(
-    subscribe,
-    useCallback(getFactures, []),
-    useCallback(getFacturesServer, []),
-  );
+  return useSyncExternalStore(subscribe, useCallback(getFactures, []), useCallback(getFacturesServer, []));
 }
