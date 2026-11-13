@@ -40,6 +40,12 @@ export type Cle =
   | "seDeconnecter"
   | "creerCompte"
   | "langue"
+  | "menu"
+  | "ouvrirMenu"
+  | "fermerMenu"
+  | "plus"
+  | "themeClair"
+  | "themeSombre"
   | "inscriptionRequise"
   | "inscriptionRequiseTexte"
   | "tout"
@@ -271,6 +277,12 @@ const fr: Record<Cle, string> = {
   seDeconnecter: "Se déconnecter",
   creerCompte: "Créer un compte",
   langue: "Langue",
+  menu: "Menu",
+  ouvrirMenu: "Ouvrir le menu",
+  fermerMenu: "Fermer le menu",
+  plus: "Plus",
+  themeClair: "Thème clair",
+  themeSombre: "Thème sombre",
   inscriptionRequise: "Inscription requise",
   inscriptionRequiseTexte: "Créez un compte gratuit pour utiliser Arija Connect.",
   tout: "Tout",
@@ -469,6 +481,12 @@ const rn: Record<Cle, string> = {
   seDeconnecter: "Sohoka",
   creerCompte: "Iyandikishe",
   langue: "Ururimi",
+  menu: "Ibiri muri porogarama",
+  ouvrirMenu: "Fungura menu",
+  fermerMenu: "Funga menu",
+  plus: "Ibindi",
+  themeClair: "Igishushanyo kirekire",
+  themeSombre: "Igishushanyo kijimye",
   inscriptionRequise: "Kwiyandikisha birakenewe",
   inscriptionRequiseTexte: "Iyandikishe ku buntu kugira ukoreshe Arija Connect.",
   tout: "Vyose",
@@ -667,6 +685,12 @@ const sw: Record<Cle, string> = {
   seDeconnecter: "Toka",
   creerCompte: "Fungua akaunti",
   langue: "Lugha",
+  menu: "Menyu",
+  ouvrirMenu: "Fungua menyu",
+  fermerMenu: "Funga menyu",
+  plus: "Zaidi",
+  themeClair: "Mandhari angavu",
+  themeSombre: "Mandhari nyeusi",
   inscriptionRequise: "Usajili unahitajika",
   inscriptionRequiseTexte: "Fungua akaunti bure ili kutumia Arija Connect.",
   tout: "Zote",
@@ -864,6 +888,12 @@ const en: Record<Cle, string> = {
   seDeconnecter: "Sign out",
   creerCompte: "Create account",
   langue: "Language",
+  menu: "Menu",
+  ouvrirMenu: "Open menu",
+  fermerMenu: "Close menu",
+  plus: "More",
+  themeClair: "Light theme",
+  themeSombre: "Dark theme",
   inscriptionRequise: "Sign-up required",
   inscriptionRequiseTexte: "Create a free account to use Arija Connect.",
   tout: "All",
