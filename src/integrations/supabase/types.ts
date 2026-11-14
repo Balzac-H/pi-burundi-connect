@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          acteur: string | null
+          action: string
+          cible: string | null
+          date: string
+          detail: Json
+          id: string
+        }
+        Insert: {
+          acteur?: string | null
+          action: string
+          cible?: string | null
+          date?: string
+          detail?: Json
+          id?: string
+        }
+        Update: {
+          acteur?: string | null
+          action?: string
+          cible?: string | null
+          date?: string
+          detail?: Json
+          id?: string
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -74,6 +101,47 @@ export type Database = {
         }
         Relationships: []
       }
+      liberations_en_attente: {
+        Row: {
+          created_at: string
+          id: string
+          montant: number
+          payment_id: string
+          premier_admin: string
+          second_admin: string | null
+          statut: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          montant: number
+          payment_id: string
+          premier_admin: string
+          second_admin?: string | null
+          statut?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          montant?: number
+          payment_id?: string
+          premier_admin?: string
+          second_admin?: string | null
+          statut?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liberations_en_attente_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: true
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       litiges: {
         Row: {
           auteur_id: string
@@ -100,6 +168,13 @@ export type Database = {
           statut?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "litiges_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "gains_lignes"
+            referencedColumns: ["order_id"]
+          },
           {
             foreignKeyName: "litiges_order_id_fkey"
             columns: ["order_id"]
@@ -171,6 +246,7 @@ export type Database = {
           acheteur_id: string
           created_at: string
           id: string
+          livre_declare_at: string | null
           montant: number
           produit_id: string | null
           quantite: number
@@ -185,20 +261,22 @@ export type Database = {
           acheteur_id: string
           created_at?: string
           id?: string
-          montant: number
+          livre_declare_at?: string | null
+          montant?: number
           produit_id?: string | null
           quantite: number
           recu_confirme?: boolean
           statut?: string
-          titre: string
+          titre?: string
           unite?: string
           updated_at?: string
-          vendeur_id: string
+          vendeur_id?: string
         }
         Update: {
           acheteur_id?: string
           created_at?: string
           id?: string
+          livre_declare_at?: string | null
           montant?: number
           produit_id?: string | null
           quantite?: number
@@ -260,6 +338,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "gains_lignes"
+            referencedColumns: ["order_id"]
+          },
           {
             foreignKeyName: "payments_order_id_fkey"
             columns: ["order_id"]
@@ -339,6 +424,7 @@ export type Database = {
           theme: string | null
           type_compte: string
           updated_at: string
+          vendeur_actif: boolean
           ville: string | null
           whatsapp: string | null
         }
@@ -357,6 +443,7 @@ export type Database = {
           theme?: string | null
           type_compte?: string
           updated_at?: string
+          vendeur_actif?: boolean
           ville?: string | null
           whatsapp?: string | null
         }
@@ -375,6 +462,7 @@ export type Database = {
           theme?: string | null
           type_compte?: string
           updated_at?: string
+          vendeur_actif?: boolean
           ville?: string | null
           whatsapp?: string | null
         }
@@ -405,6 +493,7 @@ export type Database = {
           created_at: string
           id: string
           note: number
+          order_id: string | null
           vendeur_id: string
         }
         Insert: {
@@ -413,6 +502,7 @@ export type Database = {
           created_at?: string
           id?: string
           note: number
+          order_id?: string | null
           vendeur_id: string
         }
         Update: {
@@ -421,9 +511,25 @@ export type Database = {
           created_at?: string
           id?: string
           note?: number
+          order_id?: string | null
           vendeur_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "gains_lignes"
+            referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       signalements: {
         Row: {
@@ -481,6 +587,46 @@ export type Database = {
       }
     }
     Views: {
+      clients_vendeur: {
+        Row: {
+          acheteur_id: string | null
+          derniere_commande: string | null
+          nb_commandes: number | null
+          total: number | null
+          vendeur_id: string | null
+        }
+        Relationships: []
+      }
+      gains_lignes: {
+        Row: {
+          commission: number | null
+          commission_payee: number | null
+          created_at: string | null
+          en_escrow: number | null
+          libere_brut: number | null
+          libere_net: number | null
+          livre_declare_at: string | null
+          montant: number | null
+          order_id: string | null
+          paiement_statut: string | null
+          quantite: number | null
+          statut: string | null
+          titre: string | null
+          unite: string | null
+          vendeur_id: string | null
+        }
+        Relationships: []
+      }
+      gains_totaux: {
+        Row: {
+          commission_payee: number | null
+          en_escrow: number | null
+          libere_brut: number | null
+          libere_net: number | null
+          vendeur_id: string | null
+        }
+        Relationships: []
+      }
       profils_publics: {
         Row: {
           bio: string | null
@@ -520,9 +666,48 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews_publics: {
+        Row: {
+          auteur_id: string | null
+          commentaire: string | null
+          created_at: string | null
+          id: string | null
+          note: number | null
+          vendeur_id: string | null
+        }
+        Insert: {
+          auteur_id?: string | null
+          commentaire?: string | null
+          created_at?: string | null
+          id?: string | null
+          note?: number | null
+          vendeur_id?: string | null
+        }
+        Update: {
+          auteur_id?: string | null
+          commentaire?: string | null
+          created_at?: string | null
+          id?: string | null
+          note?: number | null
+          vendeur_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      annuler_commandes_perimees: { Args: never; Returns: number }
+      commande_a_litige: { Args: { _order: string }; Returns: boolean }
       confirmer_reception: { Args: { _order: string }; Returns: undefined }
+      declarer_livraison: { Args: { _order: string }; Returns: undefined }
+      ecrire_audit: {
+        Args: {
+          _acteur: string
+          _action: string
+          _cible: string
+          _detail?: Json
+        }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -530,7 +715,23 @@ export type Database = {
         }
         Returns: boolean
       }
+      parties_commande_litigiee: {
+        Args: { _a: string; _b: string }
+        Returns: boolean
+      }
+      refuser_conflit_interet: {
+        Args: { _acheteur: string; _acteur: string; _vendeur: string }
+        Returns: undefined
+      }
+      traiter_litige: {
+        Args: { _litige: string; _statut: string }
+        Returns: undefined
+      }
       utilisateurs_verifies: { Args: { _ids: string[] }; Returns: string[] }
+      verifier_espace_vendeur: {
+        Args: { _vendeur: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
